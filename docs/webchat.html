@@ -116,6 +116,16 @@
           });
         }
 
+        function toRxJS(observable) {
+          return {
+            subscribe: subscriber => {
+              return observable.subscribe({
+                next: value => subscriber(value)
+              });
+            }
+          };
+        }
+
         let assetURLs;
 
         if (/^4/.test(version)) {
@@ -151,6 +161,7 @@
                 undefined
             );
 
+            console.log(activity);
             console.log(nextActivity);
 
             return nextActivity;
@@ -169,7 +180,11 @@
           }, document.getElementById('webchat'));
         } else {
           window.BotChat.App({
-            directLine: quirkyDirectLine,
+            botConnection: {
+              ...quirkyDirectLine,
+              activity$: toRxJS(quirkyDirectLine.activity$),
+              connectionStatus$: toRxJS(quirkyDirectLine.connectionStatus$)
+            },
             user: { id: userID, name: 'You' }
           }, document.getElementById('webchat'));
         }
