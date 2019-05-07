@@ -166,7 +166,6 @@
               <label>
                 <span>{ token ? 'Token' : 'Secret' }</span>
                 <input
-                  readOnly={ !!token }
                   onChange={ secret ? ({ target: { value } }) => onSecretChange(value) : undefined }
                   style={{ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }}
                   value={ token || secret }
