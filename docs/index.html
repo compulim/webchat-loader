@@ -167,6 +167,7 @@
                 <span>{ token ? 'Token' : 'Secret' }</span>
                 <input
                   onChange={ token ? undefined : ({ target: { value } }) => onSecretChange(value) }
+                  onFocus={ ({ target }) => target.select() }
                   readOnly={ !!token }
                   style={{ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }}
                   value={ token || secret }
