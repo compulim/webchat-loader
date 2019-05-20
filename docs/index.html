@@ -224,8 +224,8 @@
       };
 
       const SpeechCredential = ({
-        speechKey,
-        onSpeechKeyChange
+        onSpeechKeyChange,
+        speechKey
       }) => {
         const handleChange = useCallback(({ target: { value } }) => onSpeechKeyChange(value), [onSpeechKeyChange]);
         const handleFocus = useCallback(({ target }) => target.select());
