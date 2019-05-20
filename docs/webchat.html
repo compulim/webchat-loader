@@ -32,6 +32,7 @@
         let version = urlSearchParams.get('v');
         const experiment = urlSearchParams.get('x') || 'noop';
         const secret = urlSearchParams.get('s');
+        const speechKey = urlSearchParams.get('speechkey');
         const token = urlSearchParams.get('t');
         const userID = urlSearchParams.get('userid');
         const webSocket = urlSearchParams.get('ws') !== 'false';
@@ -175,8 +176,14 @@
         };
 
         if (/^4/.test(version)) {
+          const webSpeechPonyfillFactory = speechKey && await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            region: 'westus',
+            subscriptionKey: speechKey
+          });
+
           window.WebChat.renderWebChat({
-            directLine: quirkyDirectLine
+            directLine: quirkyDirectLine,
+            webSpeechPonyfillFactory
           }, document.getElementById('webchat'));
         } else {
           window.BotChat.App({

@@ -41,7 +41,7 @@
     'use strict';
 
     (async function () {
-      const { useEffect, useMemo, useState } = React;
+      const { useCallback, useEffect, useMemo, useState } = React;
 
       function generateUserId() {
         return `dl_${ Math.random().toString(36).substr(2) }`;
@@ -160,16 +160,19 @@
           // const { token, userID } = await res.json();
         }, [secret]);
 
+        const handleSecretChange = useCallback(({ target: { value } }) => onSecretChange(value), [onSecretChange, token]);
+        const style = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+
         return (
           <React.Fragment>
             <p>
               <label>
                 <span>{ token ? 'Token' : 'Secret' }</span>
                 <input
-                  onChange={ token ? undefined : ({ target: { value } }) => onSecretChange(value) }
+                  onChange={ token ? undefined : handleSecretChange }
                   onFocus={ ({ target }) => target.select() }
                   readOnly={ !!token }
-                  style={{ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }}
+                  style={ style }
                   value={ token || secret }
                 />
                 {
@@ -212,58 +215,93 @@
         );
       };
 
+      const SpeechCredential = ({
+        speechKey,
+        onSpeechKeyChange
+      }) => {
+        const handleChange = useCallback(({ target: { value } }) => onSpeechKeyChange(value), [onSpeechKeyChange]);
+        const style = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+
+        return (
+          <p>
+            <label>
+              <span>Speech key</span>
+              <input
+                onChange={ handleChange }
+                style={ style }
+                value={ speechKey }
+              />
+            </label>
+          </p>
+        );
+      }
+
       const ExperimentSelector = ({
         onChange,
         value
-      }) =>
-        <p>
-          <label>
-            <span>Experiment</span>
-            <select
-              onChange={ ({ target: { value } }) => onChange(value) }
-              value={ value }
-            >
-              <option value="">No experiments</option>
-              <option value="remove">Remove content URL</option>
-              <option value="placeholder">Replace content URL with a placeholder image</option>
-              <option value="403">Replace content URL with one return 403</option>
-            </select>
-          </label>
-        </p>
+      }) => {
+        const handleChange = useCallback(({ target: { value } }) => onChange(value));
+
+        return (
+          <p>
+            <label>
+              <span>Experiment</span>
+              <select
+                onChange={ handleChange }
+                value={ value }
+              >
+                <option value="">No experiments</option>
+                <option value="remove">Remove content URL</option>
+                <option value="placeholder">Replace content URL with a placeholder image</option>
+                <option value="403">Replace content URL with one return 403</option>
+              </select>
+            </label>
+          </p>
+        );
+      }
 
       const WebSocketToggle = ({
         onChange,
         value
-      }) =>
-        <p>
-          <label>
-            <span>Web Socket</span>
-            <input
-              checked={ value }
-              onChange={ ({ target: { checked } }) => onChange(checked) }
-              style={{ margin: 0 }}
-              type="checkbox"
-            />
-          </label>
-        </p>
+      }) => {
+        const handleChange = useCallback(({ target: { checked } }) => onChange(checked), [onChange]);
+        const style = useMemo(() => ({ margin: 0 }));
+
+        return (
+          <p>
+            <label>
+              <span>Web Socket</span>
+              <input
+                checked={ value }
+                onChange={ handleChange }
+                style={ style }
+                type="checkbox"
+              />
+            </label>
+          </p>
+        );
+      }
 
       const App = () => {
         const [experiment, setExperiment] = useState('');
         const [secret, setSecret] = useState(localStorage.getItem('WEB_CHAT_SECRET') || '');
+        const [speechKey, setSpeechKey] = useState(localStorage.getItem('SPEECH_KEY') || '');
         const [token, setToken] = useState('');
         const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
-        const [version, setVersion] = useState('4.4.1');
         const [useWebSocket, setUseWebSocket] = useState(true);
+        const [version, setVersion] = useState('4.4.1');
         const searchParams = new URLSearchParams({
           ...(experiment ? { x: experiment } : {}),
           v: version,
           ...(token ? { t: token } : { s: secret }),
+          ...(speechKey ? { speechkey: speechKey } : {}),
           userid: userId,
           ws: useWebSocket + ''
         });
         const webChatURL = `webchat?${ searchParams.toString() }`;
 
-        localStorage.setItem('WEB_CHAT_SECRET', secret);
+        useMemo(() => localStorage.setItem('SPEECH_KEY', speechKey), [speechKey]);
+        useMemo(() => localStorage.setItem('WEB_CHAT_SECRET', secret), [secret]);
 
         return (
           <div
@@ -301,6 +339,10 @@
               <WebSocketToggle
                 onChange={ setUseWebSocket }
                 value={ useWebSocket }
+              />
+              <SpeechCredential
+                onSpeechKeyChange={ setSpeechKey }
+                speechKey={ speechKey }
               />
               <ExperimentSelector
                 onChange={ setExperiment }
