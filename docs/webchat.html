@@ -73,8 +73,7 @@
               'script',
               {
                 async: true,
-                crossOrigin: 'anonymous',
-                integrity,
+                ...integrity ? { crossOrigin: 'anonymous', integrity } : {},
                 onError: reject,
                 onLoad: resolve,
                 src
@@ -87,9 +86,8 @@
           document.head.appendChild(createElement(
             'link',
             {
-              crossOrigin: 'anonymous',
+              ...integrity ? { crossOrigin: 'anonymous', integrity } : {},
               href,
-              integrity,
               rel: 'stylesheet'
             }
           ));
@@ -129,7 +127,9 @@
 
         let assetURLs;
 
-        if (/^4/.test(version)) {
+        if (version === 'localhost') {
+          assetURLs = [`http://localhost:5000/webchat.js`];
+        } else if (/^4/.test(version)) {
           assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
         } else {
           assetURLs = [
@@ -139,8 +139,8 @@
         }
 
         if (!assetURLs) {
-          assetURLs = VERSIONS['4.3'];
-          version = '4.3';
+          assetURLs = VERSIONS['4.4'];
+          version = '4.4';
         }
 
         await Promise.all(assetURLs.map(url => loadAsset(url)));
@@ -175,7 +175,7 @@
           get token() { return directLine.token; }
         };
 
-        if (/^4/.test(version)) {
+        if (version === 'localhost' || /^4/.test(version)) {
           const webSpeechPonyfillFactory = speechKey && await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
             region: 'westus',
             subscriptionKey: speechKey

@@ -95,13 +95,16 @@
           setVersions(sortedVersions);
         }, []);
 
+        const style = useMemo(() => ({ fontSize: '80%', marginRight: '.5em' }));
+
         const presetVersions = {
           '4.4.1': '4.4.1',
           '4.3.0': '4.3.0',
           '4.2.0': '4.2.0',
           '4.1.0': '4.1.0',
           v3: versions.map(({ version }) => version).find(version => /-v3\./.test(version)),
-          scorpio: versions.map(({ version }) => version).find(version => /-ibiza\./.test(version))
+          scorpio: versions.map(({ version }) => version).find(version => /-ibiza\./.test(version)),
+          'localhost:5000': 'localhost'
         };
 
         return (
@@ -114,6 +117,7 @@
               <div>
                 <div>
                   <select
+                    disabled={ !versions.length }
                     onChange={ ({ target: { value } }) => onChange(value) }
                     value={ value }
                   >
@@ -122,18 +126,19 @@
                         { version } ({ new Date(time).toLocaleDateString() })
                       </option>
                     ) }
+                    <option value="localhost">http://localhost:5000/webchat.js</option>
                   </select>
                 </div>
                 <div>
                   {
-                    Object.keys(presetVersions).map(name =>
+                    Object.keys(presetVersions).map((name, index) =>
                       <a
                         href="#"
                         onClick={ evt => {
                           evt.preventDefault();
                           onChange(presetVersions[name]);
                         } }
-                        style={{ marginRight: '.5em' }}
+                        style={ style }
                       >
                         { name }
                       </a>
@@ -160,8 +165,10 @@
           // const { token, userID } = await res.json();
         }, [secret]);
 
+        const handleFocus = useCallback(({ target }) => target.select());
         const handleSecretChange = useCallback(({ target: { value } }) => onSecretChange(value), [onSecretChange, token]);
-        const style = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+        const presetStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+        const userIdStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace` }));
 
         return (
           <React.Fragment>
@@ -170,9 +177,9 @@
                 <span>{ token ? 'Token' : 'Secret' }</span>
                 <input
                   onChange={ token ? undefined : handleSecretChange }
-                  onFocus={ ({ target }) => target.select() }
+                  onFocus={ handleFocus }
                   readOnly={ !!token }
-                  style={ style }
+                  style={ presetStyle }
                   value={ token || secret }
                 />
                 {
@@ -205,8 +212,9 @@
               <label>
                 <span>User ID</span>
                 <input
+                  onFocus={ handleFocus }
                   readOnly={ true }
-                  style={{ fontFamily: `Consolas, 'Courier New', monospace` }}
+                  style={ userIdStyle }
                   value={ userId }
                 />
               </label>
@@ -220,6 +228,7 @@
         onSpeechKeyChange
       }) => {
         const handleChange = useCallback(({ target: { value } }) => onSpeechKeyChange(value), [onSpeechKeyChange]);
+        const handleFocus = useCallback(({ target }) => target.select());
         const style = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
 
         return (
@@ -228,6 +237,7 @@
               <span>Speech key</span>
               <input
                 onChange={ handleChange }
+                onFocus={ handleFocus }
                 style={ style }
                 value={ speechKey }
               />
