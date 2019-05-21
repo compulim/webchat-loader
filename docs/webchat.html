@@ -128,7 +128,7 @@
         let assetURLs;
 
         if (version === 'localhost') {
-          assetURLs = [`http://localhost:5000/webchat.js`];
+          assetURLs = [`http://localhost:5000/webchat.js?_=${ Date.now() }`];
         } else if (/^4/.test(version)) {
           assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
         } else {
