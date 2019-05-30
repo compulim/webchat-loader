@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Web Chat</title>
+    <title>Web Chat Loader</title>
     <script src="https://unpkg.com/core-js@2.6.3/client/core.min.js"></script>
     <script src="https://unpkg.com/simple-update-in@2.0.2/dist/simple-update-in.production.min.js"></script>
     <script src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
@@ -79,8 +79,18 @@
         const [versions, setVersions] = useState([]);
 
         useMemo(async () => {
-          const res = await fetch(`https://bypasscors.herokuapp.com/api/?url=${ encodeURIComponent('https://registry.npmjs.org/botframework-webchat/') }`);
-          const json = await res.json();
+          let json;
+
+          try {
+            const res = await fetch(`https://bypasscors.herokuapp.com/api/?url=${ encodeURIComponent('https://registry.npmjs.org/botframework-webchat/') }`);
+
+            json = await res.json();
+          } catch (err) {
+            if (err) {
+              return alert('Failed to fetch version list from NPMJS. Please check network trace for details.');
+            }
+          }
+
           const { time, versions } = json;
           const sortedVersions = Object.values(versions).sort((x, y) => {
             x = new Date(time[x.version]);
@@ -98,12 +108,13 @@
         const style = useMemo(() => ({ fontSize: '80%', marginRight: '.5em' }));
 
         const presetVersions = {
+          '4.4.2': '4.4.2',
           '4.4.1': '4.4.1',
           '4.3.0': '4.3.0',
           '4.2.0': '4.2.0',
           '4.1.0': '4.1.0',
-          v3: versions.map(({ version }) => version).find(version => /-v3\./.test(version)),
-          scorpio: versions.map(({ version }) => version).find(version => /-ibiza\./.test(version)),
+          v3: (versions || []).map(({ version }) => version).find(version => /-v3\./.test(version)),
+          scorpio: (versions || []).map(({ version }) => version).find(version => /-ibiza\./.test(version)),
           'localhost:5000': 'localhost'
         };
 
@@ -117,11 +128,11 @@
               <div>
                 <div>
                   <select
-                    disabled={ !versions.length }
+                    disabled={ !versions }
                     onChange={ ({ target: { value } }) => onChange(value) }
                     value={ value }
                   >
-                    { versions.map(({ time, version }) =>
+                    { (versions || []).map(({ time, version }) =>
                       <option value={ version }>
                         { version } ({ new Date(time).toLocaleDateString() })
                       </option>
