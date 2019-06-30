@@ -79,30 +79,15 @@
         const [versions, setVersions] = useState([]);
 
         useMemo(async () => {
-          let json;
-
           try {
-            const res = await fetch(`https://bypasscors.herokuapp.com/api/?url=${ encodeURIComponent('https://registry.npmjs.org/botframework-webchat/') }`);
+            const res = await fetch('https://webchat-mockbot.azurewebsites.net/versions/botframework-webchat');
 
-            json = await res.json();
+            setVersions((await res.json()).versions);
           } catch (err) {
             if (err) {
               return alert('Failed to fetch version list from NPMJS. Please check network trace for details.');
             }
           }
-
-          const { time, versions } = json;
-          const sortedVersions = Object.values(versions).sort((x, y) => {
-            x = new Date(time[x.version]);
-            y = new Date(time[y.version]);
-
-            return x > y ? -1 : x < y ? 1 : 0;
-          }).map(version => ({
-            ...version,
-            time: time[version.version]
-          }));
-
-          setVersions(sortedVersions);
         }, []);
 
         const style = useMemo(() => ({ fontSize: '80%', marginRight: '.5em' }));
@@ -210,7 +195,7 @@
                         const { token, userId } = await generateDirectLineToken(secret);
 
                         onTokenChange(token);
-                        onUserIdChange(userID);
+                        onUserIdChange(userId);
                       } }
                       type="button"
                     >
