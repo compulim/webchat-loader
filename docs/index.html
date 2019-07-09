@@ -172,10 +172,14 @@
               <label>
                 <span>{ token ? 'Token' : 'Secret' }</span>
                 <input
+                  autoComplete={ token ? 'off' : 'on' }
+                  name={ token ? 'DIRECT_LINE_TOKEN' : 'DIRECT_LINE_SECRET' }
                   onChange={ token ? undefined : handleSecretChange }
                   onFocus={ handleFocus }
                   readOnly={ !!token }
+                  required={ true }
                   style={ presetStyle }
+                  type="text"
                   value={ token || secret }
                 />
                 {
