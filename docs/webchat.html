@@ -134,7 +134,8 @@
         } else {
           assetURLs = [
             `https://unpkg.com/botframework-webchat@${ version }/botchat.js`,
-            `https://unpkg.com/botframework-webchat@${ version }/botchat.css`
+            `https://unpkg.com/botframework-webchat@${ version }/botchat.css`,
+            `https://unpkg.com/botframework-webchat@${ version }/CognitiveServices.js`,
           ];
         }
 
@@ -188,6 +189,14 @@
               ...quirkyDirectLine,
               activity$: toRxJS(quirkyDirectLine.activity$),
               connectionStatus$: toRxJS(quirkyDirectLine.connectionStatus$)
+            },
+            speechOptions: {
+              speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechKey }),
+              speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+                gender: CognitiveServices.SynthesisGender.Female,
+                subscriptionKey: speechKey,
+                voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+              })
             },
             user: { id: userID, name: 'You' }
           }, document.getElementById('webchat'));
