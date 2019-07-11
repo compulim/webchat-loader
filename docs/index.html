@@ -114,7 +114,7 @@
               <div>
                 <div>
                   <select
-                    disabled={ !versions }
+                    disabled={ versions.length < 2 }
                     onChange={ ({ target: { value } }) => onChange(value) }
                     value={ value }
                   >
@@ -300,7 +300,7 @@
         const [token, setToken] = useState('');
         const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
         const [useWebSocket, setUseWebSocket] = useState(true);
-        const [version, setVersion] = useState('4.4.2');
+        const [version, setVersion] = useState('4.5.0');
         const searchParams = new URLSearchParams({
           ...(experiment ? { x: experiment } : {}),
           v: version,
