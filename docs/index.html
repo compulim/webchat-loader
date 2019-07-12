@@ -148,6 +148,19 @@
         );
       };
 
+      function caseInsensitiveCompare(x, y) {
+        x = x && x.toLowerCase();
+        y = y && y.toLowerCase();
+
+        return x > y ? 1 : x < y ? -1 : 0;
+      }
+
+      function tryParseJSON(json) {
+        try {
+          return JSON.parse(json);
+        } catch (err) {}
+      };
+
       const Credential = ({
         onSecretChange,
         onTokenChange,
@@ -165,24 +178,75 @@
         const handleFocus = useCallback(({ target }) => target.select());
         const handleSecretChange = useCallback(({ target: { value } }) => onSecretChange(value), [onSecretChange, token]);
         const presetStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+        const [savedSecretsString, setSavedSecretsString] = useState(window.localStorage.getItem('SAVED_SECRETS'));
+        const savedSecrets = useMemo(() => (tryParseJSON(savedSecretsString) || []).sort(caseInsensitiveCompare), [savedSecretsString]);
+        const setSavedSecrets = useCallback(secrets => setSavedSecretsString(JSON.stringify(secrets)), [setSavedSecretsString]);
         const userIdStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace` }));
+
+        useMemo(() => window.localStorage.setItem('SAVED_SECRETS', savedSecretsString), [savedSecretsString]);
 
         return (
           <React.Fragment>
             <p>
-              <label>
+              <label style={{
+                alignItems: 'flex-start',
+                display: 'flex'
+              }}>
                 <span>{ token ? 'Token' : 'Secret' }</span>
-                <input
-                  autoComplete={ token ? 'off' : 'on' }
-                  name={ token ? 'DIRECT_LINE_TOKEN' : 'DIRECT_LINE_SECRET' }
-                  onChange={ token ? undefined : handleSecretChange }
-                  onFocus={ handleFocus }
-                  readOnly={ !!token }
-                  required={ true }
-                  style={ presetStyle }
-                  type="text"
-                  value={ token || secret }
-                />
+                <div>
+                  <div>
+                    <input
+                      autoComplete={ token ? 'off' : 'on' }
+                      name={ token ? 'DIRECT_LINE_TOKEN' : 'DIRECT_LINE_SECRET' }
+                      onChange={ token ? undefined : handleSecretChange }
+                      onFocus={ handleFocus }
+                      readOnly={ !!token }
+                      required={ true }
+                      style={ presetStyle }
+                      type="text"
+                      value={ token || secret }
+                    />
+                  </div>
+                  {
+                    !token &&
+                      <div>
+                        {
+                          savedSecrets.map(secret =>
+                            <React.Fragment>
+                              <a
+                                href="#"
+                                onClick={ event => {
+                                  event.preventDefault();
+                                  onSecretChange(secret);
+                                } }
+                              >
+                                <small><code>{ secret.substr(0, 5) }&hellip;</code></small>
+                              </a>
+                              <a
+                                href="#"
+                                onClick={ event => {
+                                  event.preventDefault();
+                                  setSavedSecrets(savedSecrets.filter(s => s !== secret));
+                                } }
+                              >
+                                <small>[&times;]</small>
+                              </a>
+                              &nbsp;
+                            </React.Fragment>
+                          )
+                        }
+                        <a
+                          href="#"
+                          onClick={ event => {
+                            event.preventDefault();
+                            savedSecrets.includes(secret) || setSavedSecrets([...savedSecrets, secret]);
+                          } }
+                        >
+                          <small>Save</small>
+                        </a>
+                      </div>
+                  }
+                </div>
                 {
                   token ?
                     <button
