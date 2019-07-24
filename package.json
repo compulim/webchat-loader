@@ -1,0 +1,43 @@
+{
+  "name": "webchat-loader",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:babel && npm run build:webpack",
+    "build:babel": "babel --out-dir lib --source-maps true src",
+    "build:webpack": "webpack",
+    "prepublishOnly": "npm run build:babel && npm run build:webpack -- --mode production",
+    "start": "npm run build:babel && concurrently --kill-others --names \"babel,start,webpack\" \"npm run build:babel -- --watch\" \"serve build\" \"npm run build:webpack -- --watch\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/compulim/webchat-loader.git"
+  },
+  "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/compulim/webchat-loader/issues"
+  },
+  "homepage": "https://github.com/compulim/webchat-loader#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "concurrently": "^4.1.1",
+    "copy-webpack-plugin": "^5.0.3",
+    "serve": "^11.1.0",
+    "webpack": "^4.37.0",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "botframework-directlinejs": "^0.11.4",
+    "core-js": "^3.1.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "regenerator-runtime": "^0.13.3",
+    "simple-update-in": "^2.1.0"
+  }
+}

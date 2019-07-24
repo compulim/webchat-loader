@@ -1,0 +1,11 @@
+language: node_js
+
+before_script: npm run prepublishOnly
+script: ""
+
+deploy:
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  local_dir: build
+  provider: pages
+  skip_cleanup: true
