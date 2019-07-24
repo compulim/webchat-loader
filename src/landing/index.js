@@ -2,13 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { render } from 'react-dom';
 
 import Credential from './ui/Credential';
-import ExperimentSelector from './ui/ExperimentSelector';
+// import ExperimentSelector from './ui/ExperimentSelector';
 import SpeechCredential from './ui/SpeechCredential';
 import VersionSelector from './ui/VersionSelector';
 import WebSocketToggle from './ui/WebSocketToggle';
 
 const App = () => {
-  const [experiment, setExperiment] = useState('');
+  // const [experiment, setExperiment] = useState('');
   const [secret, setSecret] = useState(localStorage.getItem('WEB_CHAT_SECRET') || '');
   const [speechKey, setSpeechKey] = useState(localStorage.getItem('SPEECH_KEY') || '');
   const [token, setToken] = useState('');
@@ -16,7 +16,7 @@ const App = () => {
   const [useWebSocket, setUseWebSocket] = useState(true);
   const [version, setVersion] = useState('4.5.0');
   const searchParams = new URLSearchParams({
-    ...(experiment ? { x: experiment } : {}),
+    // ...(experiment ? { x: experiment } : {}),
     v: version,
     ...(token ? { t: token } : { s: secret }),
     ...(speechKey ? { speechkey: speechKey } : {}),
@@ -81,10 +81,10 @@ const App = () => {
           onSpeechKeyChange={ setSpeechKey }
           speechKey={ speechKey }
         />
-        <ExperimentSelector
+        {/* <ExperimentSelector
           onChange={ setExperiment }
           value={ experiment }
-        />
+        /> */}
         <section className="row" style={{ marginBottom: 0 }}>
           <a
             href={ webChatURL }
