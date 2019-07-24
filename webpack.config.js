@@ -3,8 +3,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    landing: './lib/landing.js',
-    webchat: './lib/webchat.js'
+    landing: './lib/landing/index.js',
+    webchat: './lib/webchat/index.js'
   },
   mode: 'development',
   output: {
