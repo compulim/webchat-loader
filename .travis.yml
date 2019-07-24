@@ -8,8 +8,7 @@ script: ""
 
 deploy:
   github_token: $GITHUB_TOKEN
-  keep_history: true
-  local-dir: build
+  local_dir: build
   on:
     branch: master
   provider: pages
