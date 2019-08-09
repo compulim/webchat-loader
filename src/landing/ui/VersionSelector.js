@@ -21,10 +21,10 @@ const VersionSelector = ({
   const style = useMemo(() => ({ fontSize: '80%', marginRight: '.5em' }));
 
   const presetVersions = {
+    '4.5.2': '4.5.2',
     '4.5.1': '4.5.1',
     '4.5.0': '4.5.0',
     '4.4.2': '4.4.2',
-    '4.4.1': '4.4.1',
     '4.3.0': '4.3.0',
     v3: (versions || []).map(({ version }) => version).find(version => /-v3\./.test(version)),
     scorpio: (versions || []).map(({ version }) => version).find(version => /-ibiza\./.test(version)),
