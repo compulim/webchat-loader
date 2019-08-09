@@ -14,7 +14,7 @@ const App = () => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
   const [useWebSocket, setUseWebSocket] = useState(true);
-  const [version, setVersion] = useState('4.5.0');
+  const [version, setVersion] = useState('4.5.2');
   const searchParams = new URLSearchParams({
     // ...(experiment ? { x: experiment } : {}),
     v: version,
