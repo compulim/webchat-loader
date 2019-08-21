@@ -16,7 +16,7 @@ const App = () => {
   const [speechRegion, setSpeechRegion] = useStateWithLocalStorage('westus', 'SPEECH_REGION');
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
-  const [useWebSocket, setUseWebSocket] = useState(true);
+  const [useWebSocket, setUseWebSocket] = useStateWithLocalStorage(true, 'USE_WEB_SOCKET');
   const [version, setVersion] = useState('4.5.2');
   const searchParams = useMemo(() => new URLSearchParams({
     // ...(experiment ? { x: experiment } : {}),

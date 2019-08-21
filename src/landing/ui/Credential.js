@@ -3,7 +3,6 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react';
 import caseInsensitiveCompare from '../util/caseInsensitiveCompare';
 import generateDirectLineToken from '../util/generateDirectLineToken';
 import Presets from './Presets';
-import tryParseJSON from '../util/tryParseJSON';
 import useStateWithLocalStorage from '../util/useStateWithLocalStorage';
 
 const Credential = ({
@@ -14,12 +13,6 @@ const Credential = ({
   token,
   userId
 }) => {
-  useMemo(async () => {
-    const { token, userId } = await generateDirectLineToken(secret);
-    // const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-    // const { token, userID } = await res.json();
-  }, [secret]);
-
   const handleFocus = useCallback(({ target }) => target.select());
   const handleSecretChange = useCallback(({ target: { value } }) => onSecretChange(value), [onSecretChange, token]);
 
@@ -62,22 +55,22 @@ const Credential = ({
           {
             token ?
               <button
-                onClick={ () => {
+                onClick={ useCallback(() => {
                   onTokenChange('');
                   onUserIdChange(`r_${ Math.random().toString(36).substr(2) }`);
-                } }
+                }, [onTokenChange, onUserIdChange]) }
                 type="button"
               >
                 Use secret
               </button>
             :
               <button
-                onClick={ async () => {
+                onClick={ useCallback(async () => {
                   const { token, userId } = await generateDirectLineToken(secret);
 
                   onTokenChange(token);
                   onUserIdChange(userId);
-                } }
+                }, [onTokenChange, onUserIdChange]) }
                 type="button"
               >
                 Generate token
