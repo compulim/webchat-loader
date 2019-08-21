@@ -2,7 +2,9 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react';
 
 import caseInsensitiveCompare from '../util/caseInsensitiveCompare';
 import generateDirectLineToken from '../util/generateDirectLineToken';
+import Presets from './Presets';
 import tryParseJSON from '../util/tryParseJSON';
+import useStateWithLocalStorage from '../util/useStateWithLocalStorage';
 
 const Credential = ({
   onSecretChange,
@@ -20,21 +22,17 @@ const Credential = ({
 
   const handleFocus = useCallback(({ target }) => target.select());
   const handleSecretChange = useCallback(({ target: { value } }) => onSecretChange(value), [onSecretChange, token]);
-  const presetStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
-  const [savedSecretsString, setSavedSecretsString] = useState(window.localStorage.getItem('SAVED_SECRETS'));
-  const savedSecrets = useMemo(() => (tryParseJSON(savedSecretsString) || []).sort(caseInsensitiveCompare), [savedSecretsString]);
-  const setSavedSecrets = useCallback(secrets => setSavedSecretsString(JSON.stringify(secrets)), [setSavedSecretsString]);
-  const userIdStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace` }));
 
-  useMemo(() => window.localStorage.setItem('SAVED_SECRETS', savedSecretsString), [savedSecretsString]);
+  const [savedSecrets, setSavedSecrets] = useStateWithLocalStorage([], 'SAVED_SECRETS');
+
+  const handleDeleteSavedSecret = useCallback(value => setSavedSecrets(savedSecrets.filter(secret => secret !== value), [savedSecrets]));
+  const handleSaveSecret = useCallback(() => setSavedSecrets([...savedSecrets.filter(s => s !== secret), secret].sort(caseInsensitiveCompare)), [savedSecrets, secret]);
+  const savedRedactedSecrets = useMemo(() => savedSecrets.map(secret => () => <code>{ (secret || '').substr(0, 5) + '…' }</code>, [savedSecrets]));
 
   return (
     <Fragment>
       <section className="row">
-        <label style={{
-          alignItems: 'flex-start',
-          display: 'flex'
-        }}>
+        <label style={ useMemo(() => ({ alignItems: 'flex-start', display: 'flex' })) }>
           <span>{ token ? 'Token' : 'Secret' }</span>
           <div>
             <div>
@@ -45,49 +43,20 @@ const Credential = ({
                 onFocus={ handleFocus }
                 readOnly={ !!token }
                 required={ true }
-                style={ presetStyle }
+                style={ useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' })) }
                 type="text"
                 value={ token || secret }
               />
             </div>
             {
               !token &&
-                <div>
-                  {
-                    savedSecrets.map(secret =>
-                      <Fragment key={ secret }>
-                        <a
-                          href="#"
-                          onClick={ event => {
-                            event.preventDefault();
-                            onSecretChange(secret);
-                          } }
-                        >
-                          <small><code>{ secret.substr(0, 5) }&hellip;</code></small>
-                        </a>
-                        <a
-                          href="#"
-                          onClick={ event => {
-                            event.preventDefault();
-                            setSavedSecrets(savedSecrets.filter(s => s !== secret));
-                          } }
-                        >
-                          <small>[&times;]</small>
-                        </a>
-                        &nbsp;
-                      </Fragment>
-                    )
-                  }
-                  <a
-                    href="#"
-                    onClick={ event => {
-                      event.preventDefault();
-                      savedSecrets.includes(secret) || setSavedSecrets([...savedSecrets, secret]);
-                    } }
-                  >
-                    <small>Save</small>
-                  </a>
-                </div>
+                <Presets
+                  onDelete={ handleDeleteSavedSecret }
+                  onLoad={ onSecretChange }
+                  onSave={ handleSaveSecret }
+                  texts={ savedRedactedSecrets }
+                  values={ savedSecrets }
+                />
             }
           </div>
           {
@@ -122,7 +91,7 @@ const Credential = ({
           <input
             onFocus={ handleFocus }
             readOnly={ true }
-            style={ userIdStyle }
+            style={ useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace` })) }
             value={ userId }
           />
         </label>

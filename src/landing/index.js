@@ -7,26 +7,35 @@ import SpeechCredential from './ui/SpeechCredential';
 import VersionSelector from './ui/VersionSelector';
 import WebSocketToggle from './ui/WebSocketToggle';
 
+import useStateWithLocalStorage from './util/useStateWithLocalStorage';
+
 const App = () => {
   // const [experiment, setExperiment] = useState('');
-  const [secret, setSecret] = useState(localStorage.getItem('WEB_CHAT_SECRET') || '');
-  const [speechKey, setSpeechKey] = useState(localStorage.getItem('SPEECH_KEY') || '');
+  const [secret, setSecret] = useStateWithLocalStorage('', 'WEB_CHAT_SECRET');
+  const [speechKey, setSpeechKey] = useStateWithLocalStorage('', 'SPEECH_KEY');
+  const [speechRegion, setSpeechRegion] = useStateWithLocalStorage('westus', 'SPEECH_REGION');
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
   const [useWebSocket, setUseWebSocket] = useState(true);
   const [version, setVersion] = useState('4.5.2');
-  const searchParams = new URLSearchParams({
+  const searchParams = useMemo(() => new URLSearchParams({
     // ...(experiment ? { x: experiment } : {}),
     v: version,
     ...(token ? { t: token } : { s: secret }),
     ...(speechKey ? { speechkey: speechKey } : {}),
+    ...(speechRegion ? { speechregion: speechRegion } : {}),
     userid: userId,
     ws: useWebSocket + ''
-  });
+  }), [
+    secret,
+    speechKey,
+    speechRegion,
+    token,
+    userId,
+    useWebSocket,
+    version
+  ]);
   const webChatURL = `webchat?${ searchParams.toString() }`;
-
-  useMemo(() => localStorage.setItem('SPEECH_KEY', speechKey), [speechKey]);
-  useMemo(() => localStorage.setItem('WEB_CHAT_SECRET', secret), [secret]);
 
   return (
     <div
@@ -79,7 +88,9 @@ const App = () => {
         />
         <SpeechCredential
           onSpeechKeyChange={ setSpeechKey }
+          onSpeechRegionChange={ setSpeechRegion }
           speechKey={ speechKey }
+          speechRegion={ speechRegion }
         />
         {/* <ExperimentSelector
           onChange={ setExperiment }

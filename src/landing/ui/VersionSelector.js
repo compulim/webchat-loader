@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import Presets from './Presets';
 
 const VersionSelector = ({
   onChange,
@@ -18,31 +19,29 @@ const VersionSelector = ({
     }
   }, []);
 
-  const style = useMemo(() => ({ fontSize: '80%', marginRight: '.5em' }));
+  const v3Version = useMemo(() => (versions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)), [versions]);
+  const scorpioVersion = useMemo(() => (versions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)), [versions]);
 
-  const presetVersions = {
+  const presetVersions = useMemo(() => ({
     '4.5.2': '4.5.2',
     '4.5.1': '4.5.1',
     '4.5.0': '4.5.0',
     '4.4.2': '4.4.2',
     '4.3.0': '4.3.0',
-    v3: (versions || []).map(({ version }) => version).find(version => /-v3\./.test(version)),
-    scorpio: (versions || []).map(({ version }) => version).find(version => /-ibiza\./.test(version)),
+    ...v3Version ? { v3: v3Version } : {},
+    ...scorpioVersion ? { scorpio: scorpioVersion } : {},
     'localhost:5000': 'localhost'
-  };
+  }), [versions]);
 
   return (
     <section className="row">
-      <label style={{
-        alignItems: 'flex-start',
-        display: 'flex'
-      }}>
+      <label style={ useMemo(() => ({ alignItems: 'flex-start', display: 'flex' }), []) }>
         <header>Version</header>
         <div>
           <div>
             <select
               disabled={ versions.length < 2 }
-              onChange={ ({ target: { value } }) => onChange(value) }
+              onChange={ useCallback(({ target: { value } }) => onChange(value), [onChange]) }
               value={ value }
             >
               { (versions || []).map(({ time, version }) =>
@@ -54,21 +53,11 @@ const VersionSelector = ({
             </select>
           </div>
           <div>
-            {
-              Object.keys(presetVersions).map(name =>
-                <a
-                  href="#"
-                  key={ name }
-                  onClick={ evt => {
-                    evt.preventDefault();
-                    onChange(presetVersions[name]);
-                  } }
-                  style={ style }
-                >
-                  { name }
-                </a>
-              )
-            }
+            <Presets
+              onLoad={ onChange }
+              texts={ useMemo(() => Object.keys(presetVersions), [presetVersions]) }
+              values={ useMemo(() => Object.values(presetVersions), [presetVersions]) }
+            />
           </div>
         </div>
       </label>

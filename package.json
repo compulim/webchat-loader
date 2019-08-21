@@ -35,6 +35,8 @@
   "dependencies": {
     "botframework-directlinejs": "^0.11.4",
     "core-js": "^3.1.4",
+    "on-error-resume-next": "^1.1.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "regenerator-runtime": "^0.13.3",

@@ -11,6 +11,7 @@ async function main() {
   const experiment = urlSearchParams.get('x') || 'noop';
   const secret = urlSearchParams.get('s');
   const speechKey = urlSearchParams.get('speechkey');
+  const speechRegion = urlSearchParams.get('speechregion');
   const token = urlSearchParams.get('t');
   const userID = urlSearchParams.get('userid');
   const webSocket = urlSearchParams.get('ws') !== 'false';
@@ -65,7 +66,7 @@ async function main() {
 
   if (version === 'localhost' || /^4/.test(version)) {
     const webSpeechPonyfillFactory = speechKey ? await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: 'westus',
+      region: speechRegion || 'westus',
       subscriptionKey: speechKey
     }) : undefined;
 
