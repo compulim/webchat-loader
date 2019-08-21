@@ -1,6 +1,7 @@
 import { DirectLine } from 'botframework-directlinejs';
 import updateIn from 'simple-update-in';
 
+import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
 import loadAsset from './util/loadAsset';
 import passThrough from './util/passThrough';
 import toRxJS from './util/toRxJS';
@@ -65,10 +66,21 @@ async function main() {
   };
 
   if (version === 'localhost' || /^4/.test(version)) {
-    const webSpeechPonyfillFactory = speechKey ? await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-      region: speechRegion || 'westus',
-      subscriptionKey: speechKey
-    }) : undefined;
+    let webSpeechPonyfillFactory;
+
+    if (speechKey === '__mockbot__') {
+      const { region } = await fetchMockBotSpeechServicesToken();
+
+      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+        authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
+        region
+      });
+    } else {
+      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+        region: speechRegion || 'westus',
+        subscriptionKey: speechKey
+      });
+    }
 
     window.WebChat.renderWebChat({
       directLine: quirkyDirectLine,

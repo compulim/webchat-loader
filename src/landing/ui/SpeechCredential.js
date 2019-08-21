@@ -37,8 +37,8 @@ const SpeechCredential = ({
                 onDelete={ useCallback(value => setSavedKeys(savedKeys.filter(key => key !== value), [savedKeys])) }
                 onLoad={ useCallback(value => onSpeechKeyChange(value), [onSpeechKeyChange]) }
                 onSave={ useCallback(() => setSavedKeys([...savedKeys.filter(key => key !== speechKey), speechKey].sort()), [savedKeys, speechKey]) }
-                texts={ useMemo(() => savedKeys.map(key => () => <code>{ key.substr(0, 5) + '…' }</code>), [savedKeys]) }
-                values={ savedKeys }
+                texts={ useMemo(() => ['MockBot', ...savedKeys.map(key => () => <code>{ key.substr(0, 5) + '…' }</code>)], [savedKeys]) }
+                values={ useMemo(() => ['__mockbot__', ...savedKeys], [savedKeys]) }
               />
             </div>
           </div>
