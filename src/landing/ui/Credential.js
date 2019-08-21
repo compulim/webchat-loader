@@ -1,9 +1,10 @@
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 import caseInsensitiveCompare from '../util/caseInsensitiveCompare';
 import generateDirectLineToken from '../util/generateDirectLineToken';
 import Presets from './Presets';
 import useStateWithLocalStorage from '../util/useStateWithLocalStorage';
+import fetchMockBotDirectLineToken from '../util/fetchMockBotDirectLineToken';
 
 const Credential = ({
   onSecretChange,
@@ -18,9 +19,38 @@ const Credential = ({
 
   const [savedSecrets, setSavedSecrets] = useStateWithLocalStorage([], 'SAVED_SECRETS');
 
+  const [mockBotDirectLineToken, setMockBotDirectLineToken] = useState();
+  const savedSecretsIncludeMockBot = useMemo(() => [...(mockBotDirectLineToken ? ['__MOCKBOT__'] : []), ...savedSecrets], [mockBotDirectLineToken, savedSecrets]);
+
+  useEffect(() => {
+    fetchMockBotDirectLineToken().then(setMockBotDirectLineToken);
+  }, [setMockBotDirectLineToken]);
+
   const handleDeleteSavedSecret = useCallback(value => setSavedSecrets(savedSecrets.filter(secret => secret !== value), [savedSecrets]));
+  const handleLoadSecret = useCallback(value => {
+    if (value === '__MOCKBOT__') {
+      onTokenChange(mockBotDirectLineToken);
+    } else {
+      onSecretChange(value);
+    }
+  });
   const handleSaveSecret = useCallback(() => setSavedSecrets([...savedSecrets.filter(s => s !== secret), secret].sort(caseInsensitiveCompare)), [savedSecrets, secret]);
-  const savedRedactedSecrets = useMemo(() => savedSecrets.map(secret => () => <code>{ (secret || '').substr(0, 5) + '…' }</code>, [savedSecrets]));
+  const savedRedactedSecrets = useMemo(() => [
+    ...(mockBotDirectLineToken ? ['MockBot'] : []),
+    ...savedSecrets.map(secret => () => <code>{ (secret || '').substr(0, 5) + '…' }</code>)
+  ], [mockBotDirectLineToken, savedSecrets]);
+
+  const handleGenerateTokenClick = useCallback(async () => {
+    const { token, userId } = await generateDirectLineToken(secret);
+
+    onTokenChange(token);
+    onUserIdChange(userId);
+  }, [onTokenChange, onUserIdChange]);
+
+  const handleUseSecretClick = useCallback(() => {
+    onTokenChange('');
+    onUserIdChange(`r_${ Math.random().toString(36).substr(2) }`);
+  }, [onTokenChange, onUserIdChange]);
 
   return (
     <Fragment>
@@ -45,32 +75,24 @@ const Credential = ({
               !token &&
                 <Presets
                   onDelete={ handleDeleteSavedSecret }
-                  onLoad={ onSecretChange }
+                  onLoad={ handleLoadSecret }
                   onSave={ handleSaveSecret }
                   texts={ savedRedactedSecrets }
-                  values={ savedSecrets }
+                  values={ savedSecretsIncludeMockBot }
                 />
             }
           </div>
           {
             token ?
               <button
-                onClick={ useCallback(() => {
-                  onTokenChange('');
-                  onUserIdChange(`r_${ Math.random().toString(36).substr(2) }`);
-                }, [onTokenChange, onUserIdChange]) }
+                onClick={ handleUseSecretClick }
                 type="button"
               >
                 Use secret
               </button>
             :
               <button
-                onClick={ useCallback(async () => {
-                  const { token, userId } = await generateDirectLineToken(secret);
-
-                  onTokenChange(token);
-                  onUserIdChange(userId);
-                }, [onTokenChange, onUserIdChange]) }
+                onClick={ handleGenerateTokenClick }
                 type="button"
               >
                 Generate token
