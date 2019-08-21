@@ -37,11 +37,12 @@ const VersionSelector = ({
     <section className="row">
       <label style={ useMemo(() => ({ alignItems: 'flex-start', display: 'flex' }), []) }>
         <header>Version</header>
-        <div>
+        <div style={ useMemo(() => ({ flex: 1 })) }>
           <div>
             <select
               disabled={ versions.length < 2 }
               onChange={ useCallback(({ target: { value } }) => onChange(value), [onChange]) }
+              style={ useMemo(() => ({ width: '100%' })) }
               value={ value }
             >
               { (versions || []).map(({ time, version }) =>

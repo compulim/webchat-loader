@@ -12,7 +12,7 @@ const SpeechCredential = ({
   const handleKeyChange = useCallback(({ target: { value } }) => onSpeechKeyChange(value), [onSpeechKeyChange]);
   const handleKeyFocus = useCallback(({ target }) => target.select());
   const handleRegionChange = useCallback(({ target: { value } }) => onSpeechRegionChange(value), [onSpeechRegionChange]);
-  const style = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' }));
+  const inputStyle = useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, width: '100%' }));
   const [savedKeys, setSavedKeys] = useStateWithLocalStorage([], 'SAVED_SPEECH_KEYS');
 
   return (
@@ -23,12 +23,12 @@ const SpeechCredential = ({
           display: 'flex'
         }), []) }>
           <header>Speech key</header>
-          <div>
+          <div style={ useMemo(() => ({ flex: 1 })) }>
             <div>
               <input
                 onChange={ handleKeyChange }
                 onFocus={ handleKeyFocus }
-                style={ style }
+                style={ inputStyle }
                 value={ speechKey }
               />
             </div>
@@ -50,11 +50,11 @@ const SpeechCredential = ({
           display: 'flex'
         }), []) }>
           <header>Speech region</header>
-          <div>
+          <div style={ useMemo(() => ({ flex: 1 })) }>
             <div>
               <input
                 onChange={ handleRegionChange }
-                style={ style }
+                style={ inputStyle }
                 value={ speechRegion }
               />
             </div>

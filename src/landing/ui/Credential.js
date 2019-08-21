@@ -57,7 +57,7 @@ const Credential = ({
       <section className="row">
         <label style={ useMemo(() => ({ alignItems: 'flex-start', display: 'flex' })) }>
           <span>{ token ? 'Token' : 'Secret' }</span>
-          <div>
+          <div style={ useMemo(() => ({ flex: 1 })) }>
             <div>
               <input
                 autoComplete={ token ? 'off' : 'on' }
@@ -66,7 +66,7 @@ const Credential = ({
                 onFocus={ handleFocus }
                 readOnly={ !!token }
                 required={ true }
-                style={ useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' })) }
+                style={ useMemo(() => ({ fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em', width: 'calc(100% - 1em)' })) }
                 type="text"
                 value={ token || secret }
               />

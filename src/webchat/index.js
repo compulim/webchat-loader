@@ -75,7 +75,7 @@ async function main() {
         authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
         region
       });
-    } else {
+    } else if (speechKey) {
       webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
         region: speechRegion || 'westus',
         subscriptionKey: speechKey
