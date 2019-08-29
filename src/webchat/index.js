@@ -50,8 +50,6 @@ async function main() {
       secret = null;
       token = result.token;
       conversationId = result.conversationId;
-
-      console.log('generated token for SE', { conversationId, token, userID });
     }
   } else if (/^4/.test(version)) {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
@@ -74,7 +72,6 @@ async function main() {
     ...(token ? { token }: {}),
     webSocket
   };
-  console.log(directLineOptions);
   const directLine = new DirectLine(directLineOptions);
   const quirkyDirectLine = {
     activity$: passThrough(directLine.activity$, activity => {
