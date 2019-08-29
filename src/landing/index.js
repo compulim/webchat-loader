@@ -1,12 +1,14 @@
-import React, { useMemo, useState } from 'react';
 import { render } from 'react-dom';
+import React, { useMemo, useState } from 'react';
 
 import Credential from './ui/Credential';
 // import ExperimentSelector from './ui/ExperimentSelector';
 import SpeechCredential from './ui/SpeechCredential';
+import StreamingExtensionToggle from './ui/StreamingExtension';
 import VersionSelector from './ui/VersionSelector';
 import WebSocketToggle from './ui/WebSocketToggle';
 
+import generateUserId from './util/generateUserId';
 import useStateWithLocalStorage from './util/useStateWithLocalStorage';
 
 const App = () => {
@@ -15,7 +17,8 @@ const App = () => {
   const [speechKey, setSpeechKey] = useStateWithLocalStorage('', 'SPEECH_KEY');
   const [speechRegion, setSpeechRegion] = useStateWithLocalStorage('westus', 'SPEECH_REGION');
   const [token, setToken] = useState('');
-  const [userId, setUserId] = useState(`r_${ Math.random().toString(36).substr(2) }`);
+  const [userId, setUserId] = useState(generateUserId(false));
+  const [useStreamingExtension, setUseStreamingExtension] = useStateWithLocalStorage(true, 'USE_STREAMING_EXTENSION');
   const [useWebSocket, setUseWebSocket] = useStateWithLocalStorage(true, 'USE_WEB_SOCKET');
   const [version, setVersion] = useState('4.5.2');
   const searchParams = useMemo(() => new URLSearchParams({
@@ -24,8 +27,9 @@ const App = () => {
     ...(token ? { t: token } : { s: secret }),
     ...(speechKey ? { speechkey: speechKey } : {}),
     ...(speechRegion ? { speechregion: speechRegion } : {}),
-    userid: userId,
-    ws: useWebSocket + ''
+    userid: useStreamingExtension ? generateUserId(true) : userId,
+    ws: useWebSocket + '',
+    ...(useStreamingExtension ? { se: 'webchat-mockbot-se.azurewebsites.net' } : {})
   }), [
     secret,
     speechKey,
@@ -85,6 +89,11 @@ const App = () => {
         <WebSocketToggle
           onChange={ setUseWebSocket }
           value={ useWebSocket }
+        />
+        <StreamingExtensionToggle
+          disabled={ !useWebSocket }
+          onChange={ setUseStreamingExtension }
+          value={ useStreamingExtension }
         />
         <SpeechCredential
           onSpeechKeyChange={ setSpeechKey }

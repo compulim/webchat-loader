@@ -1,7 +1,7 @@
 import generateUserId from './generateUserId';
 
 export default async function generateDirectLineToken(secret) {
-  const userId = generateUserId();
+  const userId = generateUserId(true);
 
   const res = await fetch(`https://directline.botframework.com/v3/directline/tokens/generate`, {
     body: JSON.stringify({ User: { Id: userId } }),

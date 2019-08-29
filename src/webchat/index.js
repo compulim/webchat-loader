@@ -1,4 +1,5 @@
-import { DirectLine } from 'botframework-directlinejs';
+import { DirectLine as NPMDirectLine } from 'botframework-directlinejs';
+import random from 'math-random';
 import updateIn from 'simple-update-in';
 
 import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
@@ -8,19 +9,50 @@ import toRxJS from './util/toRxJS';
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
-  let version = urlSearchParams.get('v');
+  let version = urlSearchParams.get('v') || 'latest';
   const experiment = urlSearchParams.get('x') || 'noop';
-  const secret = urlSearchParams.get('s');
+  let conversationId = urlSearchParams.get('cid');
+  let secret = urlSearchParams.get('s');
   const speechKey = urlSearchParams.get('speechkey');
   const speechRegion = urlSearchParams.get('speechregion');
-  const token = urlSearchParams.get('t');
-  const userID = urlSearchParams.get('userid');
+  let token = urlSearchParams.get('t');
+  let userID = urlSearchParams.get('userid');
+  const streamingExtensionHostname = urlSearchParams.get('se');
   const webSocket = urlSearchParams.get('ws') !== 'false';
 
   let assetURLs;
+  let customDirectLineJS;
 
   if (version === 'localhost') {
+    try {
+      await loadAsset(`http://localhost:5000/directLine.js?_=${ Date.now() }`);
+      customDirectLineJS = true;
+    } catch (err) {
+      console.warn('Loading Web Chat from localhost:5000, but custom DirectLineJS is not found. Will use DirectLineJS from Web Chat bundle.');
+    }
+
     assetURLs = [`http://localhost:5000/webchat.js?_=${ Date.now() }`];
+
+    if (streamingExtensionHostname && secret && !token) {
+      userID = `dl_${ random().toString(36).substr(2, 10) }`;
+
+      const res = await fetch(`https://${ streamingExtensionHostname }/.bot/v3/directline/tokens/generate`, {
+        body: JSON.stringify({ User: { Id: userID } }),
+        headers: {
+          authorization: `Bearer ${ secret }`,
+          'Content-Type': 'application/json'
+        },
+        method: 'POST'
+      });
+
+      const result = await res.json();
+
+      secret = null;
+      token = result.token;
+      conversationId = result.conversationId;
+
+      console.log('generated token for SE', { conversationId, token, userID });
+    }
   } else if (/^4/.test(version)) {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
   } else {
@@ -31,14 +63,19 @@ async function main() {
     ];
   }
 
-  if (!assetURLs) {
-    assetURLs = VERSIONS['4.4'];
-    version = '4.4';
-  }
-
   await Promise.all(assetURLs.map(url => loadAsset(url)));
 
-  const directLine = new DirectLine({ secret, token, webSocket });
+  const DirectLine = customDirectLineJS ? window.DirectLine.DirectLine : (window.WebChat.DirectLine || NPMDirectLine);
+  const directLineOptions = {
+    ...(conversationId ? { conversationId } : {}),
+    domain: streamingExtensionHostname ? `https://${ streamingExtensionHostname }/.bot/v3/directline` : undefined,
+    ...(secret ? { secret } : {}),
+    ...(!!streamingExtensionHostname ? { streamingWebSocket: true } : {}),
+    ...(token ? { token }: {}),
+    webSocket
+  };
+  console.log(directLineOptions);
+  const directLine = new DirectLine(directLineOptions);
   const quirkyDirectLine = {
     activity$: passThrough(directLine.activity$, activity => {
       const nextActivity = updateIn(
@@ -68,22 +105,54 @@ async function main() {
   if (version === 'localhost' || /^4/.test(version)) {
     let webSpeechPonyfillFactory;
 
-    if (speechKey === '__mockbot__') {
-      const { region } = await fetchMockBotSpeechServicesToken();
+    if (speechKey) {
+      const speechOptions = {
+        // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
+        // speechRecognitionEndpointId: '16f4e386-3356-4bee-8e36-c1d3d9b9a252',
+        // speechSynthesisDeploymentId: '5bc5e66a-3e81-4026-948d-d219afcc5702'
+        // textNormalization: 'itn'
+        // enableTelemetry: true
+      };
 
-      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-        authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
-        region
-      });
-    } else if (speechKey) {
-      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-        region: speechRegion || 'westus',
-        subscriptionKey: speechKey
-      });
+      if (speechKey === '__mockbot__') {
+        const { region } = await fetchMockBotSpeechServicesToken();
+
+        const speechRecognitionPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          ...speechOptions,
+          // authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
+          region,
+          subscriptionKey: 'c2c0791c71874cd29be24acb4b04a326'
+        });
+
+        const speechSynthesisPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          ...speechOptions,
+          authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
+          region
+        });
+
+        webSpeechPonyfillFactory = options => {
+          const { SpeechGrammarList, SpeechRecognition } = speechRecognitionPonyfillFactory(options);
+          const { speechSynthesis, SpeechSynthesisUtterance } = speechSynthesisPonyfillFactory(options);
+
+          return {
+            SpeechGrammarList,
+            SpeechRecognition,
+            speechSynthesis,
+            SpeechSynthesisUtterance
+          };
+        };
+      } else {
+        webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          ...speechOptions,
+          region: speechRegion || 'westus',
+          subscriptionKey: speechKey
+        });
+      }
     }
 
     window.WebChat.renderWebChat({
       directLine: quirkyDirectLine,
+      // selectVoice: () => ({ voiceURI: '1' }),
       webSpeechPonyfillFactory
     }, document.getElementById('webchat'));
   } else {
