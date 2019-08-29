@@ -18,7 +18,7 @@ const App = () => {
   const [speechRegion, setSpeechRegion] = useStateWithLocalStorage('westus', 'SPEECH_REGION');
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState(generateUserId(false));
-  const [useStreamingExtension, setUseStreamingExtension] = useStateWithLocalStorage(true, 'USE_STREAMING_EXTENSION');
+  const [useStreamingExtension, setUseStreamingExtension] = useStateWithLocalStorage(false, 'USE_STREAMING_EXTENSION');
   const [useWebSocket, setUseWebSocket] = useStateWithLocalStorage(true, 'USE_WEB_SOCKET');
   const [version, setVersion] = useState('4.5.2');
   const searchParams = useMemo(() => new URLSearchParams({
