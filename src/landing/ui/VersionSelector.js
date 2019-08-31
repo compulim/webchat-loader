@@ -1,17 +1,21 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import Presets from './Presets';
 
-const VersionSelector = ({
-  onChange,
-  value
-}) => {
-  const [versions, setVersions] = useState([]);
+import Presets from './Presets';
+import Row from './Row';
+
+import useVersion from '../data/hooks/useVersion';
+
+const SELECT_STYLE = { width: '100%' };
+
+const VersionSelector = () => {
+  const [version, setVersion] = useVersion();
+  const [availableVersions, setAvailableVersions] = useState([]);
 
   useMemo(async () => {
     try {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/versions/botframework-webchat');
 
-      setVersions((await res.json()).versions);
+      setAvailableVersions((await res.json()).versions);
     } catch (err) {
       if (err) {
         return alert('Failed to fetch version list from NPMJS. Please check network trace for details.');
@@ -19,8 +23,8 @@ const VersionSelector = ({
     }
   }, []);
 
-  const v3Version = useMemo(() => (versions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)), [versions]);
-  const scorpioVersion = useMemo(() => (versions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)), [versions]);
+  const v3Version = useMemo(() => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)), [availableVersions]);
+  const scorpioVersion = useMemo(() => (availableVersions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)), [availableVersions]);
 
   const presetVersions = useMemo(() => ({
     '4.5.2': '4.5.2',
@@ -31,38 +35,40 @@ const VersionSelector = ({
     ...v3Version ? { v3: v3Version } : {},
     ...scorpioVersion ? { scorpio: scorpioVersion } : {},
     'localhost:5000': 'localhost'
-  }), [versions]);
+  }), [availableVersions]);
+
+  const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
+  const versionValues = useMemo(() => Object.values(presetVersions), [presetVersions]);
+
+  const handleVersionChange = useCallback(({ target: { value } }) => setVersion(value), [setVersion]);
 
   return (
-    <section className="row">
-      <label style={ useMemo(() => ({ alignItems: 'flex-start', display: 'flex' }), []) }>
-        <header>Version</header>
-        <div style={ useMemo(() => ({ flex: 1 })) }>
-          <div>
-            <select
-              disabled={ versions.length < 2 }
-              onChange={ useCallback(({ target: { value } }) => onChange(value), [onChange]) }
-              style={ useMemo(() => ({ width: '100%' })) }
-              value={ value }
-            >
-              { (versions || []).map(({ time, version }) =>
-                <option key={ version } value={ version }>
-                  { version } ({ new Date(time).toLocaleDateString() })
-                </option>
-              ) }
-              <option value="localhost">http://localhost:5000/webchat.js</option>
-            </select>
-          </div>
-          <div>
-            <Presets
-              onLoad={ onChange }
-              texts={ useMemo(() => Object.keys(presetVersions), [presetVersions]) }
-              values={ useMemo(() => Object.values(presetVersions), [presetVersions]) }
-            />
-          </div>
-        </div>
-      </label>
-    </section>
+    <Row header="Version">
+      <div>
+        <select
+          disabled={ availableVersions.length < 2 }
+          onChange={ handleVersionChange }
+          style={ SELECT_STYLE }
+          value={ version }
+        >
+          { (availableVersions || []).map(({ time, version }) =>
+            <option key={ version } value={ version }>
+              { version } ({ new Date(time).toLocaleDateString() })
+            </option>
+          ) }
+          <option value="localhost">http://localhost:5000/webchat.js</option>
+        </select>
+      </div>
+      <div>
+        <small>
+          <Presets
+            onLoad={ setVersion }
+            texts={ versionTexts }
+            values={ versionValues }
+          />
+        </small>
+      </div>
+    </Row>
   );
 };
 

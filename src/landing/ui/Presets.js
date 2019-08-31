@@ -23,7 +23,7 @@ const Preset = ({
         href="#"
         onClick={ handleLoadClick }
       >
-        <small>{ typeof text === 'function' ? text() : text || value }</small>
+        <span>{ typeof text === 'function' ? text() : text || value }</span>
       </a>
       {
         !!onDelete &&
@@ -31,7 +31,7 @@ const Preset = ({
             href="#"
             onClick={ handleDeleteClick }
           >
-            <small>[&times;]</small>
+            <span>[&times;]</span>
           </a>
       }
       &nbsp;
@@ -67,7 +67,7 @@ const Presets = ({
   }, [onSave]);
 
   return (
-    <div>
+    <span>
       {
         values.map((value, index) =>
           <Preset
@@ -85,10 +85,10 @@ const Presets = ({
             href="#"
             onClick={ handleSaveClick }
           >
-            <small>Save</small>
+            <span>Save</span>
           </a>
       }
-    </div>
+    </span>
   );
 }
 
