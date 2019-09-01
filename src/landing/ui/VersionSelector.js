@@ -34,7 +34,7 @@ const VersionSelector = () => {
     '4.3.0': '4.3.0',
     ...v3Version ? { v3: v3Version } : {},
     ...scorpioVersion ? { scorpio: scorpioVersion } : {},
-    'localhost:5000': 'localhost'
+    'localhost:5000': 'http://localhost:5000/'
   }), [availableVersions]);
 
   const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
@@ -56,7 +56,7 @@ const VersionSelector = () => {
               { version } ({ new Date(time).toLocaleDateString() })
             </option>
           ) }
-          <option value="localhost">http://localhost:5000/webchat.js</option>
+          <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
         </select>
       </div>
       <div>

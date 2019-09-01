@@ -21,12 +21,12 @@ const WebChatLink = () => {
 
   const searchParams = useMemo(() => new URLSearchParams({
     v: version,
-    ...(token ? { t: token } : { s: secret }),
-    ...(speechKey ? { speechkey: speechKey } : {}),
+    ws: webSocketEnabled + '',
+    ...(streamingExtensionEnabled ? { se: 'webchat-mockbot-se.azurewebsites.net' } : {}),
     ...(speechRegion ? { speechregion: speechRegion } : {}),
     userid: userId,
-    ws: webSocketEnabled + '',
-    ...(streamingExtensionEnabled ? { se: 'webchat-mockbot-se.azurewebsites.net' } : {})
+    ...(token ? { t: token } : { s: secret }),
+    ...(speechKey ? { speechkey: speechKey } : {})
   }), [
     secret,
     speechKey,
