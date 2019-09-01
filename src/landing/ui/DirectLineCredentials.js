@@ -45,13 +45,14 @@ const Credential = () => {
             onChange={ handleSecretChange }
             onFocus={ handleFocus }
             placeholder={ token ? '<No secret>' : '' }
-            required={ true }
+            required={ !secretDisabled }
             style={ SECRET_AND_TOKEN_STYLE }
+            title={ secretDisabled ? 'You cannot set secret with token set. Please clear token first.' : '' }
             type="text"
             value={ secret }
           />
           <button
-            disabled={ !!token }
+            disabled={ !secret || !!token }
             onClick={ handleGenerateTokenClick }
             type="button"
           >
