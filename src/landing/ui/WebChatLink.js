@@ -1,19 +1,21 @@
 import React, { useMemo } from 'react';
 
+import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
+import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
+import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
-import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
-import useStreamingExtensionEnabled from '../data/hooks/useStreamingExtensionEnabled';
-import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
+import useStreamingExtensionsEnabled from '../data/hooks/useStreamingExtensionsEnabled';
 import useVersion from '../data/hooks/useVersion';
 import useWebSocketEnabled from '../data/hooks/useWebSocketEnabled';
 
 const WebChatLink = () => {
+  const [conversationId] = useDirectLineConversationId();
   const [secret] = useDirectLineSecret();
   const [speechKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
-  const [streamingExtensionEnabled] = useStreamingExtensionEnabled();
+  const [streamingExtensionsEnabled] = useStreamingExtensionsEnabled();
   const [token] = useDirectLineToken();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
@@ -22,8 +24,9 @@ const WebChatLink = () => {
   const searchParams = useMemo(() => new URLSearchParams({
     v: version,
     ws: webSocketEnabled + '',
-    ...(streamingExtensionEnabled ? { se: 'webchat-mockbot-se.azurewebsites.net' } : {}),
+    ...(streamingExtensionsEnabled ? { se: 'webchat-mockbot-se.azurewebsites.net' } : {}),
     ...(speechRegion ? { speechregion: speechRegion } : {}),
+    ...(conversationId ? { cid: conversationId } : {}),
     userid: userId,
     ...(token ? { t: token } : { s: secret }),
     ...(speechKey ? { speechkey: speechKey } : {})
@@ -31,7 +34,7 @@ const WebChatLink = () => {
     secret,
     speechKey,
     speechRegion,
-    streamingExtensionEnabled,
+    streamingExtensionsEnabled,
     token,
     userId,
     version,

@@ -2,7 +2,7 @@ import useDirectLineToken from './useDirectLineToken';
 
 import { decode } from 'jsonwebtoken';
 
-export default function useConversationId() {
+export default function useDirectLineConversationId() {
   const [directLineToken] = useDirectLineToken();
 
   return [

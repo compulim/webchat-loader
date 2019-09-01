@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import Row from './Row';
 
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
-import useStreamingExtensionEnabled from '../data/hooks/useStreamingExtensionEnabled';
+import useStreamingExtensionsEnabled from '../data/hooks/useStreamingExtensionsEnabled';
 import useWebSocketEnabled from '../data/hooks/useWebSocketEnabled';
 
 const DOMAIN_PREFIX = 'https://';
@@ -25,11 +25,11 @@ const STREAMING_EXTENSION_CSS = css({
 
 const Protocol = () => {
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost();
-  const [streamingExtensionEnabled, setStreamingExtensionEnabled] = useStreamingExtensionEnabled();
+  const [streamingExtensionsEnabled, setStreamingExtensionsEnabled] = useStreamingExtensionsEnabled();
   const [webSocketEnabled, setWebSocketEnabled] = useWebSocketEnabled();
 
   const handleDomainChange = useCallback(({ target: { value } }) => setDirectLineDomainHost(value), [setDirectLineDomainHost]);
-  const handleStreamingExtensionChange = useCallback(({ target: { checked } }) => setStreamingExtensionEnabled(checked), [useStreamingExtensionEnabled]);
+  const handleStreamingExtensionsChange = useCallback(({ target: { checked } }) => setStreamingExtensionsEnabled(checked), [useStreamingExtensionsEnabled]);
   const handleWebSocketChange = useCallback(({ target: { checked } }) => setWebSocketEnabled(checked), [useWebSocketEnabled]);
 
   return (
@@ -49,26 +49,26 @@ const Protocol = () => {
       <div className={ STREAMING_EXTENSION_CSS }>
         <label className={ LABEL_CSS }>
           <input
-            checked={ streamingExtensionEnabled }
+            checked={ streamingExtensionsEnabled }
             disabled={ !webSocketEnabled }
-            onChange={ handleStreamingExtensionChange }
+            onChange={ handleStreamingExtensionsChange }
             style={ CHECKBOX_STYLE }
             type="checkbox"
           />
           &nbsp;
-          Streaming Extension
+          Streaming Extensions
         </label>
         <div style={ DOMAIN_STYLE }>
           { DOMAIN_PREFIX }
           <input
-            disabled={ !streamingExtensionEnabled }
+            disabled={ !streamingExtensionsEnabled }
             onChange={ handleDomainChange }
-            required={ streamingExtensionEnabled }
+            required={ streamingExtensionsEnabled }
             style={ DOMAIN_INPUT_STYLE }
             type="text"
-            value={ streamingExtensionEnabled ? directLineDomainHost : '' }
+            value={ streamingExtensionsEnabled ? directLineDomainHost : '' }
           />
-          { streamingExtensionEnabled ? DOMAIN_SUFFIX_FOR_STREAMING_EXTENSION : DOMAIN_SUFFIX }
+          { streamingExtensionsEnabled ? DOMAIN_SUFFIX_FOR_STREAMING_EXTENSION : DOMAIN_SUFFIX }
         </div>
       </div>
     </Row>

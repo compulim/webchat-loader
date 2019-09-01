@@ -27,6 +27,7 @@ const VersionSelector = () => {
   const scorpioVersion = useMemo(() => (availableVersions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)), [availableVersions]);
 
   const presetVersions = useMemo(() => ({
+    'Dev': 'dev',
     '4.5.2': '4.5.2',
     '4.5.1': '4.5.1',
     '4.5.0': '4.5.0',
@@ -57,6 +58,7 @@ const VersionSelector = () => {
             </option>
           ) }
           <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
+          <option value="dev">&lt;Latest development build&gt;</option>
         </select>
       </div>
       <div>

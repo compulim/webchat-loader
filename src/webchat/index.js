@@ -10,14 +10,14 @@ import loadAsset from './util/loadAsset';
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
   let version = urlSearchParams.get('v') || 'latest';
-  const experiment = urlSearchParams.get('x') || 'noop';
+  // const experiment = urlSearchParams.get('x') || 'noop';
   let conversationId = urlSearchParams.get('cid');
   let secret = urlSearchParams.get('s');
   const speechKey = urlSearchParams.get('speechkey');
   const speechRegion = urlSearchParams.get('speechregion');
   let token = urlSearchParams.get('t');
   let userID = urlSearchParams.get('userid');
-  const streamingExtensionHostname = urlSearchParams.get('se');
+  const streamingExtensionsHostname = urlSearchParams.get('se');
   const webSocket = urlSearchParams.get('ws') !== 'false';
 
   let assetURLs;
@@ -31,6 +31,13 @@ async function main() {
     ];
   } else if (/^4/.test(version)) {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
+  } else if (version === 'dev') {
+    assetURLs = [
+      `https://github.com/compulim/BotFramework-DirectLineJS/releases/download/dev/directLine.js`,
+      `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat.js`,
+    ];
+
+    customDirectLineJS = true;
   } else {
     try {
       await loadAsset(`${ version }directLine.js?_=${ Date.now() }`);
@@ -39,10 +46,10 @@ async function main() {
 
     assetURLs = [`${ version }webchat.js?_=${ Date.now() }`];
 
-    if (streamingExtensionHostname && secret && !token) {
+    if (streamingExtensionsHostname && secret && !token) {
       userID = `dl_${ random().toString(36).substr(2, 10) }`;
 
-      const res = await fetch(`https://${ streamingExtensionHostname }/.bot/v3/directline/tokens/generate`, {
+      const res = await fetch(`https://${ streamingExtensionsHostname }/.bot/v3/directline/tokens/generate`, {
         body: JSON.stringify({ User: { Id: userID } }),
         headers: {
           authorization: `Bearer ${ secret }`,
@@ -79,12 +86,15 @@ async function main() {
 
   const directLineOptions = {
     ...(conversationId ? { conversationId } : {}),
-    domain: streamingExtensionHostname ? `https://${ streamingExtensionHostname }/.bot/v3/directline` : undefined,
+    domain: streamingExtensionsHostname ? `https://${ streamingExtensionsHostname }/.bot/v3/directline` : undefined,
     ...(secret ? { secret } : {}),
-    ...(!!streamingExtensionHostname ? { streamingWebSocket: true } : {}),
+    ...(!!streamingExtensionsHostname ? { streamingWebSocket: true } : {}),
     ...(token ? { token }: {}),
     webSocket
   };
+
+  console.warn(directLineOptions);
+
   const directLine = createDirectLine(directLineOptions);
   // const quirkyDirectLine = {
   //   activity$: passThrough(directLine.activity$, activity => {
