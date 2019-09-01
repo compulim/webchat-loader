@@ -1,11 +1,11 @@
 import { DirectLine as NPMDirectLine } from 'botframework-directlinejs';
 import random from 'math-random';
-import updateIn from 'simple-update-in';
+// import updateIn from 'simple-update-in';
 
 import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
 import loadAsset from './util/loadAsset';
-import passThrough from './util/passThrough';
-import toRxJS from './util/toRxJS';
+// import passThrough from './util/passThrough';
+// import toRxJS from './util/toRxJS';
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
@@ -112,7 +112,11 @@ async function main() {
   //   get token() { return directLine.token; }
   // };
 
+  const rootElement = document.getElementById('webchat');
+
   if (/^0/.test(version)) {
+    rootElement.style.position = 'relative';
+
     window.BotChat.App({
       // botConnection: {
       //   ...quirkyDirectLine,
@@ -129,7 +133,7 @@ async function main() {
         })
       },
       user: { id: userID, name: 'You' }
-    }, document.getElementById('webchat'));
+    }, rootElement);
   } else {
     let webSpeechPonyfillFactory;
 
@@ -164,7 +168,7 @@ async function main() {
       directLine,
       // selectVoice: () => ({ voiceURI: '1' }),
       webSpeechPonyfillFactory
-    }, document.getElementById('webchat'));
+    }, rootElement);
   }
 
   document.querySelector('#webchat > *').focus();
