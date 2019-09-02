@@ -93,8 +93,6 @@ async function main() {
     webSocket
   };
 
-  console.warn(directLineOptions);
-
   const directLine = createDirectLine(directLineOptions);
   // const quirkyDirectLine = {
   //   activity$: passThrough(directLine.activity$, activity => {
