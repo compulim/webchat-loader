@@ -57,13 +57,17 @@ const SpeechCredential = () => {
         <div style={ ROW_STYLE }>
           <div style={ INPUT_ROW_STYLE }>
             <select
+              disabled={ pregeneratedToken }
               onChange={ handleRegionChange }
               style={ REGION_SELECT_STYLE }
-              value={ region }
+              value={ pregeneratedToken ? '__mockbot__' : region }
             >
               { Object.keys(REGIONS).map(value =>
                 <option key={ value } value={ value }>{ REGIONS[value] }</option>
               ) }
+              { pregeneratedToken &&
+                <option value="__mockbot__">&lt;Key provided by MockBot&gt;</option>
+              }
             </select>
           </div>
           <div>

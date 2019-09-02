@@ -7,7 +7,7 @@ import setDirectLineToken from '../action/setDirectLineToken';
 export default function* generateDirectLineTokenSaga() {
   yield takeEvery(GENERATE_DIRECT_LINE_TOKEN, function* () {
     const { domainHost, secret, streamingExtensionsEnabled } = yield select(({ directLineCredentials: { domainHost, secret }, streamingExtensionsEnabled }) => ({ domainHost, secret, streamingExtensionsEnabled }));
-    const domain = domainHost ?
+    const domain = (streamingExtensionsEnabled && domainHost) ?
       `https://${ domainHost }/${ streamingExtensionsEnabled ? '.bot/' : '' }v3/directline`
     :
       'https://directline.botframework.com/v3/directline';
