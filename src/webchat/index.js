@@ -23,6 +23,9 @@ async function main() {
   let assetURLs;
   let customDirectLineJS;
 
+  const DIRECT_LINE_DEV_ASSET = `https://github.com/compulim/BotFramework-DirectLineJS/releases/download/dev/directLine.js`;
+  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat.js`;
+
   if (/^0/.test(version)) {
     assetURLs = [
       `https://unpkg.com/botframework-webchat@${ version }/botchat.js`,
@@ -33,8 +36,8 @@ async function main() {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
   } else if (version === 'dev') {
     assetURLs = [
-      `https://github.com/compulim/BotFramework-DirectLineJS/releases/download/dev/directLine.js`,
-      `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat.js`,
+      DIRECT_LINE_DEV_ASSET,
+      WEB_CHAT_DEV_ASSET
     ];
 
     customDirectLineJS = true;
@@ -85,7 +88,9 @@ async function main() {
   }
 
   const directLineOptions = {
-    ...(conversationId ? { conversationId } : {}),
+    // HACK: Only send conversationId if streaming extensions is enabled
+    //       We should remove this hack after botframework-services#124 is fixed
+    ...(streamingExtensionsHostname && conversationId ? { conversationId } : {}),
     domain: streamingExtensionsHostname ? `https://${ streamingExtensionsHostname }/.bot/v3/directline` : undefined,
     ...(secret ? { secret } : {}),
     ...(!!streamingExtensionsHostname ? { streamingWebSocket: true } : {}),
