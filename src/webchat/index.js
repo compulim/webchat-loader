@@ -180,6 +180,7 @@ async function main() {
       // directLine: quirkyDirectLine,
       directLine,
       // selectVoice: () => ({ voiceURI: '1' }),
+      sendTypingIndicator: true,
       webSpeechPonyfillFactory
     }, rootElement);
   }
