@@ -16,6 +16,8 @@ export default function* loadBotPresetSaga() {
   yield takeEvery(LOAD_BOT_PRESET, function* ({ payload: { name } }) {
     try {
       if (name === 'mockbot') {
+        yield put(setDirectLineToken(''));
+
         const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot.azurewebsites.net');
 
         yield put(disableStreamingExtensions());
@@ -24,16 +26,19 @@ export default function* loadBotPresetSaga() {
         yield put(setDirectLineToken(token));
         yield put(setSpeechKeyFromMockBot());
       } else if (name === 'mockbot-proxy') {
+        yield put(setDirectLineToken(''));
+
         // const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot-proxy.azurewebsites.net');
 
         yield put(enableStreamingExtensions());
         yield put(enableWebSocket());
         yield put(setDirectLineDomainHost('webchat-mockbot-proxy.azurewebsites.net'));
         yield put(setDirectLineSecret(''));
-        yield put(setDirectLineToken(''));
         // yield put(setDirectLineToken(token));
         yield put(setSpeechKeyFromMockBot());
       } else if (name === 'mockbot-streaming-extension') {
+        yield put(setDirectLineToken(''));
+
         const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot-se.azurewebsites.net');
 
         yield put(enableStreamingExtensions());
