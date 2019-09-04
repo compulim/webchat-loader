@@ -24,13 +24,14 @@ export default function* loadBotPresetSaga() {
         yield put(setDirectLineToken(token));
         yield put(setSpeechKeyFromMockBot());
       } else if (name === 'mockbot-proxy') {
-        const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot-proxy.azurewebsites.net');
+        // const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot-proxy.azurewebsites.net');
 
         yield put(enableStreamingExtensions());
         yield put(enableWebSocket());
         yield put(setDirectLineDomainHost('webchat-mockbot-proxy.azurewebsites.net'));
         yield put(setDirectLineSecret(''));
-        yield put(setDirectLineToken(token));
+        yield put(setDirectLineToken(''));
+        // yield put(setDirectLineToken(token));
         yield put(setSpeechKeyFromMockBot());
       } else if (name === 'mockbot-streaming-extension') {
         const { token } = yield call(fetchMockBotDirectLineToken, 'webchat-mockbot-se.azurewebsites.net');
