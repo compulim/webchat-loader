@@ -1,3 +1,5 @@
+import 'core-js/modules/web.url-search-params';
+
 import { DirectLine as NPMDirectLine } from 'botframework-directlinejs';
 import random from 'math-random';
 // import updateIn from 'simple-update-in';

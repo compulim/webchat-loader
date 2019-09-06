@@ -1,6 +1,8 @@
+import 'core-js/modules/web.url-search-params';
+
+import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import React, { useMemo } from 'react';
-import { Provider } from 'react-redux';
 
 import App from './App';
 
