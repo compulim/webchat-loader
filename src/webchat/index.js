@@ -93,7 +93,13 @@ async function main() {
     // HACK: Only send conversationId if streaming extensions is enabled
     //       We should remove this hack after botframework-services#124 is fixed
     ...(streamingExtensionsHostname && conversationId ? { conversationId } : {}),
-    domain: streamingExtensionsHostname ? `https://${ streamingExtensionsHostname }/.bot/v3/directline` : undefined,
+    domain:
+      streamingExtensionsHostname ?
+        /^localhost[:\/]/.test(streamingExtensionsHostname) ?
+          `http://${ streamingExtensionsHostname }/.bot/v3/directline`
+        :
+          `https://${ streamingExtensionsHostname }/.bot/v3/directline`
+      : undefined,
     ...(secret ? { secret } : {}),
     ...(!!streamingExtensionsHostname ? { streamingWebSocket: true } : {}),
     ...(token ? { token }: {}),

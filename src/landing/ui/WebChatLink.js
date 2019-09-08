@@ -13,7 +13,7 @@ import useWebSocketEnabled from '../data/hooks/useWebSocketEnabled';
 
 const WebChatLink = () => {
   const [conversationId] = useDirectLineConversationId();
-  const [domain] = useDirectLineDomainHost();
+  const [domainHost] = useDirectLineDomainHost();
   const [secret] = useDirectLineSecret();
   const [speechKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
@@ -26,13 +26,15 @@ const WebChatLink = () => {
   const searchParams = useMemo(() => new URLSearchParams({
     v: version,
     ws: webSocketEnabled + '',
-    ...(streamingExtensionsEnabled ? { se: domain } : {}),
+    ...(streamingExtensionsEnabled ? { se: domainHost } : {}),
     ...(speechRegion ? { speechregion: speechRegion } : {}),
     ...(conversationId ? { cid: conversationId } : {}),
     userid: userId,
     ...(token ? { t: token } : { s: secret }),
     ...(speechKey ? { speechkey: speechKey } : {})
   }), [
+    conversationId,
+    domainHost,
     secret,
     speechKey,
     speechRegion,
