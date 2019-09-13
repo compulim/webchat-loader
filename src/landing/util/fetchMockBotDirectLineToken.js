@@ -1,3 +1,5 @@
+import { fetch } from 'whatwg-fetch';
+
 export default async function fetchMockBotDirectLineToken() {
   const req = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
 

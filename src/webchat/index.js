@@ -1,6 +1,9 @@
 import 'core-js/modules/web.url-search-params';
+import 'core-js/modules/es.promise';
+import 'regenerator-runtime';
 
 import { DirectLine as NPMDirectLine } from 'botframework-directlinejs';
+import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 // import updateIn from 'simple-update-in';
 
@@ -26,7 +29,7 @@ async function main() {
   let customDirectLineJS;
 
   const DIRECT_LINE_DEV_ASSET = `https://github.com/compulim/BotFramework-DirectLineJS/releases/download/dev/directLine.js`;
-  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat.js`;
+  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat-es5.js`;
 
   if (/^0/.test(version)) {
     assetURLs = [
@@ -35,7 +38,7 @@ async function main() {
       `https://unpkg.com/botframework-webchat@${ version }/CognitiveServices.js`,
     ];
   } else if (/^4/.test(version)) {
-    assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat.js`];
+    assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat-es5.js`];
   } else if (version === 'dev') {
     assetURLs = [
       DIRECT_LINE_DEV_ASSET,
@@ -49,7 +52,7 @@ async function main() {
       customDirectLineJS = true;
     } catch (err) {}
 
-    assetURLs = [`${ version }webchat.js?_=${ Date.now() }`];
+    assetURLs = [`${ version }webchat-es5.js?_=${ Date.now() }`];
 
     if (streamingExtensionsHostname && secret && !token) {
       userID = `dl_${ random().toString(36).substr(2, 10) }`;

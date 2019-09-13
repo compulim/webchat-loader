@@ -5,7 +5,7 @@ module.exports = {
   presets: [
     ['@babel/preset-env', {
       targets: {
-        chrome: 67
+        browsers: ['last 2 versions']
       }
     }],
     '@babel/preset-react'

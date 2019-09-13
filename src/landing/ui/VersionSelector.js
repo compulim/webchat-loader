@@ -1,3 +1,4 @@
+import { fetch } from 'whatwg-fetch';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import Presets from './Presets';
@@ -18,6 +19,8 @@ const VersionSelector = () => {
       setAvailableVersions((await res.json()).versions);
     } catch (err) {
       if (err) {
+        console.error(err);
+
         return alert('Failed to fetch version list from NPMJS. Please check network trace for details.');
       }
     }

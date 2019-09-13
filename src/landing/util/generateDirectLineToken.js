@@ -1,3 +1,5 @@
+import { fetch } from 'whatwg-fetch';
+
 import generateUserId from './generateUserId';
 
 export default async function generateDirectLineToken({ domain, secret }) {
