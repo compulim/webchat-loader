@@ -48,11 +48,25 @@ async function main() {
     customDirectLineJS = true;
   } else {
     try {
-      await loadAsset(`${ version }directLine.js?_=${ Date.now() }`);
-      customDirectLineJS = true;
-    } catch (err) {}
+      const url = `${ version }directLine.js`;
 
-    assetURLs = [`${ version }webchat-es5.js?_=${ Date.now() }`];
+      await loadAsset(`${ url }?_=${ Date.now() }`);
+      console.warn(`Using DirectLineJS from ${ url }`);
+      customDirectLineJS = true;
+    } catch (err) {
+      await loadAsset(DIRECT_LINE_DEV_ASSET);
+      console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
+    }
+
+    try {
+      const url = `${ version }webchat-es5.js`;
+
+      await loadAsset(`${ url }?_=${ Date.now() }`);
+      console.warn(`Using Web Chat from ${ url }`);
+    } catch (err) {
+      await loadAsset(WEB_CHAT_DEV_ASSET);
+      console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
+    }
 
     if (streamingExtensionsHostname && secret && !token) {
       userID = `dl_${ random().toString(36).substr(2, 10) }`;
@@ -74,7 +88,7 @@ async function main() {
     }
   }
 
-  await Promise.all(assetURLs.map(url => loadAsset(url)));
+  await Promise.all((assetURLs || []).map(url => loadAsset(url)));
 
   let createDirectLine;
 
