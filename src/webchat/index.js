@@ -26,7 +26,6 @@ async function main() {
   const webSocket = urlSearchParams.get('ws') !== 'false';
 
   let assetURLs;
-  let customDirectLineJS;
 
   const DIRECT_LINE_DEV_ASSET = `https://github.com/microsoft/BotFramework-DirectLineJS/releases/download/dev-streamingextensions/directline.js`;
   const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat-es5.js`;
@@ -37,26 +36,25 @@ async function main() {
       `https://unpkg.com/botframework-webchat@${ version }/botchat.css`,
       `https://unpkg.com/botframework-webchat@${ version }/CognitiveServices.js`,
     ];
+    console.warn(`Using Web Chat from ${ assetURLs[0] }`);
   } else if (/^4/.test(version)) {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat-es5.js`];
+    console.warn(`Using Web Chat from ${ assetURLs[0] }`);
   } else if (version === 'dev') {
     assetURLs = [
       DIRECT_LINE_DEV_ASSET,
       WEB_CHAT_DEV_ASSET
     ];
 
-    customDirectLineJS = true;
+    console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
+    console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
   } else {
     try {
       const url = `${ version }directLine.js`;
 
       await loadAsset(`${ url }?_=${ Date.now() }`);
       console.warn(`Using DirectLineJS from ${ url }`);
-      customDirectLineJS = true;
-    } catch (err) {
-      await loadAsset(DIRECT_LINE_DEV_ASSET);
-      console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
-    }
+    } catch (err) {}
 
     try {
       const url = `${ version }webchat-es5.js`;
@@ -92,7 +90,7 @@ async function main() {
 
   let createDirectLine;
 
-  if (customDirectLineJS) {
+  if (typeof window.DirectLine !== 'undefined') {
     console.warn('Using DirectLineJS from the bundle of directLine.js.');
     createDirectLine = options => new window.DirectLine.DirectLine(options);
   } else if (window.WebChat && window.WebChat.createDirectLine) {
