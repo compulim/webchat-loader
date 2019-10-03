@@ -62,8 +62,15 @@ async function main() {
       await loadAsset(`${ url }?_=${ Date.now() }`);
       console.warn(`Using Web Chat from ${ url }`);
     } catch (err) {
-      await loadAsset(WEB_CHAT_DEV_ASSET);
-      console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
+      try {
+        const url = `${ version }webchat.js`;
+
+        await loadAsset(`${ url }?_=${ Date.now() }`);
+        console.warn(`Using Web Chat from ${ url }`);
+      } catch (err) {
+        await loadAsset(WEB_CHAT_DEV_ASSET);
+        console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
+      }
     }
 
     if (streamingExtensionsHostname && secret && !token) {
@@ -196,6 +203,29 @@ async function main() {
           region: speechRegion || 'westus',
           subscriptionKey: speechKey
         });
+
+        // const ponyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+        //   ...speechOptions,
+        //   region: speechRegion || 'westus',
+        //   subscriptionKey: speechKey
+        // });
+
+        // webSpeechPonyfillFactory = (...args) => {
+        //   const {
+        //     SpeechGrammarList,
+        //     SpeechRecognition
+        //   } = ponyfillFactory(...args);
+
+        //   console.log({
+        //     SpeechGrammarList,
+        //     SpeechRecognition
+        //   });
+
+        //   return {
+        //     SpeechGrammarList,
+        //     SpeechRecognition
+        //   };
+        // };
       }
     }
 
