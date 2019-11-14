@@ -28,7 +28,7 @@ async function main() {
   let assetURLs;
 
   const DIRECT_LINE_DEV_ASSET = `https://github.com/microsoft/BotFramework-DirectLineJS/releases/download/dev-streamingextensions/directline.js`;
-  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/4.5.2/webchat-es5.js`;
+  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js`;
 
   if (/^0/.test(version)) {
     assetURLs = [
