@@ -7,8 +7,8 @@ import loadBotPreset from '../data/action/loadBotPreset';
 
 const PRESETS = {
   mockbot: '[Public] MockBot',
-  'mockbot-streaming-extension': '[Public] MockBot with Streaming Extension',
-  'mockbot-proxy': '[Internal] MockBot Proxy'
+  // 'mockbot-streaming-extension': '[Public] MockBot with Streaming Extension',
+  // 'mockbot-proxy': '[Internal] MockBot Proxy'
 };
 
 const BotPreset = ({

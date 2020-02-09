@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import { decode } from 'jsonwebtoken';
+import { useDispatch } from 'react-redux';
+import ms from 'ms';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import generateDirectLineToken from '../data/action/generateDirectLineToken';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -10,6 +11,7 @@ import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
 import Presets from './Presets';
 import Row from './Row';
 
+const EXPIRED_FOOTNOTE_STYLE = { color: 'Red' };
 const INPUT_ROW_STYLE = { display: 'flex', flex: 1 };
 const SECRET_AND_TOKEN_STYLE = { flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' };
 
@@ -35,6 +37,17 @@ const Credential = () => {
 
   const secretDisabled = !!token;
   const decodedToken = decode(token);
+  const timeToExpire = decodedToken && (decodedToken.exp * 1000 - Date.now());
+
+  const [, setForceRender] = useState();
+
+  useEffect(() => {
+    if (decodedToken) {
+      const timeout = setTimeout(() => setForceRender({}), 60000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [decodedToken]);
 
   return (
     <React.Fragment>
@@ -86,6 +99,18 @@ const Credential = () => {
             Clear
           </button>
         </div>
+        {
+          secretDisabled && (
+            timeToExpire > 0 ?
+              <div>
+                <small>This token will expire in { ms(timeToExpire, { long: true }) }.</small>
+              </div>
+            :
+              <div style={ EXPIRED_FOOTNOTE_STYLE }>
+                <small>This token has already expired.</small>
+              </div>
+          )
+        }
       </Row>
     </React.Fragment>
   );

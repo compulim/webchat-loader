@@ -27,8 +27,8 @@ async function main() {
 
   let assetURLs;
 
-  const DIRECT_LINE_DEV_ASSET = `https://github.com/microsoft/BotFramework-DirectLineJS/releases/download/dev-streamingextensions/directline.js`;
-  const WEB_CHAT_DEV_ASSET = `https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js`;
+  // const DIRECT_LINE_DEV_ASSET = `https://github.com/microsoft/BotFramework-DirectLineJS/releases/download/dev-streamingextensions/directline.js`;
+  const WEB_CHAT_DEV_ASSET = `https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js`;
 
   if (/^0/.test(version)) {
     assetURLs = [
@@ -42,11 +42,11 @@ async function main() {
     console.warn(`Using Web Chat from ${ assetURLs[0] }`);
   } else if (version === 'dev') {
     assetURLs = [
-      DIRECT_LINE_DEV_ASSET,
+      // DIRECT_LINE_DEV_ASSET,
       WEB_CHAT_DEV_ASSET
     ];
 
-    console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
+    // console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
     console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
   } else {
     try {
