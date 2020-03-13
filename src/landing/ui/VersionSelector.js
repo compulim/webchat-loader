@@ -31,10 +31,11 @@ const VersionSelector = () => {
 
   const presetVersions = useMemo(() => ({
     'Dev': 'dev',
+    '4.8.0': '4.8.0',
     '4.7.1': '4.7.1',
     '4.6.0': '4.6.0',
     '4.5.2': '4.5.2',
-    '4.4.2': '4.4.2',
+    // '4.4.2': '4.4.2',
     ...v3Version ? { v3: v3Version } : {},
     ...scorpioVersion ? { scorpio: scorpioVersion } : {},
     'localhost:5000': 'http://localhost:5000/'
