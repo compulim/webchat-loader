@@ -17,7 +17,8 @@ const DEFAULT_STATE = {
   savedSecrets: [],
   secret: '',
   token: '',
-  userId: `r_${ random().toString(36).substr(2, 10) }`
+  tokenURL: '',
+  userId: `r_${random().toString(36).substr(2, 10)}`
 };
 
 export default function directLineCredentials(state = DEFAULT_STATE, { payload, type }) {
@@ -35,7 +36,9 @@ export default function directLineCredentials(state = DEFAULT_STATE, { payload, 
   } else if (type === SET_DIRECT_LINE_DOMAIN_HOST) {
     state = updateIn(state, ['domainHost'], () => payload.host);
   } else if (type === SET_DIRECT_LINE_SECRET) {
-    state = updateIn(state, ['secret'], () => payload.secret);
+    if (typeof payload.secret === 'string') {
+      state = updateIn(state, ['secret'], () => payload.secret);
+    }
   } else if (type === SET_DIRECT_LINE_TOKEN) {
     state = updateIn(state, ['token'], () => payload.token);
   } else if (type === SET_DIRECT_LINE_USER_ID) {
