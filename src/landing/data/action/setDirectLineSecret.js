@@ -7,4 +7,4 @@ export default function setDirectLineSecret(secret) {
   };
 }
 
-export { SET_DIRECT_LINE_SECRET }
+export { SET_DIRECT_LINE_SECRET };

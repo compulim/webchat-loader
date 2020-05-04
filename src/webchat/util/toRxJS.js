@@ -1,9 +1,8 @@
 export default function toRxJS(observable) {
   return {
-    subscribe: subscriber => {
-      return observable.subscribe({
+    subscribe: subscriber =>
+      observable.subscribe({
         next: value => subscriber(value)
-      });
-    }
+      })
   };
 }

@@ -7,4 +7,4 @@ export default function setVersion(version) {
   };
 }
 
-export { SET_VERSION }
+export { SET_VERSION };

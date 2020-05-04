@@ -7,4 +7,4 @@ export default function setSpeechSubscriptionKey(subscriptionKey) {
   };
 }
 
-export { SET_SPEECH_SUBSCRIPTION_KEY }
+export { SET_SPEECH_SUBSCRIPTION_KEY };

@@ -4,4 +4,4 @@ export default function disableWebSocket() {
   return { type: DISABLE_WEB_SOCKET };
 }
 
-export { DISABLE_WEB_SOCKET }
+export { DISABLE_WEB_SOCKET };

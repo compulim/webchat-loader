@@ -6,8 +6,5 @@ import setVersion from '../action/setVersion';
 export default function useVersion() {
   const dispatch = useDispatch();
 
-  return [
-    useSelector(({ version }) => version),
-    useCallback(value => dispatch(setVersion(value)), [dispatch])
-  ];
+  return [useSelector(({ version }) => version), useCallback(value => dispatch(setVersion(value)), [dispatch])];
 }

@@ -18,7 +18,7 @@ const Main = () => {
   const store = useMemo(createStore, []);
 
   return (
-    <Provider store={ store }>
+    <Provider store={store}>
       <App />
     </Provider>
   );

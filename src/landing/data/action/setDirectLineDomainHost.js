@@ -7,4 +7,4 @@ export default function setDirectLineDomainHost(host) {
   };
 }
 
-export { SET_DIRECT_LINE_DOMAIN_HOST }
+export { SET_DIRECT_LINE_DOMAIN_HOST };

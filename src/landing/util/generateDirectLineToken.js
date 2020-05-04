@@ -5,23 +5,23 @@ import generateUserId from './generateUserId';
 export default async function generateDirectLineToken({ domain, secret }) {
   const userId = generateUserId(true);
 
-  const res = await fetch(`${ domain }/tokens/generate`, {
+  const res = await fetch(`${domain}/tokens/generate`, {
     body: JSON.stringify({ User: { Id: userId } }),
     headers: {
-      authorization: `Bearer ${ secret }`,
+      authorization: `Bearer ${secret}`,
       'Content-Type': 'application/json'
     },
     method: 'POST'
   });
 
   if (!res.ok) {
-    throw new Error(`Direct Line returned ${ res.status } while generating token`);
+    throw new Error(`Direct Line returned ${res.status} while generating token`);
   }
 
   const json = await res.json();
 
   if ('error' in json) {
-    throw new Error(`Direct Line responded ${ JSON.stringify(json.error) } while generating new token`);
+    throw new Error(`Direct Line responded ${JSON.stringify(json.error)} while generating new token`);
   }
 
   return { ...json, userId };

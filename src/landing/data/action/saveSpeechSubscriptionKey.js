@@ -7,4 +7,4 @@ export default function saveSpeechSubscriptionKey(subscriptionKey) {
   };
 }
 
-export { SAVE_SPEECH_SUBSCRIPTION_KEY }
+export { SAVE_SPEECH_SUBSCRIPTION_KEY };

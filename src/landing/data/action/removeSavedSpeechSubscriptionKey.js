@@ -7,4 +7,4 @@ export default function removeSavedSpeechSubscriptionKey(subscriptionKey) {
   };
 }
 
-export { REMOVE_SAVED_SPEECH_SUBSCRIPTION_KEY }
+export { REMOVE_SAVED_SPEECH_SUBSCRIPTION_KEY };

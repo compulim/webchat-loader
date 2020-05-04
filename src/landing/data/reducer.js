@@ -12,4 +12,4 @@ export default combineReducers({
   streamingExtensionsEnabled,
   version,
   webSocketEnabled
-})
+});

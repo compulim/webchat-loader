@@ -7,4 +7,4 @@ export default function loadBotPreset(name) {
   };
 }
 
-export { LOAD_BOT_PRESET }
+export { LOAD_BOT_PRESET };

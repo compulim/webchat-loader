@@ -23,37 +23,38 @@ const WebChatLink = () => {
   const [version] = useVersion();
   const [webSocketEnabled] = useWebSocketEnabled();
 
-  const searchParams = useMemo(() => new URLSearchParams({
-    v: version,
-    ws: webSocketEnabled + '',
-    ...(streamingExtensionsEnabled ? { se: domainHost } : {}),
-    ...(speechRegion ? { speechregion: speechRegion } : {}),
-    ...(conversationId ? { cid: conversationId } : {}),
-    userid: userId,
-    ...(token ? { t: token } : { s: secret }),
-    ...(speechKey ? { speechkey: speechKey } : {})
-  }), [
-    conversationId,
-    domainHost,
-    secret,
-    speechKey,
-    speechRegion,
-    streamingExtensionsEnabled,
-    token,
-    userId,
-    version,
-    webSocketEnabled
-  ]);
+  const searchParams = useMemo(
+    () =>
+      new URLSearchParams({
+        v: version,
+        ws: webSocketEnabled + '',
+        ...(streamingExtensionsEnabled ? { se: domainHost } : {}),
+        ...(speechRegion ? { speechregion: speechRegion } : {}),
+        ...(conversationId ? { cid: conversationId } : {}),
+        userid: userId,
+        ...(token ? { t: token } : { s: secret }),
+        ...(speechKey ? { speechkey: speechKey } : {})
+      }),
+    [
+      conversationId,
+      domainHost,
+      secret,
+      speechKey,
+      speechRegion,
+      streamingExtensionsEnabled,
+      token,
+      userId,
+      version,
+      webSocketEnabled
+    ]
+  );
 
-  const webChatURL = useMemo(() => `webchat?${ searchParams.toString() }`, [searchParams]);
+  const webChatURL = useMemo(() => `webchat?${searchParams.toString()}`, [searchParams]);
 
   return (
-    <a
-      href={ webChatURL }
-      target="_blank"
-    >
+    <a href={webChatURL} target="_blank">
       Open Web Chat in a new window
     </a>
   );
-}
-export default WebChatLink
+};
+export default WebChatLink;

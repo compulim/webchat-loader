@@ -18,7 +18,7 @@ export default function () {
     reducer,
     onErrorResumeNext(() => JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY))) || {},
     applyMiddleware(
-      sagaMiddleware,
+      sagaMiddleware
       // () => next => action => {
       //   console.log(action);
 

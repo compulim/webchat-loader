@@ -1,7 +1,11 @@
 import { useCallback, useState } from 'react';
 import onErrorResumeNext from 'on-error-resume-next';
 
-export default function useStateWithLocalStorage(initialValue, storageKey, { hydrate = JSON.parse, dehydrate = JSON.stringify } = {}) {
+export default function useStateWithLocalStorage(
+  initialValue,
+  storageKey,
+  { hydrate = JSON.parse, dehydrate = JSON.stringify } = {}
+) {
   const [value, setter] = useState(() => {
     const loadedValue = onErrorResumeNext(() => hydrate(window.localStorage.getItem(storageKey)));
 
@@ -10,9 +14,12 @@ export default function useStateWithLocalStorage(initialValue, storageKey, { hyd
 
   return [
     value,
-    useCallback(nextValue => {
-      setter(nextValue);
-      window.localStorage.setItem(storageKey, dehydrate(nextValue));
-    }, [setter])
+    useCallback(
+      nextValue => {
+        setter(nextValue);
+        window.localStorage.setItem(storageKey, dehydrate(nextValue));
+      },
+      [setter]
+    )
   ];
 }

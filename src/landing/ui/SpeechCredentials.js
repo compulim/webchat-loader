@@ -40,13 +40,18 @@ const SpeechCredential = () => {
   const [savedSubscriptionKeys, saveSubscriptionKey, removeSavedSubscriptionKey] = useSavedSpeechSubscriptionKeys();
 
   const handleClearKeyClick = useCallback(() => setSubscriptionKey(''), [setSubscriptionKey]);
-  const handleLoadMockBotKey = useCallback(event => {
-    event.preventDefault();
-    setSubscriptionKey('__mockbot__');
-  }, [setSubscriptionKey]);
+  const handleLoadMockBotKey = useCallback(
+    event => {
+      event.preventDefault();
+      setSubscriptionKey('__mockbot__');
+    },
+    [setSubscriptionKey]
+  );
   const handleRegionChange = useCallback(({ target: { value } }) => setRegion(value), [setRegion]);
   const handleSaveSubscriptionKey = useCallback(() => saveSubscriptionKey(subscriptionKey), [subscriptionKey]);
-  const handleSubscriptionKeyChange = useCallback(({ target: { value } }) => setSubscriptionKey(value), [setSubscriptionKey]);
+  const handleSubscriptionKeyChange = useCallback(({ target: { value } }) => setSubscriptionKey(value), [
+    setSubscriptionKey
+  ]);
   const handleSubscriptionKeyFocus = useCallback(({ target }) => target.select());
 
   const pregeneratedToken = subscriptionKey === '__mockbot__';
@@ -54,57 +59,65 @@ const SpeechCredential = () => {
   return (
     <React.Fragment>
       <Row header="Speech region">
-        <div style={ ROW_STYLE }>
-          <div style={ INPUT_ROW_STYLE }>
+        <div style={ROW_STYLE}>
+          <div style={INPUT_ROW_STYLE}>
             <select
-              disabled={ pregeneratedToken }
-              onChange={ handleRegionChange }
-              style={ REGION_SELECT_STYLE }
-              value={ pregeneratedToken ? '__mockbot__' : region }
+              disabled={pregeneratedToken}
+              onChange={handleRegionChange}
+              style={REGION_SELECT_STYLE}
+              value={pregeneratedToken ? '__mockbot__' : region}
             >
-              { Object.keys(REGIONS).map(value =>
-                <option key={ value } value={ value }>{ REGIONS[value] }</option>
-              ) }
-              { pregeneratedToken &&
-                <option value="__mockbot__">&lt;Key provided by MockBot&gt;</option>
-              }
+              {Object.keys(REGIONS).map(value => (
+                <option key={value} value={value}>
+                  {REGIONS[value]}
+                </option>
+              ))}
+              {pregeneratedToken && <option value="__mockbot__">&lt;Key provided by MockBot&gt;</option>}
             </select>
           </div>
           <div>
             <small>
               <Presets
-                onLoad={ setRegion }
-                texts={ useMemo(() => ['West US', 'West US 2', 'East US'], []) }
-                values={ useMemo(() => ['westus', 'westus2', 'eastus'], []) }
+                onLoad={setRegion}
+                texts={useMemo(() => ['West US', 'West US 2', 'East US'], [])}
+                values={useMemo(() => ['westus', 'westus2', 'eastus'], [])}
               />
             </small>
           </div>
         </div>
       </Row>
       <Row header="Speech key">
-        <div style={ ROW_STYLE }>
-          <div style={ INPUT_ROW_STYLE }>
+        <div style={ROW_STYLE}>
+          <div style={INPUT_ROW_STYLE}>
             <input
-              disabled={ pregeneratedToken }
-              onChange={ handleSubscriptionKeyChange }
-              onFocus={ handleSubscriptionKeyFocus }
-              placeholder={ pregeneratedToken ? '<Key provided by MockBot>' : '' }
-              style={ INPUT_STYLE }
-              value={ pregeneratedToken ? '' : subscriptionKey }
+              disabled={pregeneratedToken}
+              onChange={handleSubscriptionKeyChange}
+              onFocus={handleSubscriptionKeyFocus}
+              placeholder={pregeneratedToken ? '<Key provided by MockBot>' : ''}
+              style={INPUT_STYLE}
+              value={pregeneratedToken ? '' : subscriptionKey}
             />
-            {
-              !!subscriptionKey && <button onClick={ handleClearKeyClick } type="button">Clear</button>
-            }
+            {!!subscriptionKey && (
+              <button onClick={handleClearKeyClick} type="button">
+                Clear
+              </button>
+            )}
           </div>
           <div>
             <small>
-              <a href="#" onClick={ handleLoadMockBotKey }>MockBot</a>&nbsp;
+              <a href="#" onClick={handleLoadMockBotKey}>
+                MockBot
+              </a>
+              &nbsp;
               <Presets
-                onDelete={ removeSavedSubscriptionKey }
-                onLoad={ setSubscriptionKey }
-                onSave={ pregeneratedToken ? undefined : handleSaveSubscriptionKey }
-                texts={ useMemo(() => savedSubscriptionKeys.map(key => () => <code>{ (key || '').substr(0, 5) + '…' }</code>), [savedSubscriptionKeys]) }
-                values={ savedSubscriptionKeys }
+                onDelete={removeSavedSubscriptionKey}
+                onLoad={setSubscriptionKey}
+                onSave={pregeneratedToken ? undefined : handleSaveSubscriptionKey}
+                texts={useMemo(
+                  () => savedSubscriptionKeys.map(key => () => <code>{(key || '').substr(0, 5) + '…'}</code>),
+                  [savedSubscriptionKeys]
+                )}
+                values={savedSubscriptionKeys}
               />
             </small>
           </div>
@@ -112,6 +125,6 @@ const SpeechCredential = () => {
       </Row>
     </React.Fragment>
   );
-}
+};
 
-export default SpeechCredential
+export default SpeechCredential;

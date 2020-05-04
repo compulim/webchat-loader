@@ -5,7 +5,7 @@ async function fetchMockBotSpeechServicesToken() {
   const req = await fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', { method: 'POST' });
 
   if (!req.ok) {
-    throw new Error(`Server returned ${ req.status } while fetching Cognitive Services Speech Services token`);
+    throw new Error(`Server returned ${req.status} while fetching Cognitive Services Speech Services token`);
   }
 
   const { region, token } = await req.json();

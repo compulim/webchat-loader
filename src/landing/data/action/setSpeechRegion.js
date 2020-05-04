@@ -7,4 +7,4 @@ export default function setSpeechRegion(region) {
   };
 }
 
-export { SET_SPEECH_REGION }
+export { SET_SPEECH_REGION };

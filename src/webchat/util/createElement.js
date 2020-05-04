@@ -1,8 +1,4 @@
-const NON_PIXEL_STYLES = [
-  'flex',
-  'z-index',
-  'zoom'
-];
+const NON_PIXEL_STYLES = ['flex', 'z-index', 'zoom'];
 
 export default function createElement(tag, attributes = {}, ...children) {
   const element = document.createElement(tag);
@@ -20,13 +16,13 @@ export default function createElement(tag, attributes = {}, ...children) {
 
       Object.keys(style).forEach(name => {
         let value = style[name];
-        const normalizedName = name.replace(/[A-Z]/gu, c => `-${ c.toLowerCase() }`);
+        const normalizedName = name.replace(/[A-Z]/gu, c => `-${c.toLowerCase()}`);
 
         if (NON_PIXEL_STYLES.includes(normalizedName)) {
           value += '';
         }
 
-        styleStrings.push(`${ normalizedName }: ${ typeof value === 'number' ? `${ value }px` : value }`);
+        styleStrings.push(`${normalizedName}: ${typeof value === 'number' ? `${value}px` : value}`);
       });
 
       element.setAttribute(name, styleStrings.join('; '));

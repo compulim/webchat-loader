@@ -20,59 +20,58 @@ const LABEL_CSS = css({
   display: 'flex'
 });
 
-const STREAMING_EXTENSION_CSS = css({
-});
+const STREAMING_EXTENSION_CSS = css({});
 
 const Protocol = () => {
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost();
   const [streamingExtensionsEnabled, setStreamingExtensionsEnabled] = useStreamingExtensionsEnabled();
   const [webSocketEnabled, setWebSocketEnabled] = useWebSocketEnabled();
 
-  const handleDomainChange = useCallback(({ target: { value } }) => setDirectLineDomainHost(value), [setDirectLineDomainHost]);
-  const handleStreamingExtensionsChange = useCallback(({ target: { checked } }) => setStreamingExtensionsEnabled(checked), [useStreamingExtensionsEnabled]);
-  const handleWebSocketChange = useCallback(({ target: { checked } }) => setWebSocketEnabled(checked), [useWebSocketEnabled]);
+  const handleDomainChange = useCallback(({ target: { value } }) => setDirectLineDomainHost(value), [
+    setDirectLineDomainHost
+  ]);
+  const handleStreamingExtensionsChange = useCallback(
+    ({ target: { checked } }) => setStreamingExtensionsEnabled(checked),
+    [useStreamingExtensionsEnabled]
+  );
+  const handleWebSocketChange = useCallback(({ target: { checked } }) => setWebSocketEnabled(checked), [
+    useWebSocketEnabled
+  ]);
 
   return (
     <Row header="Protocol">
       <div>
-        <label className={ LABEL_CSS }>
-          <input
-            checked={ webSocketEnabled }
-            onChange={ handleWebSocketChange }
-            style={ CHECKBOX_STYLE }
-            type="checkbox"
-          />
-          &nbsp;
-          Web Socket
+        <label className={LABEL_CSS}>
+          <input checked={webSocketEnabled} onChange={handleWebSocketChange} style={CHECKBOX_STYLE} type="checkbox" />
+          &nbsp; Web Socket
         </label>
       </div>
-      <div className={ STREAMING_EXTENSION_CSS }>
-        <label className={ LABEL_CSS }>
+      <div className={STREAMING_EXTENSION_CSS}>
+        <label className={LABEL_CSS}>
           <input
-            checked={ streamingExtensionsEnabled }
-            disabled={ !webSocketEnabled }
-            onChange={ handleStreamingExtensionsChange }
-            style={ CHECKBOX_STYLE }
+            checked={streamingExtensionsEnabled}
+            disabled={!webSocketEnabled}
+            onChange={handleStreamingExtensionsChange}
+            style={CHECKBOX_STYLE}
             type="checkbox"
           />
-          &nbsp;
-          Streaming Extensions
+          &nbsp; Streaming Extensions
         </label>
-        <div style={ DOMAIN_STYLE }>
-          { DOMAIN_PREFIX }
+        <div style={DOMAIN_STYLE}>
+          {DOMAIN_PREFIX}
           <input
-            disabled={ !streamingExtensionsEnabled }
-            onChange={ handleDomainChange }
-            required={ streamingExtensionsEnabled }
-            style={ DOMAIN_INPUT_STYLE }
+            disabled={!streamingExtensionsEnabled}
+            onChange={handleDomainChange}
+            required={streamingExtensionsEnabled}
+            style={DOMAIN_INPUT_STYLE}
             type="text"
-            value={ streamingExtensionsEnabled ? directLineDomainHost : '' }
+            value={streamingExtensionsEnabled ? directLineDomainHost : ''}
           />
-          { streamingExtensionsEnabled ? DOMAIN_SUFFIX_FOR_STREAMING_EXTENSION : DOMAIN_SUFFIX }
+          {streamingExtensionsEnabled ? DOMAIN_SUFFIX_FOR_STREAMING_EXTENSION : DOMAIN_SUFFIX}
         </div>
       </div>
     </Row>
   );
-}
+};
 
-export default Protocol
+export default Protocol;

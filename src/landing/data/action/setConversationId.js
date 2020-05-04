@@ -7,4 +7,4 @@ export default function setConversationId(conversationId) {
   };
 }
 
-export { SET_CONVERSATION_ID }
+export { SET_CONVERSATION_ID };

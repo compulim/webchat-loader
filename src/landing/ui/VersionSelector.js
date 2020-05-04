@@ -26,21 +26,30 @@ const VersionSelector = () => {
     }
   }, []);
 
-  const v3Version = useMemo(() => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)), [availableVersions]);
-  const scorpioVersion = useMemo(() => (availableVersions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)), [availableVersions]);
+  const v3Version = useMemo(
+    () => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)),
+    [availableVersions]
+  );
+  const scorpioVersion = useMemo(
+    () => (availableVersions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)),
+    [availableVersions]
+  );
 
-  const presetVersions = useMemo(() => ({
-    'Dev': 'dev',
-    '4.8.1': '4.8.1',
-    '4.8.0': '4.8.0',
-    '4.7.1': '4.7.1',
-    '4.6.0': '4.6.0',
-    // '4.5.2': '4.5.2',
-    // '4.4.2': '4.4.2',
-    ...v3Version ? { v3: v3Version } : {},
-    ...scorpioVersion ? { scorpio: scorpioVersion } : {},
-    'localhost:5000': 'http://localhost:5000/'
-  }), [availableVersions]);
+  const presetVersions = useMemo(
+    () => ({
+      Dev: 'dev',
+      '4.8.1': '4.8.1',
+      '4.8.0': '4.8.0',
+      '4.7.1': '4.7.1',
+      '4.6.0': '4.6.0',
+      // '4.5.2': '4.5.2',
+      // '4.4.2': '4.4.2',
+      ...(v3Version ? { v3: v3Version } : {}),
+      ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
+      'localhost:5000': 'http://localhost:5000/'
+    }),
+    [availableVersions]
+  );
 
   const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
   const versionValues = useMemo(() => Object.values(presetVersions), [presetVersions]);
@@ -51,31 +60,27 @@ const VersionSelector = () => {
     <Row header="Version">
       <div>
         <select
-          disabled={ availableVersions.length < 2 }
-          onChange={ handleVersionChange }
-          style={ SELECT_STYLE }
-          value={ version }
+          disabled={availableVersions.length < 2}
+          onChange={handleVersionChange}
+          style={SELECT_STYLE}
+          value={version}
         >
-          { (availableVersions || []).map(({ time, version }) =>
-            <option key={ version } value={ version }>
-              { version } ({ new Date(time).toLocaleDateString() })
+          {(availableVersions || []).map(({ time, version }) => (
+            <option key={version} value={version}>
+              {version} ({new Date(time).toLocaleDateString()})
             </option>
-          ) }
+          ))}
           <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
           <option value="dev">&lt;Latest development build&gt;</option>
         </select>
       </div>
       <div>
         <small>
-          <Presets
-            onLoad={ setVersion }
-            texts={ versionTexts }
-            values={ versionValues }
-          />
+          <Presets onLoad={setVersion} texts={versionTexts} values={versionValues} />
         </small>
       </div>
     </Row>
   );
 };
 
-export default VersionSelector
+export default VersionSelector;

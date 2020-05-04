@@ -4,4 +4,4 @@ export default function enableWebSocket() {
   return { type: ENABLE_WEB_SOCKET };
 }
 
-export { ENABLE_WEB_SOCKET }
+export { ENABLE_WEB_SOCKET };

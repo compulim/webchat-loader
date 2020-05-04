@@ -7,4 +7,4 @@ export default function setDirectLineTokenURL(url) {
   };
 }
 
-export { SET_DIRECT_LINE_TOKEN_URL }
+export { SET_DIRECT_LINE_TOKEN_URL };

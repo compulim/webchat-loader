@@ -1,4 +1,4 @@
-const SET_DIRECT_LINE_USER_ID = 'SET_DIRECT_LINE_USER_ID'
+const SET_DIRECT_LINE_USER_ID = 'SET_DIRECT_LINE_USER_ID';
 
 export default function setDirectLineUserId(userId) {
   return {
@@ -7,4 +7,4 @@ export default function setDirectLineUserId(userId) {
   };
 }
 
-export { SET_DIRECT_LINE_USER_ID }
+export { SET_DIRECT_LINE_USER_ID };

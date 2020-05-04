@@ -32,14 +32,14 @@ async function main() {
 
   if (/^0/.test(version)) {
     assetURLs = [
-      `https://unpkg.com/botframework-webchat@${ version }/botchat.js`,
-      `https://unpkg.com/botframework-webchat@${ version }/botchat.css`,
-      `https://unpkg.com/botframework-webchat@${ version }/CognitiveServices.js`,
+      `https://unpkg.com/botframework-webchat@${version}/botchat.js`,
+      `https://unpkg.com/botframework-webchat@${version}/botchat.css`,
+      `https://unpkg.com/botframework-webchat@${version}/CognitiveServices.js`
     ];
-    console.warn(`Using Web Chat from ${ assetURLs[0] }`);
+    console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (/^4/.test(version)) {
-    assetURLs = [`https://cdn.botframework.com/botframework-webchat/${ version }/webchat-es5.js`];
-    console.warn(`Using Web Chat from ${ assetURLs[0] }`);
+    assetURLs = [`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`];
+    console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (version === 'dev') {
     assetURLs = [
       // DIRECT_LINE_DEV_ASSET,
@@ -47,39 +47,39 @@ async function main() {
     ];
 
     // console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
-    console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
+    console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
   } else {
     try {
-      const url = `${ version }directLine.js`;
+      const url = `${version}directLine.js`;
 
-      await loadAsset(`${ url }?_=${ Date.now() }`);
-      console.warn(`Using DirectLineJS from ${ url }`);
+      await loadAsset(`${url}?_=${Date.now()}`);
+      console.warn(`Using DirectLineJS from ${url}`);
     } catch (err) {}
 
     try {
-      const url = `${ version }webchat-es5.js`;
+      const url = `${version}webchat-es5.js`;
 
-      await loadAsset(`${ url }?_=${ Date.now() }`);
-      console.warn(`Using Web Chat from ${ url }`);
+      await loadAsset(`${url}?_=${Date.now()}`);
+      console.warn(`Using Web Chat from ${url}`);
     } catch (err) {
       try {
-        const url = `${ version }webchat.js`;
+        const url = `${version}webchat.js`;
 
-        await loadAsset(`${ url }?_=${ Date.now() }`);
-        console.warn(`Using Web Chat from ${ url }`);
+        await loadAsset(`${url}?_=${Date.now()}`);
+        console.warn(`Using Web Chat from ${url}`);
       } catch (err) {
         await loadAsset(WEB_CHAT_DEV_ASSET);
-        console.warn(`Using Web Chat from ${ WEB_CHAT_DEV_ASSET }`);
+        console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
       }
     }
 
     if (streamingExtensionsHostname && secret && !token) {
-      userID = `dl_${ random().toString(36).substr(2, 10) }`;
+      userID = `dl_${random().toString(36).substr(2, 10)}`;
 
-      const res = await fetch(`https://${ streamingExtensionsHostname }/.bot/v3/directline/tokens/generate`, {
+      const res = await fetch(`https://${streamingExtensionsHostname}/.bot/v3/directline/tokens/generate`, {
         body: JSON.stringify({ User: { Id: userID } }),
         headers: {
-          authorization: `Bearer ${ secret }`,
+          authorization: `Bearer ${secret}`,
           'Content-Type': 'application/json'
         },
         method: 'POST'
@@ -115,16 +115,14 @@ async function main() {
     // HACK: Only send conversationId if streaming extensions is enabled
     //       We should remove this hack after botframework-services#124 is fixed
     ...(streamingExtensionsHostname && conversationId ? { conversationId } : {}),
-    domain:
-      streamingExtensionsHostname ?
-        /^localhost[:\/]/.test(streamingExtensionsHostname) ?
-          `http://${ streamingExtensionsHostname }/.bot/v3/directline`
-        :
-          `https://${ streamingExtensionsHostname }/.bot/v3/directline`
+    domain: streamingExtensionsHostname
+      ? /^localhost[:\/]/.test(streamingExtensionsHostname)
+        ? `http://${streamingExtensionsHostname}/.bot/v3/directline`
+        : `https://${streamingExtensionsHostname}/.bot/v3/directline`
       : undefined,
     ...(secret ? { secret } : {}),
     ...(!!streamingExtensionsHostname ? { streamingWebSocket: true } : {}),
-    ...(token ? { token }: {}),
+    ...(token ? { token } : {}),
     webSocket
   };
 
@@ -160,23 +158,26 @@ async function main() {
   if (/^0/.test(version)) {
     rootElement.style.position = 'relative';
 
-    window.BotChat.App({
-      // botConnection: {
-      //   ...quirkyDirectLine,
-      //   activity$: toRxJS(quirkyDirectLine.activity$),
-      //   connectionStatus$: toRxJS(quirkyDirectLine.connectionStatus$)
-      // },
-      botConnection: directLine,
-      speechOptions: {
-        speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechKey }),
-        speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
-          gender: CognitiveServices.SynthesisGender.Female,
-          subscriptionKey: speechKey,
-          voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
-        })
+    window.BotChat.App(
+      {
+        // botConnection: {
+        //   ...quirkyDirectLine,
+        //   activity$: toRxJS(quirkyDirectLine.activity$),
+        //   connectionStatus$: toRxJS(quirkyDirectLine.connectionStatus$)
+        // },
+        botConnection: directLine,
+        speechOptions: {
+          speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechKey }),
+          speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
+            gender: CognitiveServices.SynthesisGender.Female,
+            subscriptionKey: speechKey,
+            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+          })
+        },
+        user: { id: userID, name: 'You' }
       },
-      user: { id: userID, name: 'You' }
-    }, rootElement);
+      rootElement
+    );
   } else {
     let webSpeechPonyfillFactory;
 
@@ -229,13 +230,16 @@ async function main() {
       }
     }
 
-    window.WebChat.renderWebChat({
-      // directLine: quirkyDirectLine,
-      directLine,
-      // selectVoice: () => ({ voiceURI: '1' }),
-      sendTypingIndicator: true,
-      webSpeechPonyfillFactory
-    }, rootElement);
+    window.WebChat.renderWebChat(
+      {
+        // directLine: quirkyDirectLine,
+        directLine,
+        // selectVoice: () => ({ voiceURI: '1' }),
+        sendTypingIndicator: true,
+        webSpeechPonyfillFactory
+      },
+      rootElement
+    );
   }
 
   document.querySelector('#webchat > *').focus();

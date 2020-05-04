@@ -24,7 +24,9 @@ export default function setSpeechKey(state = DEFAULT_STATE, { payload, type }) {
     const { subscriptionKey } = payload;
 
     state = updateIn(state, ['savedSubscriptionKeys', value => value === subscriptionKey]);
-    state = updateIn(state, ['savedSubscriptionKeys'], keys => [...(keys || []), subscriptionKey].sort(caseInsensitiveCompare));
+    state = updateIn(state, ['savedSubscriptionKeys'], keys =>
+      [...(keys || []), subscriptionKey].sort(caseInsensitiveCompare)
+    );
   } else if (type === SET_SPEECH_AUTHORIZATION_TOKEN) {
     state = updateIn(state, ['authorizationToken'], () => payload.authorizationToken);
     state = updateIn(state, ['subscriptionKey'], () => payload.subscriptionKey);

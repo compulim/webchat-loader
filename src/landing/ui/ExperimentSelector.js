@@ -1,19 +1,13 @@
 import React, { useCallback } from 'react';
 
-const ExperimentSelector = ({
-  onChange,
-  value
-}) => {
+const ExperimentSelector = ({ onChange, value }) => {
   const handleChange = useCallback(({ target: { value } }) => onChange(value));
 
   return (
     <section className="row">
       <label>
         <header>Experiment</header>
-        <select
-          onChange={ handleChange }
-          value={ value }
-        >
+        <select onChange={handleChange} value={value}>
           <option value="">No experiments</option>
           <option value="remove">Remove content URL</option>
           <option value="placeholder">Replace content URL with a placeholder image</option>
@@ -22,6 +16,6 @@ const ExperimentSelector = ({
       </label>
     </section>
   );
-}
+};
 
-export default ExperimentSelector
+export default ExperimentSelector;

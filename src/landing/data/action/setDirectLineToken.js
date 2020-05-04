@@ -7,4 +7,4 @@ export default function setDirectLineToken(token) {
   };
 }
 
-export { SET_DIRECT_LINE_TOKEN }
+export { SET_DIRECT_LINE_TOKEN };

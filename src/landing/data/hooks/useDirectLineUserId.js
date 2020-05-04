@@ -12,8 +12,5 @@ export default function useDirectLineUserId() {
   const value = useSelector(({ directLineCredentials: { userId } }) => userId);
   const setter = useCallback(value => dispatch(setDirectLineUserId(value)));
 
-  return [
-    ((token && decode(token)) || {}).user || value,
-    setter
-  ];
+  return [((token && decode(token)) || {}).user || value, setter];
 }

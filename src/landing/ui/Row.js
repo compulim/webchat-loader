@@ -20,12 +20,12 @@ const ROOT_CSS = css({
 });
 
 const Row = ({ children, header }) => (
-  <section className={ ROOT_CSS }>
+  <section className={ROOT_CSS}>
     <label>
-      <header>{ header }</header>
-      <div>{ children }</div>
+      <header>{header}</header>
+      <div>{children}</div>
     </label>
   </section>
 );
 
-export default Row
+export default Row;

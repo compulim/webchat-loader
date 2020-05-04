@@ -7,4 +7,4 @@ export default function removeSavedDirectLineSecret(secret) {
   };
 }
 
-export { REMOVE_SAVED_DIRECT_LINE_SECRET }
+export { REMOVE_SAVED_DIRECT_LINE_SECRET };

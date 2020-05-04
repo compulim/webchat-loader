@@ -7,4 +7,4 @@ export default function setSpeechAuthorizationToken(authorizationToken) {
   };
 }
 
-export { SET_SPEECH_AUTHORIZATION_TOKEN }
+export { SET_SPEECH_AUTHORIZATION_TOKEN };
