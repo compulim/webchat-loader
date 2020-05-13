@@ -1,7 +1,7 @@
 import { css } from 'glamor';
 import { decode } from 'jsonwebtoken';
 import ms from 'ms';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
 import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
@@ -88,6 +88,16 @@ const SpeechCredential = () => {
 
   const decodedAuthorizationToken = (authorizationToken && decode(authorizationToken)) || undefined;
   const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
+
+  const [, setForceRender] = useState();
+
+  useEffect(() => {
+    if (decodedAuthorizationToken) {
+      const timeout = setTimeout(() => setForceRender({}), 60000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [decodedAuthorizationToken]);
 
   return (
     <React.Fragment>
