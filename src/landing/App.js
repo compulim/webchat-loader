@@ -1,3 +1,5 @@
+import { css } from 'glamor';
+import classNames from 'classnames';
 import React from 'react';
 
 import BotPresets from './ui/BotPresets';
@@ -8,24 +10,27 @@ import SpeechCredentials from './ui/SpeechCredentials';
 import VersionSelector from './ui/VersionSelector';
 import WebChatLink from './ui/WebChatLink';
 
+const ROOT_CSS = css({
+  '&.app': {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'center',
+
+    '&.app .app__box': {
+      backgroundColor: 'White',
+      borderRadius: 4,
+      boxShadow: '0 0 10px rgba(0, 0, 0, .05)',
+      padding: '0 20px 20px'
+    }
+  }
+});
+
 const App = () => {
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        justifyContent: 'center'
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: 'White',
-          border: 'solid 1px #DDD',
-          padding: '0 20px 20px'
-        }}
-      >
+    <div className={classNames(ROOT_CSS + '', 'app')}>
+      <div className="app__box">
         <pre
           title={[
             'Slant by Glenn Chappell 3/93 -- based on Standard',
