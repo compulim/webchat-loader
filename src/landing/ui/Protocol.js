@@ -69,7 +69,7 @@ const Protocol = () => {
             style={CHECKBOX_STYLE}
             type="radio"
           />
-          &nbsp; App Service Extension
+          &nbsp; Direct Line App Service Extension
         </label>
         <div style={DOMAIN_STYLE}>
           {protocolAppServiceExtension && isLocalhost(directLineDomainHost) ? DOMAIN_PREFIX_INSECURE : DOMAIN_PREFIX}
