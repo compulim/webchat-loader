@@ -1,15 +1,17 @@
-import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import React, { useCallback } from 'react';
 
 import Row from './Row';
 
 import loadBotPreset from '../data/action/loadBotPreset';
 
-const PRESETS = {
-  mockbot: '[Public] MockBot'
+const PRESETS = [
+  { id: 'mockbot', name: '[Public] MockBot' },
+  { id: 'mockbot-ase', name: '[Preview] MockBot ASE' },
+  { id: 'dev', name: '[Dev] http://localhost:3978/directline/tokens' }
   // 'mockbot-streaming-extension': '[Public] MockBot with Streaming Extension',
   // 'mockbot-proxy': '[Internal] MockBot Proxy'
-};
+];
 
 const BotPreset = ({ children, onLoad, value }) => {
   const handleClick = useCallback(
@@ -33,10 +35,10 @@ const BotPresets = () => {
 
   return (
     <Row header="Preset">
-      {Object.keys(PRESETS).map(value => (
-        <div key={value}>
-          <BotPreset onLoad={handleLoad} value={value}>
-            {PRESETS[value]}
+      {PRESETS.map(({ id, name }) => (
+        <div key={id}>
+          <BotPreset onLoad={handleLoad} value={id}>
+            {name}
           </BotPreset>
         </div>
       ))}

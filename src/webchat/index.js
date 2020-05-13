@@ -2,12 +2,13 @@ import 'core-js/modules/web.url-search-params';
 import 'core-js/modules/es.promise';
 import 'regenerator-runtime';
 
-import { DirectLine as NPMDirectLine } from 'botframework-directlinejs';
+import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 // import updateIn from 'simple-update-in';
 
 import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
+import isLocalhost from './util/isLocalhost';
 import loadAsset from './util/loadAsset';
 // import passThrough from './util/passThrough';
 // import toRxJS from './util/toRxJS';
@@ -22,7 +23,7 @@ async function main() {
   const speechRegion = urlSearchParams.get('speechregion');
   let token = urlSearchParams.get('t');
   let userID = urlSearchParams.get('userid');
-  const streamingExtensionsHostname = urlSearchParams.get('se');
+  const appServiceExtensionHost = urlSearchParams.get('se');
   const webSocket = urlSearchParams.get('ws') !== 'false';
 
   let assetURLs;
@@ -73,10 +74,10 @@ async function main() {
       }
     }
 
-    if (streamingExtensionsHostname && secret && !token) {
+    if (appServiceExtensionHost && secret && !token) {
       userID = `dl_${random().toString(36).substr(2, 10)}`;
 
-      const res = await fetch(`https://${streamingExtensionsHostname}/.bot/v3/directline/tokens/generate`, {
+      const res = await fetch(`https://${appServiceExtensionHost}/.bot/v3/directline/tokens/generate`, {
         body: JSON.stringify({ User: { Id: userID } }),
         headers: {
           authorization: `Bearer ${secret}`,
@@ -95,63 +96,52 @@ async function main() {
 
   await Promise.all((assetURLs || []).map(url => loadAsset(url)));
 
-  let createDirectLine;
+  let directLine;
 
-  if (typeof window.DirectLine !== 'undefined') {
-    console.warn('Using DirectLineJS from the bundle of directLine.js.');
-    createDirectLine = options => new window.DirectLine.DirectLine(options);
-  } else if (window.WebChat && window.WebChat.createDirectLine) {
-    console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
-    createDirectLine = options => new window.WebChat.createDirectLine(options);
-  } else if (window.BotChat && window.BotChat.DirectLine) {
-    console.warn('Using DirectLineJS from the bundle of Web Chat v3.');
-    createDirectLine = options => new window.BotChat.DirectLine(options);
+  if (appServiceExtensionHost) {
+    let createDirectLineAppServiceExtension;
+
+    if (typeof window.DirectLine !== 'undefined') {
+      console.warn('Using DirectLineJS from the bundle of directLine.js.');
+      createDirectLineAppServiceExtension = options => new window.DirectLine.DirectLineStreaming(options);
+    } else if (window.WebChat && window.WebChat.createDirectLineAppServiceExtension) {
+      console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
+      createDirectLineAppServiceExtension = options => new window.WebChat.createDirectLineAppServiceExtension(options);
+    } else {
+      console.warn('Using DirectLineJS from Web Chat Loader.');
+      createDirectLineAppServiceExtension = options => new NPMDirectLineStreaming(options);
+    }
+
+    directLine = createDirectLineAppServiceExtension({
+      conversationId,
+      domain: isLocalhost(appServiceExtensionHost)
+        ? `http://${appServiceExtensionHost}/.bot/v3/directline`
+        : `https://${appServiceExtensionHost}/.bot/v3/directline`,
+      token
+    });
   } else {
-    console.warn('Using DirectLineJS from Web Chat Loader.');
-    createDirectLine = options => new NPMDirectLine(options);
+    let createDirectLine;
+
+    if (typeof window.DirectLine !== 'undefined') {
+      console.warn('Using DirectLineJS from the bundle of directLine.js.');
+      createDirectLine = options => new window.DirectLine.DirectLine(options);
+    } else if (window.WebChat && window.WebChat.createDirectLine) {
+      console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
+      createDirectLine = options => new window.WebChat.createDirectLine(options);
+    } else if (window.BotChat && window.BotChat.DirectLine) {
+      console.warn('Using DirectLineJS from the bundle of Web Chat v3.');
+      createDirectLine = options => new window.BotChat.DirectLine(options);
+    } else {
+      console.warn('Using DirectLineJS from Web Chat Loader.');
+      createDirectLine = options => new NPMDirectLine(options);
+    }
+
+    directLine = createDirectLine({
+      ...(secret ? { secret } : {}),
+      ...(token ? { token } : {}),
+      webSocket
+    });
   }
-
-  const directLineOptions = {
-    // HACK: Only send conversationId if streaming extensions is enabled
-    //       We should remove this hack after botframework-services#124 is fixed
-    ...(streamingExtensionsHostname && conversationId ? { conversationId } : {}),
-    domain: streamingExtensionsHostname
-      ? /^localhost[:\/]/.test(streamingExtensionsHostname)
-        ? `http://${streamingExtensionsHostname}/.bot/v3/directline`
-        : `https://${streamingExtensionsHostname}/.bot/v3/directline`
-      : undefined,
-    ...(secret ? { secret } : {}),
-    ...(!!streamingExtensionsHostname ? { streamingWebSocket: true } : {}),
-    ...(token ? { token } : {}),
-    webSocket
-  };
-
-  const directLine = createDirectLine(directLineOptions);
-  // const quirkyDirectLine = {
-  //   activity$: passThrough(directLine.activity$, activity => {
-  //     const nextActivity = updateIn(
-  //       activity,
-  //       ['attachments', () => true, 'contentUrl'],
-  //       experiment === 'noop' ?
-  //         value => value
-  //       : experiment === 'placeholder' ?
-  //         () => 'placeholder.png'
-  //       : experiment === '403' ?
-  //         // Removing the token will cause 403
-  //         value => value.replace(/\?t=.+/, '')
-  //       :
-  //         undefined
-  //     );
-
-  //     return nextActivity;
-  //   }),
-  //   connectionStatus$: passThrough(directLine.connectionStatus$),
-  //   end: () => directLine.end(),
-  //   get referenceGrammarId() { return directLine.referenceGrammarId; },
-  //   getSessionId: (...args) => directLine.getSessionId(...args),
-  //   postActivity: (...args) => directLine.postActivity(...args),
-  //   get token() { return directLine.token; }
-  // };
 
   const rootElement = document.getElementById('webchat');
 

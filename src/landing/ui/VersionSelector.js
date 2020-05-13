@@ -1,5 +1,5 @@
 import { fetch } from 'whatwg-fetch';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Presets from './Presets';
 import Row from './Row';
@@ -11,6 +11,7 @@ const SELECT_STYLE = { width: '100%' };
 const VersionSelector = () => {
   const [version, setVersion] = useVersion();
   const [availableVersions, setAvailableVersions] = useState([]);
+  const [devReleaseLabel, setDevReleaseLabel] = useState('GitHub "daily"');
 
   useMemo(async () => {
     try {
@@ -26,6 +27,27 @@ const VersionSelector = () => {
     }
   }, []);
 
+  useEffect(() => {
+    (async function () {
+      const res = await fetch('https://api.github.com/repos/microsoft/BotFramework-WebChat/releases/tags/daily');
+
+      if (!res.ok) {
+        return;
+      }
+
+      const { assets, target_commitish: commit } = await res.json();
+      const { updated_at: updatedAtISOString } = assets.find(({ name }) => name === 'webchat.js');
+      const updatedAt = new Date(updatedAtISOString);
+
+      setDevReleaseLabel(
+        `GitHub "daily" ${commit.substr(
+          0,
+          7
+        )} at ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
+      );
+    })();
+  }, [devReleaseLabel, setDevReleaseLabel]);
+
   const v3Version = useMemo(
     () => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)),
     [availableVersions]
@@ -37,7 +59,7 @@ const VersionSelector = () => {
 
   const presetVersions = useMemo(
     () => ({
-      Dev: 'dev',
+      'GitHub': 'dev',
       '4.8.1': '4.8.1',
       '4.8.0': '4.8.0',
       '4.7.1': '4.7.1',
@@ -65,13 +87,13 @@ const VersionSelector = () => {
           style={SELECT_STYLE}
           value={version}
         >
+          <option value="dev">{devReleaseLabel}</option>
+          <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
           {(availableVersions || []).map(({ time, version }) => (
             <option key={version} value={version}>
               {version} ({new Date(time).toLocaleDateString()})
             </option>
           ))}
-          <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
-          <option value="dev">&lt;Latest development build&gt;</option>
         </select>
       </div>
       <div>

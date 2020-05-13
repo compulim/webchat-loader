@@ -8,9 +8,6 @@ import SpeechCredentials from './ui/SpeechCredentials';
 import VersionSelector from './ui/VersionSelector';
 import WebChatLink from './ui/WebChatLink';
 
-import generateUserId from './util/generateUserId';
-import useStateWithLocalStorage from './util/useStateWithLocalStorage';
-
 const App = () => {
   return (
     <div
@@ -42,15 +39,15 @@ const App = () => {
             'of new full-width/kern/smush alternatives, but default output is NOT changed.'
           ].join('\n')}
         >
-          &nbsp;_ __ __ ________ __
+          &nbsp;_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__
           <br />
-          | | / /__ / /_ / ____/ /_ ____ _/ /_
+          |&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;/__&nbsp;&nbsp;/&nbsp;/_&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;____/&nbsp;/_&nbsp;&nbsp;____&nbsp;_/&nbsp;/_
           <br />
-          | | /| / / _ \/ __ \ / / / __ \/ __ `/ __/
+          |&nbsp;|&nbsp;/|&nbsp;/&nbsp;/&nbsp;_&nbsp;\/&nbsp;__&nbsp;\&nbsp;&nbsp;&nbsp;/&nbsp;/&nbsp;&nbsp;&nbsp;/&nbsp;__&nbsp;\/&nbsp;__&nbsp;`/&nbsp;__/
           <br />
-          | |/ |/ / __/ /_/ / / /___/ / / / /_/ / /_
+          |&nbsp;|/&nbsp;|/&nbsp;/&nbsp;&nbsp;__/&nbsp;/_/&nbsp;/&nbsp;&nbsp;/&nbsp;/___/&nbsp;/&nbsp;/&nbsp;/&nbsp;/_/&nbsp;/&nbsp;/_
           <br />
-          |__/|__/\___/_.___/ \____/_/ /_/\__,_/\__/
+          |__/|__/\___/_.___/&nbsp;&nbsp;&nbsp;\____/_/&nbsp;/_/\__,_/\__/
           <br />
         </pre>
         <VersionSelector />

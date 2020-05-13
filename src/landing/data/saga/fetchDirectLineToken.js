@@ -7,21 +7,25 @@ import setDirectLineToken from '../action/setDirectLineToken';
 
 export default function* fetchDirectLineTokenSaga() {
   yield takeEvery(FETCH_DIRECT_LINE_TOKEN, function* () {
-    const { secret, userId } = yield select(({ directLineCredentials: { secret, userId } }) => ({ secret, userId }));
-    let url = secret;
+    try {
+      const { secret, userId } = yield select(({ directLineCredentials: { secret, userId } }) => ({ secret, userId }));
+      let url = secret;
 
-    if (!/^https?:/u.test(url)) {
-      return;
+      if (!/^https?:/u.test(url)) {
+        return;
+      }
+
+      url = url.replace(/\{userid\}/giu, userId);
+
+      let { token } = yield call(fetchDirectLineToken, url);
+
+      if (new URL(url).hostname === 'covid19healthbot.cdc.gov') {
+        token = decode(token).connectorToken;
+      }
+
+      yield put(setDirectLineToken(token));
+    } catch (err) {
+      console.error(err);
     }
-
-    url = url.replace(/\{userid\}/giu, userId);
-
-    let { token } = yield call(fetchDirectLineToken, url);
-
-    if (new URL(url).hostname === 'covid19healthbot.cdc.gov') {
-      token = decode(token).connectorToken;
-    }
-
-    yield put(setDirectLineToken(token));
   });
 }

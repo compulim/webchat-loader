@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import useAppServiceExtensionEnabled from '../data/hooks/useAppServiceExtensionEnabled';
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -7,17 +8,16 @@ import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
-import useStreamingExtensionsEnabled from '../data/hooks/useStreamingExtensionsEnabled';
 import useVersion from '../data/hooks/useVersion';
 import useWebSocketEnabled from '../data/hooks/useWebSocketEnabled';
 
 const WebChatLink = () => {
+  const [appServiceExtensionEnabled] = useAppServiceExtensionEnabled();
   const [conversationId] = useDirectLineConversationId();
   const [domainHost] = useDirectLineDomainHost();
   const [secret] = useDirectLineSecret();
   const [speechKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
-  const [streamingExtensionsEnabled] = useStreamingExtensionsEnabled();
   const [token] = useDirectLineToken();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
@@ -28,7 +28,7 @@ const WebChatLink = () => {
       new URLSearchParams({
         v: version,
         ws: webSocketEnabled + '',
-        ...(streamingExtensionsEnabled ? { se: domainHost } : {}),
+        ...(appServiceExtensionEnabled ? { se: domainHost } : {}),
         ...(speechRegion ? { speechregion: speechRegion } : {}),
         ...(conversationId ? { cid: conversationId } : {}),
         userid: userId,
@@ -41,7 +41,7 @@ const WebChatLink = () => {
       secret,
       speechKey,
       speechRegion,
-      streamingExtensionsEnabled,
+      appServiceExtensionEnabled,
       token,
       userId,
       version,
