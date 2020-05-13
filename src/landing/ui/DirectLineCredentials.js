@@ -95,7 +95,7 @@ const Credential = () => {
           <Presets
             onDelete={removeSavedSecret}
             onLoad={handleLoadSecret}
-            onSave={handleSaveSecret}
+            onSave={secret && !savedSecrets.includes(secret) ? handleSaveSecret : undefined}
             texts={savedSecretsTexts}
             values={savedSecrets}
           />

@@ -112,7 +112,7 @@ const SpeechCredential = () => {
               <Presets
                 onDelete={removeSavedSubscriptionKey}
                 onLoad={setSubscriptionKey}
-                onSave={pregeneratedToken ? undefined : handleSaveSubscriptionKey}
+                onSave={(pregeneratedToken || !subscriptionKey || savedSubscriptionKeys.includes(subscriptionKey)) ? undefined : handleSaveSubscriptionKey}
                 texts={useMemo(
                   () => savedSubscriptionKeys.map(key => () => <code>{(key || '').substr(0, 5) + '…'}</code>),
                   [savedSubscriptionKeys]
