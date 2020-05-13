@@ -59,7 +59,7 @@ const VersionSelector = () => {
 
   const presetVersions = useMemo(
     () => ({
-      'GitHub': 'dev',
+      'daily': 'dev',
       '4.8.1': '4.8.1',
       '4.8.0': '4.8.0',
       '4.7.1': '4.7.1',

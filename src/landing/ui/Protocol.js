@@ -5,8 +5,9 @@ import Row from './Row';
 
 import isLocalhost from '../util/isLocalhost';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
-import useAppServiceExtensionEnabled from '../data/hooks/useAppServiceExtensionEnabled';
-import useWebSocketEnabled from '../data/hooks/useWebSocketEnabled';
+import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
+import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolREST from '../data/hooks/useProtocolREST';
 
 const DOMAIN_PREFIX = 'https://';
 const DOMAIN_PREFIX_INSECURE = 'http://';
@@ -24,51 +25,63 @@ const LABEL_CSS = css({
 });
 
 const Protocol = () => {
-  const [appServiceExtensionEnabled, setAppServiceExtensionEnabled] = useAppServiceExtensionEnabled();
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
-  const [webSocketEnabled, setWebSocketEnabled] = useWebSocketEnabled();
+  const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
+  const [protocolREST, setProtocolREST] = useProtocolREST();
+  const [protocolWebSocket, setProtocolWebSocket] = useProtocolWebSocket();
 
-  const handleAppServiceExtensionChange = useCallback(
-    ({ target: { checked } }) => setAppServiceExtensionEnabled(checked),
-    [useAppServiceExtensionEnabled]
-  );
   const handleDomainChange = useCallback(({ target: { value } }) => setDirectLineDomainHost(value || ''), [
     setDirectLineDomainHost
-  ]);
-  const handleWebSocketChange = useCallback(({ target: { checked } }) => setWebSocketEnabled(checked), [
-    useWebSocketEnabled
   ]);
 
   return (
     <Row header="Protocol">
       <div>
         <label className={LABEL_CSS}>
-          <input checked={webSocketEnabled} onChange={handleWebSocketChange} style={CHECKBOX_STYLE} type="checkbox" />
+          <input
+            checked={protocolWebSocket}
+            name="protocol"
+            onChange={setProtocolWebSocket}
+            style={CHECKBOX_STYLE}
+            type="radio"
+          />
           &nbsp; Web Socket
+        </label>
+      </div>
+      <div>
+        <label className={LABEL_CSS}>
+          <input
+            checked={protocolREST}
+            name="protocol"
+            onChange={setProtocolREST}
+            style={CHECKBOX_STYLE}
+            type="radio"
+          />
+          &nbsp; REST short-polling&nbsp;<small>(not recommended)</small>
         </label>
       </div>
       <div className={APP_SERVICE_EXTENSION_CSS}>
         <label className={LABEL_CSS}>
           <input
-            checked={appServiceExtensionEnabled}
-            disabled={!webSocketEnabled}
-            onChange={handleAppServiceExtensionChange}
+            checked={protocolAppServiceExtension}
+            name="protocol"
+            onChange={setProtocolAppServiceExtension}
             style={CHECKBOX_STYLE}
-            type="checkbox"
+            type="radio"
           />
           &nbsp; App Service Extension
         </label>
         <div style={DOMAIN_STYLE}>
-          {appServiceExtensionEnabled && isLocalhost(directLineDomainHost) ? DOMAIN_PREFIX_INSECURE : DOMAIN_PREFIX}
+          {protocolAppServiceExtension && isLocalhost(directLineDomainHost) ? DOMAIN_PREFIX_INSECURE : DOMAIN_PREFIX}
           <input
-            disabled={!appServiceExtensionEnabled}
+            disabled={!protocolAppServiceExtension}
             onChange={handleDomainChange}
-            required={appServiceExtensionEnabled}
+            required={protocolAppServiceExtension}
             style={DOMAIN_INPUT_STYLE}
             type="text"
-            value={appServiceExtensionEnabled ? directLineDomainHost : ''}
+            value={protocolAppServiceExtension ? directLineDomainHost : ''}
           />
-          {appServiceExtensionEnabled ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
+          {protocolAppServiceExtension ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
         </div>
       </div>
     </Row>

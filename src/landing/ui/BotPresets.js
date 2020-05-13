@@ -7,9 +7,8 @@ import loadBotPreset from '../data/action/loadBotPreset';
 
 const PRESETS = [
   { id: 'mockbot', name: '[Public] MockBot' },
-  { id: 'mockbot-ase', name: '[Preview] MockBot ASE' },
+  { id: 'mockbot-ase', name: '[Public] MockBot App Service Extension' },
   { id: 'dev', name: '[Dev] http://localhost:3978/directline/tokens' }
-  // 'mockbot-streaming-extension': '[Public] MockBot with Streaming Extension',
   // 'mockbot-proxy': '[Internal] MockBot Proxy'
 ];
 
