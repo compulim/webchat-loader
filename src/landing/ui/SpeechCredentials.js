@@ -111,7 +111,7 @@ const SpeechCredential = () => {
           <div>
             <small>
               <Presets
-                onLoad={setRegion}
+                onLoad={subscriptionKeyIsURL ? undefined : setRegion}
                 texts={useMemo(() => ['West US', 'West US 2', 'East US'], [])}
                 values={useMemo(() => ['westus', 'westus2', 'eastus'], [])}
               />

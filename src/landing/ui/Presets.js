@@ -13,9 +13,9 @@ const Preset = ({ onDelete, onLoad, text, value }) => {
   const handleLoadClick = useCallback(
     event => {
       event.preventDefault();
-      onLoad(value);
+      onLoad && onLoad(value);
     },
-    [value]
+    [onLoad, value]
   );
 
   return (
@@ -35,12 +35,13 @@ const Preset = ({ onDelete, onLoad, text, value }) => {
 
 Preset.defaultProps = {
   onDelete: undefined,
+  onLoad: undefined,
   text: undefined
 };
 
 Preset.propTypes = {
   onDelete: PropTypes.func,
-  onLoad: PropTypes.func.isRequired,
+  onLoad: PropTypes.func,
   text: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   value: PropTypes.string.isRequired
 };
@@ -70,12 +71,13 @@ const Presets = ({ onDelete, onLoad, onSave, texts, values }) => {
 
 Presets.defaultProps = {
   onDelete: undefined,
+  onLoad: undefined,
   onSave: undefined
 };
 
 Presets.propTypes = {
   onDelete: PropTypes.func,
-  onLoad: PropTypes.func.isRequired,
+  onLoad: PropTypes.func,
   onSave: PropTypes.func,
   texts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.string])).isRequired,
   values: PropTypes.arrayOf(PropTypes.string).isRequired
