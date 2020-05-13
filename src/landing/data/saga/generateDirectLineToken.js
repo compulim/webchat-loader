@@ -6,23 +6,29 @@ import setDirectLineToken from '../action/setDirectLineToken';
 
 export default function* generateDirectLineTokenSaga() {
   yield takeEvery(GENERATE_DIRECT_LINE_TOKEN, function* () {
-    const { appServiceExtensionEnabled, domainHost, secret } = yield select(
-      ({ directLineCredentials: { domainHost, secret }, appServiceExtensionEnabled }) => ({
-        appServiceExtensionEnabled,
+    const { domainHost, protocol, secret } = yield select(
+      ({ directLineCredentials: { domainHost, secret }, protocol }) => ({
         domainHost,
+        protocol,
         secret
       })
     );
 
+    const isAppServiceExtension = protocol === 'app service extension';
+
     const domain =
-      appServiceExtensionEnabled && domainHost
+      isAppServiceExtension && domainHost
         ? /^localhost[:\/]/.test(domainHost)
-          ? `http://${domainHost}/${appServiceExtensionEnabled ? '.bot/' : ''}v3/directline`
-          : `https://${domainHost}/${appServiceExtensionEnabled ? '.bot/' : ''}v3/directline`
+          ? `http://${domainHost}/${isAppServiceExtension ? '.bot/' : ''}v3/directline`
+          : `https://${domainHost}/${isAppServiceExtension ? '.bot/' : ''}v3/directline`
         : 'https://directline.botframework.com/v3/directline';
 
-    const { token } = yield call(generateDirectLineToken, { domain, secret });
+    try {
+      const { token } = yield call(generateDirectLineToken, { domain, secret });
 
-    yield put(setDirectLineToken(token));
+      yield put(setDirectLineToken(token));
+    } catch (err) {
+      yield put(setDirectLineToken('<Failed to fetch token>'));
+    }
   });
 }

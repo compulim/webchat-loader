@@ -1,0 +1,7 @@
+const FETCH_SPEECH_AUTHORIZATION_TOKEN = 'FETCH_SPEECH_AUTHORIZATION_TOKEN';
+
+export default function fetchSpeechAuthorizationToken() {
+  return { type: FETCH_SPEECH_AUTHORIZATION_TOKEN };
+}
+
+export { FETCH_SPEECH_AUTHORIZATION_TOKEN };

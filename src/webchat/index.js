@@ -5,30 +5,35 @@ import 'regenerator-runtime';
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
-// import updateIn from 'simple-update-in';
 
 import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
 import isLocalhost from './util/isLocalhost';
 import loadAsset from './util/loadAsset';
-// import passThrough from './util/passThrough';
-// import toRxJS from './util/toRxJS';
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
-  let version = urlSearchParams.get('v') || 'latest';
-  // const experiment = urlSearchParams.get('x') || 'noop';
+
+  const directLineDomainHost = urlSearchParams.get('dd');
+  const protocolAppServiceExtension = urlSearchParams.get('p') === 'ase';
+  const protocolREST = urlSearchParams.get('p') === 'rest';
+  const speechAuthorizationToken = urlSearchParams.get('st');
+  const speechSubscriptionKey = urlSearchParams.get('sk');
+  const speechRegion = urlSearchParams.get('sr');
   let conversationId = urlSearchParams.get('cid');
-  let secret = urlSearchParams.get('s');
-  const speechKey = urlSearchParams.get('speechkey');
-  const speechRegion = urlSearchParams.get('speechregion');
-  let token = urlSearchParams.get('t');
+  let secret = urlSearchParams.get('ds');
+  let token = urlSearchParams.get('dt');
   let userID = urlSearchParams.get('userid');
-  const appServiceExtensionHost = urlSearchParams.get('se');
-  const webSocket = urlSearchParams.get('ws') !== 'false';
+  let version = urlSearchParams.get('v') || 'latest';
+
+  const protocolWebSocket = !protocolAppServiceExtension && !protocolREST;
+  const domain = directLineDomainHost
+    ? isLocalhost(directLineDomainHost)
+      ? `http://${directLineDomainHost}${protocolAppServiceExtension ? '/.bot' : ''}/v3/directline`
+      : `https://${directLineDomainHost}${protocolAppServiceExtension ? '/.bot' : ''}/v3/directline`
+    : undefined;
 
   let assetURLs;
 
-  // const DIRECT_LINE_DEV_ASSET = `https://github.com/microsoft/BotFramework-DirectLineJS/releases/download/dev-streamingextensions/directline.js`;
   const WEB_CHAT_DEV_ASSET = `https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js`;
 
   if (/^0/.test(version)) {
@@ -42,12 +47,7 @@ async function main() {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`];
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (version === 'dev') {
-    assetURLs = [
-      // DIRECT_LINE_DEV_ASSET,
-      WEB_CHAT_DEV_ASSET
-    ];
-
-    // console.warn(`Using DirectLineJS from ${ DIRECT_LINE_DEV_ASSET }`);
+    assetURLs = [WEB_CHAT_DEV_ASSET];
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
   } else {
     try {
@@ -74,10 +74,10 @@ async function main() {
       }
     }
 
-    if (appServiceExtensionHost && secret && !token) {
+    if (directLineDomainHost && secret && !token) {
       userID = `dl_${random().toString(36).substr(2, 10)}`;
 
-      const res = await fetch(`https://${appServiceExtensionHost}/.bot/v3/directline/tokens/generate`, {
+      const res = await fetch(`https://${directLineDomainHost}/.bot/v3/directline/tokens/generate`, {
         body: JSON.stringify({ User: { Id: userID } }),
         headers: {
           authorization: `Bearer ${secret}`,
@@ -98,7 +98,7 @@ async function main() {
 
   let directLine;
 
-  if (appServiceExtensionHost) {
+  if (protocolAppServiceExtension) {
     let createDirectLineAppServiceExtension;
 
     if (typeof window.DirectLine !== 'undefined') {
@@ -114,9 +114,7 @@ async function main() {
 
     directLine = createDirectLineAppServiceExtension({
       conversationId,
-      domain: isLocalhost(appServiceExtensionHost)
-        ? `http://${appServiceExtensionHost}/.bot/v3/directline`
-        : `https://${appServiceExtensionHost}/.bot/v3/directline`,
+      domain,
       token
     });
   } else {
@@ -137,9 +135,9 @@ async function main() {
     }
 
     directLine = createDirectLine({
-      ...(secret ? { secret } : {}),
-      ...(token ? { token } : {}),
-      webSocket
+      domain,
+      ...(token ? { token } : secret ? { secret } : {}),
+      webSocket: protocolWebSocket
     });
   }
 
@@ -150,17 +148,12 @@ async function main() {
 
     window.BotChat.App(
       {
-        // botConnection: {
-        //   ...quirkyDirectLine,
-        //   activity$: toRxJS(quirkyDirectLine.activity$),
-        //   connectionStatus$: toRxJS(quirkyDirectLine.connectionStatus$)
-        // },
         botConnection: directLine,
         speechOptions: {
-          speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechKey }),
+          speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechSubscriptionKey }),
           speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
             gender: CognitiveServices.SynthesisGender.Female,
-            subscriptionKey: speechKey,
+            subscriptionKey: speechSubscriptionKey,
             voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
           })
         },
@@ -171,7 +164,7 @@ async function main() {
   } else {
     let webSpeechPonyfillFactory;
 
-    if (speechKey) {
+    if (speechAuthorizationToken || speechSubscriptionKey) {
       const speechOptions = {
         // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
         // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',
@@ -180,51 +173,20 @@ async function main() {
         // enableTelemetry: true
       };
 
-      if (speechKey === '__mockbot__') {
-        const { region } = await fetchMockBotSpeechServicesToken();
-
-        webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          ...speechOptions,
-          authorizationToken: () => fetchMockBotSpeechServicesToken().then(({ token }) => token),
-          region
-        });
-      } else {
-        webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          ...speechOptions,
-          region: speechRegion || 'westus',
-          subscriptionKey: speechKey
-        });
-
-        // const ponyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-        //   ...speechOptions,
-        //   region: speechRegion || 'westus',
-        //   subscriptionKey: speechKey
-        // });
-
-        // webSpeechPonyfillFactory = (...args) => {
-        //   const {
-        //     SpeechGrammarList,
-        //     SpeechRecognition
-        //   } = ponyfillFactory(...args);
-
-        //   console.log({
-        //     SpeechGrammarList,
-        //     SpeechRecognition
-        //   });
-
-        //   return {
-        //     SpeechGrammarList,
-        //     SpeechRecognition
-        //   };
-        // };
-      }
+      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+        ...speechOptions,
+        credentials: () => ({
+          region: speechRegion,
+          ...(speechAuthorizationToken
+            ? { authorizationToken: speechAuthorizationToken }
+            : { subscriptionKey: speechSubscriptionKey })
+        })
+      });
     }
 
     window.WebChat.renderWebChat(
       {
-        // directLine: quirkyDirectLine,
         directLine,
-        // selectVoice: () => ({ voiceURI: '1' }),
         sendTypingIndicator: true,
         webSpeechPonyfillFactory
       },
@@ -233,14 +195,6 @@ async function main() {
   }
 
   document.querySelector('#webchat > *').focus();
-
-  // setTimeout(() => {
-  //   quirkyDirectLine.postActivity({
-  //     from: { id: userID },
-  //     text: `echo Loading Web Chat "${ version }" using experiment "${ experiment }"`,
-  //     type: 'message'
-  //   }).subscribe();
-  // }, 2000);
 }
 
 main().catch(err => console.error(err));

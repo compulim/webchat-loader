@@ -23,6 +23,7 @@ const LABEL_CSS = css({
   alignItems: 'center',
   display: 'flex'
 });
+const RED_CSS = css({ color: 'Red' });
 
 const Protocol = () => {
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
@@ -35,7 +36,7 @@ const Protocol = () => {
   ]);
 
   return (
-    <Row header="Protocol">
+    <Row header="Protocol" rowLabel={false}>
       <div>
         <label className={LABEL_CSS}>
           <input
@@ -45,7 +46,7 @@ const Protocol = () => {
             style={CHECKBOX_STYLE}
             type="radio"
           />
-          &nbsp; Web Socket
+          &nbsp; Direct Line via Web Socket
         </label>
       </div>
       <div>
@@ -57,8 +58,9 @@ const Protocol = () => {
             style={CHECKBOX_STYLE}
             type="radio"
           />
-          &nbsp; REST short-polling&nbsp;<small>(not recommended)</small>
+          &nbsp; Direct Line via REST short-polling
         </label>
+        {protocolREST && <small className={RED_CSS}>This protocol is not recommended to use in production.</small>}
       </div>
       <div className={APP_SERVICE_EXTENSION_CSS}>
         <label className={LABEL_CSS}>
@@ -83,6 +85,7 @@ const Protocol = () => {
           />
           {protocolAppServiceExtension ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
         </div>
+        {protocolAppServiceExtension && <small>This protocol is not supported on all versions of Web Chat.</small>}
       </div>
     </Row>
   );

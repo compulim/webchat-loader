@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 
+import isURL from '../util/isURL';
+
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -8,6 +10,7 @@ import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
+import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 import useVersion from '../data/hooks/useVersion';
 
@@ -17,28 +20,48 @@ const WebChatLink = () => {
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolWebSocket] = useProtocolWebSocket();
   const [secret] = useDirectLineSecret();
-  const [speechKey] = useSpeechSubscriptionKey();
+  const [speechAuthorizationToken] = useSpeechAuthorizationToken();
+  const [speechSubscriptionKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
   const [token] = useDirectLineToken();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
 
   const searchParams = useMemo(() => {
-    const tokenURL = /^https?:\/\//.test(secret || '');
+    const directLineTokenURL = isURL(secret);
+    const speechTokenURL = isURL(speechSubscriptionKey);
 
-    if ((tokenURL && !token) || (!secret && !token) || (protocolAppServiceExtension && !domainHost)) {
+    if (
+      (directLineTokenURL && !token) ||
+      (!secret && !token) ||
+      (protocolAppServiceExtension && !domainHost) ||
+      (speechTokenURL && !speechAuthorizationToken)
+    ) {
       return;
     }
 
     return new URLSearchParams({
       v: version,
-      ws: protocolWebSocket + '',
-      ...(protocolAppServiceExtension ? { se: domainHost } : {}),
-      ...(speechRegion ? { speechregion: speechRegion } : {}),
+      p: protocolAppServiceExtension ? 'ase' : protocolWebSocket ? 'ws' : 'rest',
+
       ...(conversationId ? { cid: conversationId } : {}),
-      userid: userId,
-      ...(token ? { t: token } : { s: secret }),
-      ...(speechKey ? { speechkey: speechKey } : {})
+
+      ...(protocolAppServiceExtension && domainHost ? { dd: domainHost } : {}),
+      ...(token ? { dt: token } : { ds: secret }),
+
+      ...(speechRegion ? { sr: speechRegion } : {}),
+      ...(speechAuthorizationToken
+        ? { st: speechAuthorizationToken }
+        : speechSubscriptionKey
+        ? { sk: speechSubscriptionKey }
+        : {}),
+      uid: userId
+
+      // ws: protocolWebSocket + '',
+      // ...(protocolAppServiceExtension ? { se: domainHost } : {}),
+      // ...(speechRegion ? { speechregion: speechRegion } : {}),
+      // userid: userId,
+      // ...(speechSubscriptionKey ? { speechkey: speechSubscriptionKey } : {})
     });
   }, [
     conversationId,
@@ -46,7 +69,8 @@ const WebChatLink = () => {
     protocolAppServiceExtension,
     protocolWebSocket,
     secret,
-    speechKey,
+    speechAuthorizationToken,
+    speechSubscriptionKey,
     speechRegion,
     token,
     userId,

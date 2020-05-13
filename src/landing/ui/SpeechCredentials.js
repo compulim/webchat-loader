@@ -1,17 +1,32 @@
+import { css } from 'glamor';
+import { decode } from 'jsonwebtoken';
+import ms from 'ms';
 import React, { useCallback, useMemo } from 'react';
 
+import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
+import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
+import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSavedSpeechSubscriptionKeys from '../data/hooks/useSavedSpeechSubscriptionKeys';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 
+import isURL from '../util/isURL';
 import Presets from './Presets';
 import Row from './Row';
 
-const ROW_STYLE = { flex: 1 };
-const REGION_SELECT_STYLE = { flex: 1 };
-const INPUT_ROW_STYLE = { display: 'flex' };
-const INPUT_STYLE = { flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' };
-const INPUT_STYLE_FOR_MOCK_BOT = { flex: 1, marginRight: '1em' };
+const INPUT_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
+const INPUT_ROW_CSS = css({
+  display: 'flex',
+
+  '& > input:invalid': {
+    borderColor: 'Red',
+    borderStyle: 'solid',
+    borderWidth: 1
+  }
+});
+const RED_CSS = css({ color: 'Red' });
+const REGION_SELECT_CSS = css({ flex: 1 });
+const ROW_CSS = css({ flex: 1 });
 
 const REGIONS = {
   westus: 'West US',
@@ -35,17 +50,33 @@ const REGIONS = {
 };
 
 const SpeechCredential = () => {
+  const [authorizationToken, setAuthorizationToken] = useSpeechAuthorizationToken();
   const [region, setRegion] = useSpeechRegion();
-  const [subscriptionKey, setSubscriptionKey] = useSpeechSubscriptionKey();
   const [savedSubscriptionKeys, saveSubscriptionKey, removeSavedSubscriptionKey] = useSavedSpeechSubscriptionKeys();
+  const [subscriptionKey, setSubscriptionKey] = useSpeechSubscriptionKey();
+  const fetchAuthorizationToken = useFetchSpeechAuthorizationToken();
+  const generateAuthorizationToken = useGenerateSpeechAuthorizationToken();
 
-  const handleClearKeyClick = useCallback(() => setSubscriptionKey(''), [setSubscriptionKey]);
-  const handleLoadMockBotKey = useCallback(
+  const handleLoadSubscriptionKey = useCallback(
+    subscriptionKey => {
+      setAuthorizationToken('');
+      setSubscriptionKey(subscriptionKey);
+    },
+    [setAuthorizationToken, setSubscriptionKey]
+  );
+
+  const handleAuthorizationTokenChange = useCallback(({ target: { value } }) => setAuthorizationToken(value), [
+    setAuthorizationToken
+  ]);
+  const handleAuthorizationTokenFocus = useCallback(({ target }) => target.select());
+  const handleClearAuthorizationTokenClick = useCallback(() => setAuthorizationToken(''), [setAuthorizationToken]);
+  const handleLoadMockBotToken = useCallback(
     event => {
       event.preventDefault();
-      setSubscriptionKey('__mockbot__');
+      setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
+      fetchAuthorizationToken();
     },
-    [setSubscriptionKey]
+    [fetchAuthorizationToken, setSubscriptionKey]
   );
   const handleRegionChange = useCallback(({ target: { value } }) => setRegion(value), [setRegion]);
   const handleSaveSubscriptionKey = useCallback(() => saveSubscriptionKey(subscriptionKey), [subscriptionKey]);
@@ -53,26 +84,28 @@ const SpeechCredential = () => {
     setSubscriptionKey
   ]);
   const handleSubscriptionKeyFocus = useCallback(({ target }) => target.select());
+  const subscriptionKeyIsURL = isURL(subscriptionKey);
 
-  const pregeneratedToken = subscriptionKey === '__mockbot__';
+  const decodedAuthorizationToken = (authorizationToken && decode(authorizationToken)) || undefined;
+  const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
 
   return (
     <React.Fragment>
       <Row header="Speech region">
-        <div style={ROW_STYLE}>
-          <div style={INPUT_ROW_STYLE}>
+        <div className={ROW_CSS}>
+          <div className={INPUT_ROW_CSS}>
             <select
-              disabled={pregeneratedToken}
+              className={REGION_SELECT_CSS}
+              disabled={subscriptionKeyIsURL}
               onChange={handleRegionChange}
-              style={REGION_SELECT_STYLE}
-              value={pregeneratedToken ? '__mockbot__' : region}
+              title={subscriptionKeyIsURL ? 'Clear token URL to select region.' : undefined}
+              value={region}
             >
               {Object.keys(REGIONS).map(value => (
                 <option key={value} value={value}>
                   {REGIONS[value]}
                 </option>
               ))}
-              {pregeneratedToken && <option value="__mockbot__">&lt;Key provided by MockBot&gt;</option>}
             </select>
           </div>
           <div>
@@ -86,33 +119,51 @@ const SpeechCredential = () => {
           </div>
         </div>
       </Row>
-      <Row header="Speech key">
-        <div style={ROW_STYLE}>
-          <div style={INPUT_ROW_STYLE}>
+      <Row header={subscriptionKeyIsURL ? 'Token URL' : 'Speech key'}>
+        <div className={ROW_CSS}>
+          <div className={INPUT_ROW_CSS}>
             <input
-              disabled={pregeneratedToken}
+              className={INPUT_CSS}
+              disabled={!!authorizationToken}
               onChange={handleSubscriptionKeyChange}
               onFocus={handleSubscriptionKeyFocus}
-              placeholder={pregeneratedToken ? '<Key provided by MockBot>' : ''}
-              style={INPUT_STYLE}
-              value={pregeneratedToken ? '' : subscriptionKey}
+              title={
+                authorizationToken
+                  ? 'You cannot set subscription key when authorization token is set.\n\nPlease clear authorization token first.'
+                  : subscriptionKeyIsURL
+                  ? `Will POST to this endpoint for either JSON or text depends on "Content-Type" header.`
+                  : undefined
+              }
+              value={subscriptionKey}
             />
-            {!!subscriptionKey && (
-              <button onClick={handleClearKeyClick} type="button">
-                Clear
+            {subscriptionKeyIsURL ? (
+              <button disabled={!!authorizationToken} onClick={fetchAuthorizationToken} type="button">
+                Fetch token
+              </button>
+            ) : (
+              <button
+                disabled={!subscriptionKey || !!authorizationToken}
+                onClick={generateAuthorizationToken}
+                type="button"
+              >
+                Generate token
               </button>
             )}
           </div>
           <div>
             <small>
-              <a href="#" onClick={handleLoadMockBotKey}>
+              <a href="#" onClick={handleLoadMockBotToken}>
                 MockBot
               </a>
               &nbsp;
               <Presets
                 onDelete={removeSavedSubscriptionKey}
-                onLoad={setSubscriptionKey}
-                onSave={(pregeneratedToken || !subscriptionKey || savedSubscriptionKeys.includes(subscriptionKey)) ? undefined : handleSaveSubscriptionKey}
+                onLoad={handleLoadSubscriptionKey}
+                onSave={
+                  subscriptionKey && !savedSubscriptionKeys.includes(subscriptionKey)
+                    ? handleSaveSubscriptionKey
+                    : undefined
+                }
                 texts={useMemo(
                   () => savedSubscriptionKeys.map(key => () => <code>{(key || '').substr(0, 5) + '…'}</code>),
                   [savedSubscriptionKeys]
@@ -122,6 +173,33 @@ const SpeechCredential = () => {
             </small>
           </div>
         </div>
+      </Row>
+      <Row header="Speech token">
+        <div className={ROW_CSS}>
+          <div className={INPUT_ROW_CSS}>
+            <input
+              className={INPUT_CSS}
+              onChange={handleAuthorizationTokenChange}
+              onFocus={handleAuthorizationTokenFocus}
+              required={subscriptionKeyIsURL}
+              title={decodedAuthorizationToken && JSON.stringify(decodedAuthorizationToken, null, 2)}
+              value={authorizationToken}
+            />
+            <button disabled={!authorizationToken} onClick={handleClearAuthorizationTokenClick} type="button">
+              Clear
+            </button>
+          </div>
+        </div>
+        {!!authorizationToken &&
+          (timeToExpire > 0 ? (
+            <div>
+              <small>This token will expire in {ms(timeToExpire, { long: true })}.</small>
+            </div>
+          ) : (
+            <div className={RED_CSS}>
+              <small>This token has already expired.</small>
+            </div>
+          ))}
       </Row>
     </React.Fragment>
   );

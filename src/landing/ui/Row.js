@@ -1,10 +1,10 @@
 import { css } from 'glamor';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 const ROOT_CSS = css({
   margin: '1em 0',
 
-  '& > label': {
+  '& > label, & > div': {
     alignItems: 'flex-start',
     display: 'flex',
 
@@ -19,12 +19,19 @@ const ROOT_CSS = css({
   }
 });
 
-const Row = ({ children, header }) => (
+const Row = ({ children, header, rowLabel = true }) => (
   <section className={ROOT_CSS}>
-    <label>
-      <header>{header}</header>
-      <div>{children}</div>
-    </label>
+    {rowLabel ? (
+      <label>
+        <header>{header}</header>
+        <div>{children}</div>
+      </label>
+    ) : (
+      <div>
+        <header>{header}</header>
+        <div>{children}</div>
+      </div>
+    )}
   </section>
 );
 
