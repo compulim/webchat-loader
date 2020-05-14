@@ -60,6 +60,7 @@ const VersionSelector = () => {
   const presetVersions = useMemo(
     () => ({
       'daily': 'dev',
+      'CDN latest': 'https://cdn.botframework.com/botframework-webchat/latest/',
       '4.8.1': '4.8.1',
       '4.8.0': '4.8.0',
       '4.7.1': '4.7.1',
@@ -88,7 +89,8 @@ const VersionSelector = () => {
           value={version}
         >
           <option value="dev">{devReleaseLabel}</option>
-          <option value="http://localhost:5000/">http://localhost:5000/webchat.js</option>
+          <option value="https://cdn.botframework.com/botframework-webchat/latest/">https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js</option>
+          <option value="http://localhost:5000/">http://localhost:5000/webchat*.js and directLine.js</option>
           {(availableVersions || []).map(({ time, version }) => (
             <option key={version} value={version}>
               {version} ({new Date(time).toLocaleDateString()})
