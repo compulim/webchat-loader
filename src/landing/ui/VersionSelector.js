@@ -9,9 +9,13 @@ import useVersion from '../data/hooks/useVersion';
 const SELECT_STYLE = { width: '100%' };
 
 async function exists(url) {
-  const res = await fetch(url, { method: 'HEAD' });
+  try {
+    const res = await fetch(url, { method: 'HEAD', timeout: 500 });
 
-  return res.ok;
+    return res.ok;
+  } catch (err) {
+    return false;
+  }
 }
 
 function toLocalDateTime(date) {
@@ -24,6 +28,7 @@ const VersionSelector = () => {
   const [devReleaseLabel, setDevReleaseLabel] = useState('GitHub "daily"');
   const [cdnLatestLabel, setCDNLatestLabel] = useState('cdn.botframework.com/.../latest');
   const [localhostLabel, setLocalhostLabel] = useState('localhost:5000/webchat*.js and directLine.js');
+  const [localhostAvailable, setLocalhostAvailable] = useState(false);
 
   useMemo(async () => {
     try {
@@ -97,8 +102,10 @@ const VersionSelector = () => {
         } else {
           setLocalhostLabel(`localhost:5000/${webChatBundleName}`);
         }
+
+        setLocalhostAvailable(true);
       } else {
-        setLocalhostLabel('');
+        setLocalhostAvailable(false);
       }
     })();
   }, []);
@@ -124,9 +131,9 @@ const VersionSelector = () => {
       // '4.4.2': '4.4.2',
       ...(v3Version ? { v3: v3Version } : {}),
       ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
-      ...(localhostLabel ? { 'localhost:5000': 'http://localhost:5000/' } : {})
+      ...(localhostAvailable ? { 'localhost:5000': 'http://localhost:5000/' } : {})
     }),
-    [availableVersions, localhostLabel]
+    [availableVersions, localhostAvailable]
   );
 
   const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
@@ -145,8 +152,9 @@ const VersionSelector = () => {
         >
           <option value="dev">{devReleaseLabel}</option>
           <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
-          <option disabled={!localhostLabel} value="http://localhost:5000/">
+          <option disabled={!localhostAvailable} value="http://localhost:5000/">
             {localhostLabel}
+            {localhostAvailable ? '' : ' (not available)'}
           </option>
           {(availableVersions || []).map(({ time, version }) => (
             <option key={version} value={version}>
