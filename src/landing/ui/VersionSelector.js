@@ -8,10 +8,22 @@ import useVersion from '../data/hooks/useVersion';
 
 const SELECT_STYLE = { width: '100%' };
 
+async function exists(url) {
+  const res = await fetch(url, { method: 'HEAD' });
+
+  return res.ok;
+}
+
+function toLocalDateTime(date) {
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+}
+
 const VersionSelector = () => {
   const [version, setVersion] = useVersion();
   const [availableVersions, setAvailableVersions] = useState([]);
   const [devReleaseLabel, setDevReleaseLabel] = useState('GitHub "daily"');
+  const [cdnLatestLabel, setCDNLatestLabel] = useState('cdn.botframework.com/.../latest');
+  const [localhostLabel, setLocalhostLabel] = useState('localhost:5000/webchat*.js and directLine.js');
 
   useMemo(async () => {
     try {
@@ -39,14 +51,57 @@ const VersionSelector = () => {
       const { updated_at: updatedAtISOString } = assets.find(({ name }) => name === 'webchat.js');
       const updatedAt = new Date(updatedAtISOString);
 
-      setDevReleaseLabel(
-        `GitHub "daily" ${commit.substr(
-          0,
-          7
-        )} at ${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`
-      );
+      setDevReleaseLabel(`GitHub "daily" ${commit.substr(0, 7)} (${toLocalDateTime(updatedAt)})`);
     })();
   }, [devReleaseLabel, setDevReleaseLabel]);
+
+  useEffect(() => {
+    (async function () {
+      const res = await fetch('https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js', {
+        method: 'HEAD'
+      });
+
+      if (!res.ok) {
+        return;
+      }
+
+      const {
+        headers: {
+          map: { 'last-modified': lastModifiedHeader }
+        }
+      } = res;
+
+      setCDNLatestLabel(`cdn.botframework.com/.../latest (${toLocalDateTime(new Date(lastModifiedHeader))})`);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      let webChatBundleName;
+
+      if (await exists('http://localhost:5000/webchat-es5.js')) {
+        webChatBundleName = 'webchat-es5.js';
+      } else if (await exists('http://localhost:5000/webchat.js')) {
+        webChatBundleName = 'webchat.js';
+      }
+
+      let directLineBundleName;
+
+      if (await exists('http://localhost:5000/directLine.js')) {
+        directLineBundleName = 'directLine.js';
+      }
+
+      if (webChatBundleName) {
+        if (directLineBundleName) {
+          setLocalhostLabel(`localhost:5000/${webChatBundleName} and ${directLineBundleName}`);
+        } else {
+          setLocalhostLabel(`localhost:5000/${webChatBundleName}`);
+        }
+      } else {
+        setLocalhostLabel('');
+      }
+    })();
+  }, []);
 
   const v3Version = useMemo(
     () => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)),
@@ -59,8 +114,8 @@ const VersionSelector = () => {
 
   const presetVersions = useMemo(
     () => ({
-      'daily': 'dev',
-      'CDN latest': 'https://cdn.botframework.com/botframework-webchat/latest/',
+      daily: 'dev',
+      latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
       '4.8.1': '4.8.1',
       '4.8.0': '4.8.0',
       '4.7.1': '4.7.1',
@@ -69,9 +124,9 @@ const VersionSelector = () => {
       // '4.4.2': '4.4.2',
       ...(v3Version ? { v3: v3Version } : {}),
       ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
-      'localhost:5000': 'http://localhost:5000/'
+      ...(localhostLabel ? { 'localhost:5000': 'http://localhost:5000/' } : {})
     }),
-    [availableVersions]
+    [availableVersions, localhostLabel]
   );
 
   const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
@@ -89,8 +144,10 @@ const VersionSelector = () => {
           value={version}
         >
           <option value="dev">{devReleaseLabel}</option>
-          <option value="https://cdn.botframework.com/botframework-webchat/latest/">https://cdn.botframework.com/botframework-webchat/latest/webchat-es5.js</option>
-          <option value="http://localhost:5000/">http://localhost:5000/webchat*.js and directLine.js</option>
+          <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
+          <option disabled={!localhostLabel} value="http://localhost:5000/">
+            {localhostLabel}
+          </option>
           {(availableVersions || []).map(({ time, version }) => (
             <option key={version} value={version}>
               {version} ({new Date(time).toLocaleDateString()})
