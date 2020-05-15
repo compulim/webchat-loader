@@ -10,7 +10,7 @@ const SELECT_STYLE = { width: '100%' };
 
 async function exists(url) {
   try {
-    const res = await fetch(url, { method: 'HEAD', timeout: 500 });
+    const res = await fetch(url, { method: 'HEAD', mode: 'no-cors', timeout: 500 });
 
     return res.ok;
   } catch (err) {
