@@ -8,6 +8,7 @@ import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useFetchDirectLineToken from '../data/hooks/useFetchDirectLineToken';
 import useGenerateDirectLineToken from '../data/hooks/useGenerateDirectLineToken';
+import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
 
 import Presets from './Presets';
@@ -31,6 +32,7 @@ const Credential = () => {
   const fetchDirectLineToken = useFetchDirectLineToken();
   const generateDirectLineToken = useGenerateDirectLineToken();
 
+  const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [savedSecrets, saveSecret, removeSavedSecret] = useSavedDirectLineSecrets();
   const [secret, setSecret] = useDirectLineSecret();
   const [token, setToken] = useDirectLineToken();
@@ -63,7 +65,8 @@ const Credential = () => {
   const handleSecretChange = useCallback(({ target: { value } }) => setSecret(value), [setSecret]);
   const handleTokenChange = useCallback(({ target: { value } }) => setToken(value), [setToken]);
 
-  const secretDisabled = !!token;
+  const secretDisabled = !!token || !!protocolDirectLineSpeech;
+  const tokenDisabled = !!protocolDirectLineSpeech;
   const decodedToken = decode(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
 
@@ -126,6 +129,7 @@ const Credential = () => {
         <div className={INPUT_ROW_CSS}>
           <input
             className={SECRET_AND_TOKEN_CSS}
+            disabled={tokenDisabled}
             onChange={handleTokenChange}
             onFocus={handleFocus}
             required={tokenFromURL}
@@ -138,6 +142,7 @@ const Credential = () => {
           </button>
         </div>
         {secretDisabled &&
+          !tokenDisabled &&
           (timeToExpire > 0 ? (
             <div>
               <small>This token will expire in {ms(timeToExpire, { long: true })}.</small>

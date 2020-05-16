@@ -8,6 +8,7 @@ import setDirectLineDomainHost from '../action/setDirectLineDomainHost';
 import setDirectLineSecret from '../action/setDirectLineSecret';
 import setDirectLineToken from '../action/setDirectLineToken';
 import setProtocolAppServiceExtension from '../action/setProtocolAppServiceExtension';
+import setProtocolDirectLineSpeech from '../action/setProtocolDirectLineSpeech';
 import setProtocolWebSocket from '../action/setProtocolWebSocket';
 import setSpeechAuthorizationToken from '../action/setSpeechAuthorizationToken';
 import setSpeechSubscriptionKey from '../action/setSpeechSubscriptionKey';
@@ -23,6 +24,15 @@ export default function* loadBotPresetSaga() {
 
       yield put(setSpeechAuthorizationToken(''));
       yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
+      yield put(fetchSpeechAuthorizationToken());
+    } else if (name === 'mockbot-dls') {
+      yield put(setDirectLineToken(''));
+      yield put(setDirectLineSecret(''));
+
+      yield put(setProtocolDirectLineSpeech());
+
+      yield put(setSpeechAuthorizationToken(''));
+      yield put(setSpeechSubscriptionKey('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token'));
       yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot-ase') {
       yield put(setDirectLineToken(''));

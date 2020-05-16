@@ -7,6 +7,7 @@ import loadBotPreset from '../data/action/loadBotPreset';
 
 const PRESETS = [
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Web Socket with speech-enabled.' },
+  { id: 'mockbot-dls', name: '[Public] MockBot (Direct Line Speech)', title: 'MockBot via Direct Line Speech.' },
   {
     id: 'mockbot-ase',
     name: '[Public] MockBot App Service Extension',

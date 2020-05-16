@@ -8,9 +8,10 @@ import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
-import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
+import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 import useVersion from '../data/hooks/useVersion';
 
@@ -18,6 +19,7 @@ const WebChatLink = () => {
   const [conversationId] = useDirectLineConversationId();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
+  const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolWebSocket] = useProtocolWebSocket();
   const [secret] = useDirectLineSecret();
   const [speechAuthorizationToken] = useSpeechAuthorizationToken();
@@ -32,8 +34,7 @@ const WebChatLink = () => {
     const speechTokenURL = isURL(speechSubscriptionKey);
 
     if (
-      (directLineTokenURL && !token) ||
-      (!secret && !token) ||
+      (!protocolDirectLineSpeech && ((directLineTokenURL && !token) || (!secret && !token))) ||
       (protocolAppServiceExtension && !domainHost) ||
       (speechTokenURL && !speechAuthorizationToken)
     ) {
@@ -42,7 +43,7 @@ const WebChatLink = () => {
 
     return new URLSearchParams({
       v: version,
-      p: protocolAppServiceExtension ? 'ase' : protocolWebSocket ? 'ws' : 'rest',
+      p: protocolAppServiceExtension ? 'ase' : protocolDirectLineSpeech ? 'dls' : protocolWebSocket ? 'ws' : 'rest',
 
       ...(conversationId ? { cid: conversationId } : {}),
 

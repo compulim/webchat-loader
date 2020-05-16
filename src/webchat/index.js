@@ -15,6 +15,7 @@ async function main() {
 
   const directLineDomainHost = urlSearchParams.get('dd');
   const protocolAppServiceExtension = urlSearchParams.get('p') === 'ase';
+  const protocolDirectLineSpeech = urlSearchParams.get('p') === 'dls';
   const protocolREST = urlSearchParams.get('p') === 'rest';
   const speechAuthorizationToken = urlSearchParams.get('st');
   const speechSubscriptionKey = urlSearchParams.get('sk');
@@ -96,7 +97,7 @@ async function main() {
 
   await Promise.all((assetURLs || []).map(url => loadAsset(url)));
 
-  let directLine;
+  let adapters;
 
   if (protocolAppServiceExtension) {
     let createDirectLineAppServiceExtension;
@@ -112,10 +113,26 @@ async function main() {
       createDirectLineAppServiceExtension = options => new NPMDirectLineStreaming(options);
     }
 
-    directLine = createDirectLineAppServiceExtension({
-      conversationId,
-      domain,
-      token
+    adapters = {
+      directLine: createDirectLineAppServiceExtension({
+        conversationId,
+        domain,
+        token
+      })
+    };
+  } else if (protocolDirectLineSpeech) {
+    console.warn('Using Direct Line Speech chat adapter from the bundle of Web Chat v4.');
+
+    adapters = await window.WebChat.createDirectLineSpeechAdapters({
+      fetchCredentials: speechAuthorizationToken
+        ? {
+            authorizationToken: speechAuthorizationToken,
+            region: speechRegion
+          }
+        : {
+            region: speechRegion,
+            subscriptionKey: speechSubscriptionKey
+          }
     });
   } else {
     let createDirectLine;
@@ -134,11 +151,13 @@ async function main() {
       createDirectLine = options => new NPMDirectLine(options);
     }
 
-    directLine = createDirectLine({
-      domain,
-      ...(token ? { token } : secret ? { secret } : {}),
-      webSocket: protocolWebSocket
-    });
+    adapters = {
+      directLine: createDirectLine({
+        domain,
+        ...(token ? { token } : secret ? { secret } : {}),
+        webSocket: protocolWebSocket
+      })
+    };
   }
 
   const rootElement = document.getElementById('webchat');
@@ -148,7 +167,7 @@ async function main() {
 
     window.BotChat.App(
       {
-        botConnection: directLine,
+        botConnection: adapters.directLine,
         speechOptions: {
           speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechSubscriptionKey }),
           speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
@@ -162,33 +181,32 @@ async function main() {
       rootElement
     );
   } else {
-    let webSpeechPonyfillFactory;
+    if (!protocolDirectLineSpeech) {
+      if (speechAuthorizationToken || speechSubscriptionKey) {
+        const speechOptions = {
+          // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
+          // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',
+          // speechSynthesisDeploymentId: '12345678-1234-5678-abcd-12345678abcd'
+          // textNormalization: 'itn'
+          // enableTelemetry: true
+        };
 
-    if (speechAuthorizationToken || speechSubscriptionKey) {
-      const speechOptions = {
-        // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
-        // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',
-        // speechSynthesisDeploymentId: '12345678-1234-5678-abcd-12345678abcd'
-        // textNormalization: 'itn'
-        // enableTelemetry: true
-      };
-
-      webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-        ...speechOptions,
-        credentials: () => ({
-          region: speechRegion,
-          ...(speechAuthorizationToken
-            ? { authorizationToken: speechAuthorizationToken }
-            : { subscriptionKey: speechSubscriptionKey })
-        })
-      });
+        adapters.webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          ...speechOptions,
+          credentials: () => ({
+            region: speechRegion,
+            ...(speechAuthorizationToken
+              ? { authorizationToken: speechAuthorizationToken }
+              : { subscriptionKey: speechSubscriptionKey })
+          })
+        });
+      }
     }
 
     window.WebChat.renderWebChat(
       {
-        directLine,
-        sendTypingIndicator: true,
-        webSpeechPonyfillFactory
+        ...adapters,
+        sendTypingIndicator: true
       },
       rootElement
     );

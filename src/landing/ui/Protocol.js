@@ -6,9 +6,10 @@ import Row from './Row';
 
 import isLocalhost from '../util/isLocalhost';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
-import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
+import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 
 const DOMAIN_PREFIX = 'https://';
 const DOMAIN_PREFIX_INSECURE = 'http://';
@@ -49,6 +50,7 @@ const RED_CSS = css({ color: 'Red' });
 const Protocol = () => {
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
   const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
+  const [protocolDirectLineSpeech, setProtocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST, setProtocolREST] = useProtocolREST();
   const [protocolWebSocket, setProtocolWebSocket] = useProtocolWebSocket();
 
@@ -82,6 +84,19 @@ const Protocol = () => {
           &nbsp; Direct Line via REST short-polling
         </label>
         {protocolREST && <small className={RED_CSS}>This protocol is not recommended to use in production.</small>}
+      </div>
+      <div>
+        <label className={LABEL_CSS}>
+          <input
+            checked={protocolDirectLineSpeech}
+            className={CHECKBOX_CSS}
+            name="protocol"
+            onChange={setProtocolDirectLineSpeech}
+            type="radio"
+          />
+          &nbsp; Direct Line Speech
+        </label>
+        {protocolDirectLineSpeech && <small>This protocol is supported since version 4.7.0.</small>}
       </div>
       <div className={APP_SERVICE_EXTENSION_CSS}>
         <label className={LABEL_CSS}>
