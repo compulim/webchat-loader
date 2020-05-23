@@ -8,14 +8,18 @@ import useVersion from '../data/hooks/useVersion';
 
 const SELECT_STYLE = { width: '100%' };
 
-async function exists(url) {
-  try {
-    const res = await fetch(url, { method: 'HEAD', mode: 'no-cors', timeout: 500 });
+function scriptExists(url) {
+  return new Promise(resolve => {
+    const script = document.createElement('script');
 
-    return res.ok;
-  } catch (err) {
-    return false;
-  }
+    script.setAttribute('async', 'async');
+    script.setAttribute('src', url);
+
+    script.addEventListener('error', () => resolve(false));
+    script.addEventListener('load', () => resolve(true));
+
+    document.head.appendChild(script);
+  });
 }
 
 function toLocalDateTime(date) {
@@ -84,15 +88,15 @@ const VersionSelector = () => {
     (async function () {
       let webChatBundleName;
 
-      if (await exists('http://localhost:5000/webchat-es5.js')) {
+      if (await scriptExists('http://localhost:5000/webchat-es5.js')) {
         webChatBundleName = 'webchat-es5.js';
-      } else if (await exists('http://localhost:5000/webchat.js')) {
+      } else if (await scriptExists('http://localhost:5000/webchat.js')) {
         webChatBundleName = 'webchat.js';
       }
 
       let directLineBundleName;
 
-      if (await exists('http://localhost:5000/directLine.js')) {
+      if (await scriptExists('http://localhost:5000/directLine.js')) {
         directLineBundleName = 'directLine.js';
       }
 
