@@ -8,7 +8,10 @@ import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useFetchDirectLineToken from '../data/hooks/useFetchDirectLineToken';
 import useGenerateDirectLineToken from '../data/hooks/useGenerateDirectLineToken';
+import useProtocolDirectLineAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
+import useProtocolREST from '../data/hooks/useProtocolREST';
+import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
 
 import Presets from './Presets';
@@ -32,7 +35,10 @@ const Credential = () => {
   const fetchDirectLineToken = useFetchDirectLineToken();
   const generateDirectLineToken = useGenerateDirectLineToken();
 
+  const [protocolDirectLineAppServiceExtension] = useProtocolDirectLineAppServiceExtension();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
+  const [protocolREST] = useProtocolREST();
+  const [protocolWebSocket] = useProtocolWebSocket();
   const [savedSecrets, saveSecret, removeSavedSecret] = useSavedDirectLineSecrets();
   const [secret, setSecret] = useDirectLineSecret();
   const [token, setToken] = useDirectLineToken();
@@ -69,6 +75,10 @@ const Credential = () => {
   const tokenDisabled = !!protocolDirectLineSpeech;
   const decodedToken = decode(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
+
+  const validDirectLineAppServiceExtensionToken =
+    !decodedToken || decodedToken.iss === 'https://directlineextension.botframework.com/';
+  const validDirectLineToken = !decodedToken || decodedToken.iss === 'https://directline.botframework.com/';
 
   const [, setForceRender] = useState();
 
@@ -141,6 +151,16 @@ const Credential = () => {
             Clear
           </button>
         </div>
+        {protocolDirectLineAppServiceExtension && !validDirectLineAppServiceExtensionToken && (
+          <div className={EXPIRED_FOOTNOTE_CSS}>
+            <small>This token is not for Direct Line App Service Extension.</small>
+          </div>
+        )}
+        {(protocolREST || protocolWebSocket) && !validDirectLineToken && (
+          <div className={EXPIRED_FOOTNOTE_CSS}>
+            <small>This token is not for Direct Line channel.</small>
+          </div>
+        )}
         {secretDisabled &&
           !tokenDisabled &&
           (timeToExpire > 0 ? (
