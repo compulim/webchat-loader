@@ -7,6 +7,7 @@ import loadBotPreset from '../data/action/loadBotPreset';
 
 const PRESETS = [
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Web Socket with speech-enabled.' },
+  { id: 'mockbot2', name: '[Public] MockBot 2 (Preview)', title: 'MockBot2 via Direct Line App Service Extension.' },
   { id: 'mockbot-dls', name: '[Public] MockBot (Direct Line Speech)', title: 'MockBot via Direct Line Speech.' },
   {
     id: 'mockbot-ase',
@@ -31,7 +32,7 @@ const BotPreset = ({ children, onLoad, title, value }) => {
 
   return (
     <a href="#" onClick={handleClick} title={title}>
-      {children}
+      <nobr>{children}</nobr>
     </a>
   );
 };

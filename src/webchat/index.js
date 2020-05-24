@@ -1,12 +1,12 @@
-import 'core-js/modules/web.url-search-params';
-import 'core-js/modules/es.promise';
+import 'core-js/features/promise';
+import 'core-js/features/string/starts-with';
+import 'core-js/features/url-search-params';
 import 'regenerator-runtime';
 
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 
-import fetchMockBotSpeechServicesToken from './util/fetchMockBotSpeechServicesToken';
 import isLocalhost from './util/isLocalhost';
 import loadAsset from './util/loadAsset';
 

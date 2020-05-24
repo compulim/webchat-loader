@@ -1,9 +1,11 @@
-import 'core-js/modules/web.url-search-params';
-import 'core-js/modules/es.promise';
-import 'core-js/modules/es.array.find';
-import 'core-js/modules/es.array.includes';
-import 'core-js/modules/es.object.values';
-import 'core-js/modules/es.symbol';
+import 'core-js/features/array/find';
+import 'core-js/features/array/includes';
+import 'core-js/features/object/values';
+import 'core-js/features/promise';
+import 'core-js/features/string/starts-with';
+import 'core-js/features/symbol';
+import 'core-js/features/url-search-params';
+import 'core-js/features/url';
 import 'regenerator-runtime';
 
 import { Provider } from 'react-redux';
