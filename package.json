@@ -8,7 +8,11 @@
     "build:babel": "babel --out-dir lib --source-maps true src",
     "build:webpack": "webpack",
     "prepublishOnly": "npm run build:babel && npm run build:webpack -- --mode production",
-    "start": "npm run build:babel && concurrently --kill-others --names \"babel,start,webpack\" \"npm run build:babel -- --watch\" \"serve build\" \"npm run build:webpack -- --watch\""
+    "prestart": "npm run build:babel",
+    "start": "concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel\" \"npm run start:server\" \"npm run start:webpack\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start:server": "serve -p 5100 build",
+    "start:webpack": "npm run build:webpack -- --watch"
   },
   "repository": {
     "type": "git",

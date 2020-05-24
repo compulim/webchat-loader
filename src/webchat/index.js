@@ -114,7 +114,7 @@ async function main() {
     }
 
     adapters = {
-      directLine: createDirectLineAppServiceExtension({
+      directLine: await createDirectLineAppServiceExtension({
         conversationId,
         domain,
         token
