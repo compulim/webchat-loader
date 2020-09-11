@@ -12,6 +12,7 @@ import useProtocolDirectLineAppServiceExtension from '../data/hooks/useProtocolA
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
+import useRefreshToken from '../data/hooks/useRefreshToken';
 import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
 
 import Presets from './Presets';
@@ -29,6 +30,17 @@ const INPUT_ROW_CSS = css({
     borderWidth: 1
   }
 });
+
+const REFRESH_TOKEN_BUTTON_CSS = css({
+  appearance: 'none',
+  backgroundColor: 'transparent',
+  border: 0,
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  padding: 0,
+  textDecoration: 'underline'
+});
+
 const SECRET_AND_TOKEN_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 
 const Credential = () => {
@@ -43,6 +55,7 @@ const Credential = () => {
   const [secret, setSecret] = useDirectLineSecret();
   const [token, setToken] = useDirectLineToken();
   const [userId] = useDirectLineUserId();
+  const refreshToken = useRefreshToken();
   const tokenFromURL = /^https?:/.test(secret);
 
   const savedSecretsTexts = useMemo(
@@ -165,7 +178,12 @@ const Credential = () => {
           !tokenDisabled &&
           (timeToExpire > 0 ? (
             <div>
-              <small>This token will expire in {ms(timeToExpire, { long: true })}.</small>
+              <small>
+                This token will expire in {ms(timeToExpire, { long: true })}.{' '}
+                <button className={REFRESH_TOKEN_BUTTON_CSS} onClick={refreshToken} type="button">
+                  Refresh now
+                </button>
+              </small>
             </div>
           ) : (
             <div className={EXPIRED_FOOTNOTE_CSS}>

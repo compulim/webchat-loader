@@ -6,6 +6,7 @@ import generateDirectLineToken from './saga/generateDirectLineToken';
 import generateSpeechAuthorizationToken from './saga/generateSpeechAuthorizationToken';
 import generateUserIdOnCredentialChange from './saga/generateUserIdOnCredentialChange';
 import loadBotPreset from './saga/loadBotPreset';
+import refreshDirectLineToken from './saga/refreshDirectLineToken';
 
 export default function* () {
   yield fork(fetchDirectLineToken);
@@ -14,4 +15,5 @@ export default function* () {
   yield fork(generateSpeechAuthorizationToken);
   yield fork(generateUserIdOnCredentialChange);
   yield fork(loadBotPreset);
+  yield fork(refreshDirectLineToken);
 }
