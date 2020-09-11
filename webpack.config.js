@@ -11,5 +11,9 @@ module.exports = {
     filename: '[name].js',
     path: join(__dirname, 'build')
   },
-  plugins: [new CopyWebpackPlugin([{ from: 'public', to: '.' }])]
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'public', to: '.' }]
+    })
+  ]
 };
