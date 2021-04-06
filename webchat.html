@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat</title>
+    <meta name="viewport" content="width=device-width,max-width=360"></meta>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        background-color: #f7f7f7;
+        margin: 0;
+      }
+
+      #webchat {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        margin: 0 auto;
+        max-width: 480px;
+        min-width: 320px;
+      }
+
+      #webchat > * {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script src="webchat.js"></script>
+  </body>
+</html>
