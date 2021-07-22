@@ -27,6 +27,16 @@ export default function* loadBotPresetSaga() {
       yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot2') {
       yield put(setDirectLineToken(''));
+      yield put(setDirectLineSecret('https://webchat-mockbot2.azurewebsites.net/api/token/directline'));
+      yield put(fetchDirectLineToken());
+
+      yield put(setProtocolWebSocket());
+
+      yield put(setSpeechAuthorizationToken(''));
+      yield put(setSpeechSubscriptionKey('https://webchat-mockbot2.azurewebsites.net/api/token/speechservices'));
+      yield put(fetchSpeechAuthorizationToken());
+    } else if (name === 'mockbot2-dlase') {
+      yield put(setDirectLineToken(''));
       yield put(setDirectLineSecret('https://webchat-mockbot2.azurewebsites.net/api/token/directlinease'));
       yield put(fetchDirectLineToken());
 

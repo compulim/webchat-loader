@@ -7,13 +7,14 @@ import loadBotPreset from '../data/action/loadBotPreset';
 
 const PRESETS = [
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Web Socket with speech-enabled.' },
-  { id: 'mockbot2', name: '[Public] MockBot 2 (Preview)', title: 'MockBot2 via Direct Line App Service Extension.' },
+  { id: 'mockbot2', name: '[Public] MockBot 2 via Web Socket (Preview)', title: 'MockBot2 via Direct Line App Service Extension.' },
+  { id: 'mockbot2-dlase', name: '[Public] MockBot 2 via Direct Line ASE (Preview)', title: 'MockBot2 via Direct Line App Service Extension.' },
   { id: 'mockbot-dls', name: '[Public] MockBot (Direct Line Speech)', title: 'MockBot via Direct Line Speech.' },
-  {
-    id: 'mockbot-ase',
-    name: '[Public] MockBot App Service Extension',
-    title: 'MockBot via Direct Line App Service Extension with speech-enabled.'
-  },
+  // {
+  //   id: 'mockbot-ase',
+  //   name: '[Public] MockBot App Service Extension',
+  //   title: 'MockBot via Direct Line App Service Extension with speech-enabled.'
+  // },
   {
     id: 'dev',
     name: '[Dev] http://localhost:3978/directline/tokens',
