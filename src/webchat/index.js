@@ -52,11 +52,18 @@ async function main() {
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
   } else {
     try {
-      const url = `${version}directLine.js`;
+      const url = `${version}directline.js`;
 
       await loadAsset(`${url}?_=${Date.now()}`);
       console.warn(`Using DirectLineJS from ${url}`);
-    } catch (err) {}
+    } catch (err) {
+      try {
+        const url = `${version}directLine.js`;
+
+        await loadAsset(`${url}?_=${Date.now()}`);
+        console.warn(`Using DirectLineJS from ${url}`);
+      } catch (err) {}
+    }
 
     try {
       const url = `${version}webchat-es5.js`;
