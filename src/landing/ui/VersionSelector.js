@@ -127,6 +127,7 @@ const VersionSelector = () => {
     () => ({
       daily: 'dev',
       latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
+      '4.14.1': '4.14.1',
       '4.14.0': '4.14.0',
       '4.13.0': '4.13.0',
       '4.12.1': '4.12.1',
