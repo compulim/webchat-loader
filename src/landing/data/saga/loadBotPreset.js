@@ -25,26 +25,26 @@ export default function* loadBotPresetSaga() {
       yield put(setSpeechAuthorizationToken(''));
       yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
       yield put(fetchSpeechAuthorizationToken());
-    } else if (name === 'mockbot2') {
+    } else if (name === 'mockbot3') {
       yield put(setDirectLineToken(''));
-      yield put(setDirectLineSecret('https://webchat-mockbot2.azurewebsites.net/api/token/directline'));
+      yield put(setDirectLineSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline'));
       yield put(fetchDirectLineToken());
 
       yield put(setProtocolWebSocket());
 
       yield put(setSpeechAuthorizationToken(''));
-      yield put(setSpeechSubscriptionKey('https://webchat-mockbot2.azurewebsites.net/api/token/speechservices'));
+      yield put(setSpeechSubscriptionKey(''));
       yield put(fetchSpeechAuthorizationToken());
-    } else if (name === 'mockbot2-dlase') {
+    } else if (name === 'mockbot3-dlase') {
       yield put(setDirectLineToken(''));
-      yield put(setDirectLineSecret('https://webchat-mockbot2.azurewebsites.net/api/token/directlinease'));
+      yield put(setDirectLineSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directlinease'));
       yield put(fetchDirectLineToken());
 
       yield put(setProtocolAppServiceExtension());
-      yield put(setDirectLineDomainHost('webchat-mockbot2.azurewebsites.net'));
+      yield put(setDirectLineDomainHost('webchat-mockbot3.azurewebsites.net'));
 
       yield put(setSpeechAuthorizationToken(''));
-      yield put(setSpeechSubscriptionKey('https://webchat-mockbot2.azurewebsites.net/api/token/speechservices'));
+      yield put(setSpeechSubscriptionKey(''));
       yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot-dls') {
       yield put(setDirectLineToken(''));
