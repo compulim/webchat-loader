@@ -57,6 +57,9 @@ const SpeechCredential = () => {
   const fetchAuthorizationToken = useFetchSpeechAuthorizationToken();
   const generateAuthorizationToken = useGenerateSpeechAuthorizationToken();
 
+  const handleClearSubscriptionKeyClick = useCallback(() => {
+    setSubscriptionKey('');
+  }, [setSubscriptionKey]);
   const handleLoadSubscriptionKey = useCallback(
     subscriptionKey => {
       setAuthorizationToken('');
@@ -65,9 +68,10 @@ const SpeechCredential = () => {
     [setAuthorizationToken, setSubscriptionKey]
   );
 
-  const handleAuthorizationTokenChange = useCallback(({ target: { value } }) => setAuthorizationToken(value), [
-    setAuthorizationToken
-  ]);
+  const handleAuthorizationTokenChange = useCallback(
+    ({ target: { value } }) => setAuthorizationToken(value),
+    [setAuthorizationToken]
+  );
   const handleAuthorizationTokenFocus = useCallback(({ target }) => target.select());
   const handleClearAuthorizationTokenClick = useCallback(() => setAuthorizationToken(''), [setAuthorizationToken]);
   const handleLoadMockBotToken = useCallback(
@@ -80,9 +84,10 @@ const SpeechCredential = () => {
   );
   const handleRegionChange = useCallback(({ target: { value } }) => setRegion(value), [setRegion]);
   const handleSaveSubscriptionKey = useCallback(() => saveSubscriptionKey(subscriptionKey), [subscriptionKey]);
-  const handleSubscriptionKeyChange = useCallback(({ target: { value } }) => setSubscriptionKey(value), [
-    setSubscriptionKey
-  ]);
+  const handleSubscriptionKeyChange = useCallback(
+    ({ target: { value } }) => setSubscriptionKey(value),
+    [setSubscriptionKey]
+  );
   const handleSubscriptionKeyFocus = useCallback(({ target }) => target.select());
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
@@ -146,6 +151,14 @@ const SpeechCredential = () => {
               }
               value={subscriptionKey}
             />
+            <button
+              disabled={!subscriptionKey || !!authorizationToken}
+              onClick={handleClearSubscriptionKeyClick}
+              type="button"
+            >
+              &times;
+            </button>
+            &nbsp;
             {subscriptionKeyIsURL ? (
               <button disabled={!!authorizationToken} onClick={fetchAuthorizationToken} type="button">
                 Fetch token

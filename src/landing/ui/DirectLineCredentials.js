@@ -65,12 +65,21 @@ const Credential = () => {
     [savedSecrets]
   );
 
+  const handleClearSecretClick = useCallback(() => setSecret(''), [setSecret]);
   const handleClearTokenClick = useCallback(() => setToken(''), [setToken]);
   const handleFocus = useCallback(({ target }) => target.select());
   const handleLoadMockBotToken = useCallback(
     event => {
       event.preventDefault();
       setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
+      fetchDirectLineToken();
+    },
+    [fetchDirectLineToken, setSecret]
+  );
+  const handleLoadMockBot3Token = useCallback(
+    event => {
+      event.preventDefault();
+      setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
       fetchDirectLineToken();
     },
     [fetchDirectLineToken, setSecret]
@@ -126,6 +135,10 @@ const Credential = () => {
             type="text"
             value={secret}
           />
+          <button disabled={!secret || !!token} onClick={handleClearSecretClick} type="button">
+            &times;
+          </button>
+          &nbsp;
           {tokenFromURL ? (
             <button disabled={!!token} onClick={fetchDirectLineToken} type="button">
               Fetch token
@@ -139,6 +152,10 @@ const Credential = () => {
         <small>
           <a href="#" onClick={handleLoadMockBotToken}>
             MockBot
+          </a>
+          &nbsp;
+          <a href="#" onClick={handleLoadMockBot3Token}>
+            MockBot3
           </a>
           &nbsp;
           <Presets

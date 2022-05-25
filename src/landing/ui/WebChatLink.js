@@ -9,6 +9,7 @@ import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
+import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
@@ -22,6 +23,7 @@ const WebChatLink = () => {
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
+  const [protocolREST] = useProtocolREST();
   const [protocolTranscript] = useProtocolTranscript();
   const [protocolWebSocket] = useProtocolWebSocket();
   const [secret] = useDirectLineSecret();
@@ -39,14 +41,26 @@ const WebChatLink = () => {
   );
 
   const searchParams = useMemo(() => {
-    const directLineTokenURL = isURL(secret);
-    const speechTokenURL = isURL(speechSubscriptionKey);
+    const isDirectLineTokenURL = isURL(secret);
+    const isSpeechTokenURL = isURL(speechSubscriptionKey);
 
-    if (
-      (!protocolDirectLineSpeech && ((directLineTokenURL && !token) || (!secret && !token))) ||
-      (protocolAppServiceExtension && !domainHost) ||
-      (speechTokenURL && !speechAuthorizationToken)
-    ) {
+    if (protocolDirectLineSpeech && !speechSubscriptionKey && !speechAuthorizationToken) {
+      return;
+    }
+
+    if (protocolAppServiceExtension && (!token || !domainHost)) {
+      return;
+    }
+
+    if (protocolTranscript && !transcriptContentBlobURL) {
+      return;
+    }
+
+    if ((protocolREST || protocolWebSocket) && (isDirectLineTokenURL ? !token : !secret)) {
+      return;
+    }
+
+    if (isSpeechTokenURL && !speechAuthorizationToken) {
       return;
     }
 
