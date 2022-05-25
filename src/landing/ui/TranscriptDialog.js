@@ -47,10 +47,13 @@ const DIALOG_CSS = css({
   }
 });
 
+const NOW = Date.now();
+
 const SAMPLE_TRANSCRIPT = [
   {
     id: 'a-00001',
     text: 'What can I do for you?',
+    timestamp: new Date(NOW - 120000).toISOString(),
     type: 'message'
   },
   {
@@ -59,11 +62,13 @@ const SAMPLE_TRANSCRIPT = [
     },
     id: 'a-00002',
     text: 'What time is it?',
+    timestamp: new Date(NOW - 60000).toISOString(),
     type: 'message'
   },
   {
     id: 'a-00003',
-    text: `It's ${new Date().toLocaleTimeString()}.`,
+    text: `It's ${new Date(NOW).toLocaleTimeString()}.`,
+    timestamp: new Date(NOW).toISOString(),
     type: 'message'
   }
 ];
