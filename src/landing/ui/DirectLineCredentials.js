@@ -11,6 +11,7 @@ import useGenerateDirectLineToken from '../data/hooks/useGenerateDirectLineToken
 import useProtocolDirectLineAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
+import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useRefreshToken from '../data/hooks/useRefreshToken';
 import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
@@ -50,6 +51,7 @@ const Credential = () => {
   const [protocolDirectLineAppServiceExtension] = useProtocolDirectLineAppServiceExtension();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST] = useProtocolREST();
+  const [protocolTranscript] = useProtocolTranscript();
   const [protocolWebSocket] = useProtocolWebSocket();
   const [savedSecrets, saveSecret, removeSavedSecret] = useSavedDirectLineSecrets();
   const [secret, setSecret] = useDirectLineSecret();
@@ -84,8 +86,8 @@ const Credential = () => {
   const handleSecretChange = useCallback(({ target: { value } }) => setSecret(value), [setSecret]);
   const handleTokenChange = useCallback(({ target: { value } }) => setToken(value), [setToken]);
 
-  const secretDisabled = !!token || !!protocolDirectLineSpeech;
-  const tokenDisabled = !!protocolDirectLineSpeech;
+  const secretDisabled = !!token || !!protocolDirectLineSpeech || !!protocolTranscript;
+  const tokenDisabled = !!protocolDirectLineSpeech || !!protocolTranscript;
   const decodedToken = decode(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
 

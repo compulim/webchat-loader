@@ -7,6 +7,7 @@ import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStream
 import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 
+import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
 import isLocalhost from './util/isLocalhost';
 import loadAsset from './util/loadAsset';
 
@@ -17,16 +18,18 @@ async function main() {
   const protocolAppServiceExtension = urlSearchParams.get('p') === 'ase';
   const protocolDirectLineSpeech = urlSearchParams.get('p') === 'dls';
   const protocolREST = urlSearchParams.get('p') === 'rest';
+  const protocolTranscript = urlSearchParams.get('p') === 'blob';
   const speechAuthorizationToken = urlSearchParams.get('st');
   const speechSubscriptionKey = urlSearchParams.get('sk');
   const speechRegion = urlSearchParams.get('sr');
+  const transcriptBlobURL = urlSearchParams.get('blob');
   let conversationId = urlSearchParams.get('cid');
   let secret = urlSearchParams.get('ds');
   let token = urlSearchParams.get('dt');
   let userID = urlSearchParams.get('userid');
   let version = urlSearchParams.get('v') || 'latest';
 
-  const protocolWebSocket = !protocolAppServiceExtension && !protocolREST;
+  const protocolWebSocket = !protocolAppServiceExtension && !protocolREST && !protocolTranscript;
   const domain = directLineDomainHost
     ? isLocalhost(directLineDomainHost)
       ? `http://${directLineDomainHost}${protocolAppServiceExtension ? '/.bot' : ''}/v3/directline`
@@ -141,6 +144,24 @@ async function main() {
             subscriptionKey: speechSubscriptionKey
           }
     });
+  } else if (protocolTranscript) {
+    console.warn(`Using transcript from ${transcriptBlobURL}.`);
+
+    let transcript = [];
+
+    try {
+      const res = await fetch(transcriptBlobURL);
+
+      if (!res.ok) {
+        throw new Error('Failed to load transcript from browser memory.');
+      }
+
+      transcript = await res.json();
+    } catch (err) {}
+
+    adapters = {
+      directLine: createDirectLineFromTranscript(transcript)
+    };
   } else {
     let createDirectLine;
 

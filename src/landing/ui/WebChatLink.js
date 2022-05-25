@@ -9,10 +9,12 @@ import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
+import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
+import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useVersion from '../data/hooks/useVersion';
 
 const WebChatLink = () => {
@@ -20,14 +22,21 @@ const WebChatLink = () => {
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
+  const [protocolTranscript] = useProtocolTranscript();
   const [protocolWebSocket] = useProtocolWebSocket();
   const [secret] = useDirectLineSecret();
   const [speechAuthorizationToken] = useSpeechAuthorizationToken();
   const [speechSubscriptionKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
   const [token] = useDirectLineToken();
+  const [transcriptContent] = useTranscriptDialogContent();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
+
+  const transcriptContentBlobURL = useMemo(
+    () => transcriptContent && URL.createObjectURL(new Blob([transcriptContent], { type: 'application/json' })),
+    [transcriptContent]
+  );
 
   const searchParams = useMemo(() => {
     const directLineTokenURL = isURL(secret);
@@ -43,12 +52,20 @@ const WebChatLink = () => {
 
     return new URLSearchParams({
       v: version,
-      p: protocolAppServiceExtension ? 'ase' : protocolDirectLineSpeech ? 'dls' : protocolWebSocket ? 'ws' : 'rest',
+      p: protocolAppServiceExtension
+        ? 'ase'
+        : protocolDirectLineSpeech
+        ? 'dls'
+        : protocolTranscript
+        ? 'blob'
+        : protocolWebSocket
+        ? 'ws'
+        : 'rest',
 
       ...(conversationId ? { cid: conversationId } : {}),
 
       ...(protocolAppServiceExtension && domainHost ? { dd: domainHost } : {}),
-      ...(token ? { dt: token } : { ds: secret }),
+      ...(protocolTranscript ? { blob: transcriptContentBlobURL } : token ? { dt: token } : { ds: secret }),
 
       ...(speechRegion ? { sr: speechRegion } : {}),
       ...(speechAuthorizationToken
@@ -74,6 +91,7 @@ const WebChatLink = () => {
     speechSubscriptionKey,
     speechRegion,
     token,
+    transcriptContentBlobURL,
     userId,
     version
   ]);

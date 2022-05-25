@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import updateIn from 'simple-update-in';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -30,7 +31,11 @@ export default function () {
   sagaMiddleware.run(saga);
 
   store.subscribe(() => {
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(store.getState()));
+    const state = store.getState();
+
+    const persistedState = updateIn(state, ['transcript', 'visible'], () => false);
+
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState));
 
     // console.log(store.getState());
   });

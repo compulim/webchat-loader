@@ -9,7 +9,9 @@ import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
+import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
+import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
 
 const DOMAIN_PREFIX = 'https://';
 const DOMAIN_PREFIX_INSECURE = 'http://';
@@ -52,11 +54,16 @@ const Protocol = () => {
   const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolDirectLineSpeech, setProtocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST, setProtocolREST] = useProtocolREST();
+  const [protocolTranscript, setProtocolTranscript] = useProtocolTranscript();
   const [protocolWebSocket, setProtocolWebSocket] = useProtocolWebSocket();
+  const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
 
-  const handleDomainChange = useCallback(({ target: { value } }) => setDirectLineDomainHost(value || ''), [
-    setDirectLineDomainHost
-  ]);
+  const handleDomainChange = useCallback(
+    ({ target: { value } }) => setDirectLineDomainHost(value || ''),
+    [setDirectLineDomainHost]
+  );
+
+  const handleEditTranscriptClick = useCallback(() => setTranscriptDialogVisible(true), [setTranscriptDialogVisible]);
 
   return (
     <Row header="Protocol" rowLabel={false}>
@@ -127,6 +134,21 @@ const Protocol = () => {
           </div>
         )}
         {protocolAppServiceExtension && <small>This protocol is not supported on all versions of Web Chat.</small>}
+      </div>
+      <div>
+        <label className={LABEL_CSS}>
+          <input
+            checked={protocolTranscript}
+            className={CHECKBOX_CSS}
+            name="protocol"
+            onChange={setProtocolTranscript}
+            type="radio"
+          />
+          &nbsp; Load from transcript &nbsp;
+          <button disabled={!protocolTranscript} onClick={handleEditTranscriptClick} type="button">
+            Edit
+          </button>
+        </label>
       </div>
     </Row>
   );

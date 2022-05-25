@@ -7,6 +7,8 @@ import DirectLineCredentials from './ui/DirectLineCredentials';
 // import ExperimentSelector from './ui/ExperimentSelector';
 import Protocol from './ui/Protocol';
 import SpeechCredentials from './ui/SpeechCredentials';
+import TranscriptDialog from './ui/TranscriptDialog';
+import useTranscriptDialogVisible from './data/hooks/useTranscriptDialogVisible';
 import VersionSelector from './ui/VersionSelector';
 import WebChatLink from './ui/WebChatLink';
 
@@ -28,6 +30,8 @@ const ROOT_CSS = css({
 });
 
 const App = () => {
+  const [transcriptDialogVisible] = useTranscriptDialogVisible();
+
   return (
     <div className={classNames(ROOT_CSS + '', 'app')}>
       <div className="app__box">
@@ -68,6 +72,7 @@ const App = () => {
           <WebChatLink />
         </section>
       </div>
+      {transcriptDialogVisible && <TranscriptDialog />}
     </div>
   );
 };
