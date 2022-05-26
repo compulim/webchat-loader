@@ -1,5 +1,5 @@
 import { css } from 'emotion';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 import ms from 'ms';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -49,7 +49,7 @@ const REGIONS = {
   francecentral: 'France Central'
 };
 
-const SpeechCredential = () => {
+const SpeechCredentials = () => {
   const [authorizationToken, setAuthorizationToken] = useSpeechAuthorizationToken();
   const [region, setRegion] = useSpeechRegion();
   const [savedSubscriptionKeys, saveSubscriptionKey, removeSavedSubscriptionKey] = useSavedSpeechSubscriptionKeys();
@@ -228,4 +228,4 @@ const SpeechCredential = () => {
   );
 };
 
-export default SpeechCredential;
+export default SpeechCredentials;

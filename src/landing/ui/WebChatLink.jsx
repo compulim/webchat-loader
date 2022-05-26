@@ -28,8 +28,8 @@ const WebChatLink = () => {
   const [protocolWebSocket] = useProtocolWebSocket();
   const [secret] = useDirectLineSecret();
   const [speechAuthorizationToken] = useSpeechAuthorizationToken();
-  const [speechSubscriptionKey] = useSpeechSubscriptionKey();
   const [speechRegion] = useSpeechRegion();
+  const [speechSubscriptionKey] = useSpeechSubscriptionKey();
   const [token] = useDirectLineToken();
   const [transcriptContent] = useTranscriptDialogContent();
   const [userId] = useDirectLineUserId();
@@ -110,7 +110,7 @@ const WebChatLink = () => {
     version
   ]);
 
-  const webChatURL = useMemo(() => searchParams && `webchat?${searchParams.toString()}`, [searchParams]);
+  const webChatURL = useMemo(() => searchParams && `webchat.html?${searchParams.toString()}`, [searchParams]);
 
   return webChatURL ? (
     <a href={webChatURL} target="_blank">

@@ -1,4 +1,3 @@
-import { fetch } from 'whatwg-fetch';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Presets from './Presets';
@@ -74,11 +73,7 @@ const VersionSelector = () => {
         return;
       }
 
-      const {
-        headers: {
-          map: { 'last-modified': lastModifiedHeader }
-        }
-      } = res;
+      const lastModifiedHeader = res.headers.get('last-modified');
 
       setCDNLatestLabel(`cdn.botframework.com/.../latest (${toLocalDateTime(new Date(lastModifiedHeader))})`);
     })();

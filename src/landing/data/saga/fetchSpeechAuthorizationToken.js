@@ -1,5 +1,5 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 
 import { FETCH_SPEECH_AUTHORIZATION_TOKEN } from '../action/fetchSpeechAuthorizationToken';
 import fetchSpeechAuthorizationToken from '../../util/fetchSpeechAuthorizationToken';

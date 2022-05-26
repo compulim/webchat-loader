@@ -1,5 +1,5 @@
 import { css } from 'emotion';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 import ms from 'ms';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -44,7 +44,7 @@ const REFRESH_TOKEN_BUTTON_CSS = css({
 
 const SECRET_AND_TOKEN_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 
-const Credential = () => {
+const DirectLineCredential = () => {
   const fetchDirectLineToken = useFetchDirectLineToken();
   const generateDirectLineToken = useGenerateDirectLineToken();
 
@@ -97,7 +97,7 @@ const Credential = () => {
 
   const secretDisabled = !!token || !!protocolDirectLineSpeech || !!protocolTranscript;
   const tokenDisabled = !!protocolDirectLineSpeech || !!protocolTranscript;
-  const decodedToken = decode(token);
+  const decodedToken = token && decode(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
 
   const validDirectLineAppServiceExtensionToken =
@@ -214,4 +214,4 @@ const Credential = () => {
   );
 };
 
-export default Credential;
+export default DirectLineCredential;

@@ -1,5 +1,5 @@
 import { call, put, select, takeEvery } from 'redux-saga/effects';
-import { decode } from 'jsonwebtoken';
+import decode from 'jwt-decode';
 
 import { FETCH_DIRECT_LINE_TOKEN } from '../action/fetchDirectLineToken';
 import fetchDirectLineToken from '../../util/fetchDirectLineToken';

@@ -1,5 +1,3 @@
-import { fetch } from 'whatwg-fetch';
-
 export default async function fetchMockBotDirectLineToken(host) {
   const req = await fetch(`https://${host}/directline/token`, { method: 'POST' });
 

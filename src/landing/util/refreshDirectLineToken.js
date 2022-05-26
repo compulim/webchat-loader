@@ -1,5 +1,3 @@
-import { fetch } from 'whatwg-fetch';
-
 export default async function refreshDirectLineToken({ domain, token }) {
   const res = await fetch(`${domain}/tokens/refresh`, {
     headers: {

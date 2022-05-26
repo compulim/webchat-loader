@@ -1,6 +1,6 @@
-import useDirectLineToken from './useDirectLineToken';
+import decode from 'jwt-decode';
 
-import { decode } from 'jsonwebtoken';
+import useDirectLineToken from './useDirectLineToken';
 
 export default function useDirectLineConversationId() {
   const [directLineToken] = useDirectLineToken();
