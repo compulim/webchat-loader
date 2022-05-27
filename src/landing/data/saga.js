@@ -1,5 +1,6 @@
 import { fork } from 'redux-saga/effects';
 
+import autoRefreshDirectLineTokenSaga from './saga/autoRefreshDirectLineToken';
 import fetchDirectLineToken from './saga/fetchDirectLineToken';
 import fetchSpeechAuthorizationToken from './saga/fetchSpeechAuthorizationToken';
 import generateDirectLineToken from './saga/generateDirectLineToken';
@@ -9,6 +10,7 @@ import loadBotPreset from './saga/loadBotPreset';
 import refreshDirectLineToken from './saga/refreshDirectLineToken';
 
 export default function* () {
+  yield fork(autoRefreshDirectLineTokenSaga);
   yield fork(fetchDirectLineToken);
   yield fork(fetchSpeechAuthorizationToken);
   yield fork(generateDirectLineToken);
