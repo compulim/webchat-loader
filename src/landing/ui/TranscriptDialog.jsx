@@ -54,7 +54,33 @@ const SAMPLE_TRANSCRIPT = [
     id: 'a-00001',
     text: 'What can I do for you?',
     timestamp: new Date(NOW - 120000).toISOString(),
-    type: 'message'
+    type: 'message',
+    attachments: [
+      {
+        content: {
+          type: 'AdaptiveCard',
+          body: [
+            {
+              type: 'TextBlock',
+              text: 'You can choose one of the followings.'
+            }
+          ],
+          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+          version: '1.2',
+          actions: [
+            {
+              type: 'Action.Submit',
+              title: 'What time is it?'
+            },
+            {
+              type: 'Action.Submit',
+              title: 'What is the weather?'
+            }
+          ]
+        },
+        contentType: 'application/vnd.microsoft.card.adaptive'
+      }
+    ]
   },
   {
     from: {
