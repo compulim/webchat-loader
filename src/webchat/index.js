@@ -41,6 +41,9 @@ async function main() {
       `https://unpkg.com/botframework-webchat@${version}/CognitiveServices.js`
     ];
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
+  } else if (/^4\.\d+\.\d+-/.test(version)) {
+    assetURLs = [`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`];
+    console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (/^4/.test(version)) {
     assetURLs = [`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`];
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
