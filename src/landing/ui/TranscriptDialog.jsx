@@ -3,6 +3,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
+import parseChatHistoryFromHARFile from '../util/parseChatHistoryFromHARFile';
+import FileUploadButton from './FileUploadButton';
 
 const DIALOG_CSS = css({
   '&.transcript-dialog': {
@@ -39,6 +41,10 @@ const DIALOG_CSS = css({
       padding: 5,
       resize: 'none',
       width: '100%'
+    },
+
+    '& .transcript-dialog__text-area::placeholder': {
+      color: '#CCC'
     },
 
     '& .transcript-dialog__text-area--invalid': {
@@ -121,6 +127,12 @@ const TranscriptDialog = () => {
     return transcript && transcript.length ? JSON.stringify(transcript, null, 2) + '\n' : '';
   });
 
+  const handleUploadHARFile = useCallback(text => {
+    const chatHistory = parseChatHistoryFromHARFile(text);
+
+    setEditedContent(chatHistory ? JSON.stringify(chatHistory, null, 2) : '');
+  }, []);
+
   const handleLoadSampleButtonClick = useCallback(
     () => setEditedContent(JSON.stringify(SAMPLE_TRANSCRIPT, null, 2) + '\n'),
     [setEditedContent]
@@ -178,6 +190,8 @@ const TranscriptDialog = () => {
         <button disabled={!!editedContent} onClick={handleLoadSampleButtonClick} type="button">
           Load sample
         </button>
+        &nbsp;
+        <FileUploadButton onUpload={handleUploadHARFile}>Upload HAR file</FileUploadButton>
       </div>
       <div className="transcript-dialog__body">
         <textarea
