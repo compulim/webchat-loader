@@ -1,4 +1,5 @@
 import Observable from 'core-js/features/observable';
+import sleep from './sleep';
 
 function createDeferredObservable(subscribe) {
   const observers = [];
@@ -60,9 +61,12 @@ export default function createDirectLineFromTranscript(activities) {
       connectionStatusDeferredObservable.next(1);
       connectionStatusDeferredObservable.next(2);
 
-      setTimeout(() => {
-        activities.forEach(activity => activityDeferredObservable.next(activity));
-      }, 100);
+      await sleep(1000);
+
+      for (const activity of activities) {
+        activityDeferredObservable.next(activity);
+        await sleep(200);
+      }
     })();
   });
 
