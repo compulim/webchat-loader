@@ -1,3 +1,4 @@
+import { fetch } from 'whatwg-fetch';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Presets from './Presets';

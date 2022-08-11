@@ -1,4 +1,7 @@
+import 'core-js/features/promise';
+
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
+import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 
 import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
@@ -62,7 +65,7 @@ async function main() {
 
         await loadAsset(`${url}?_=${Date.now()}`);
         console.warn(`Using DirectLineJS from ${url}`);
-      } catch (err) {}
+      } catch (err) { }
     }
 
     try {
@@ -133,13 +136,13 @@ async function main() {
     adapters = await window.WebChat.createDirectLineSpeechAdapters({
       fetchCredentials: speechAuthorizationToken
         ? {
-            authorizationToken: speechAuthorizationToken,
-            region: speechRegion
-          }
+          authorizationToken: speechAuthorizationToken,
+          region: speechRegion
+        }
         : {
-            region: speechRegion,
-            subscriptionKey: speechSubscriptionKey
-          }
+          region: speechRegion,
+          subscriptionKey: speechSubscriptionKey
+        }
     });
   } else if (protocolTranscript) {
     console.warn(`Using transcript from ${transcriptBlobURL}.`);
@@ -154,7 +157,7 @@ async function main() {
       }
 
       transcript = await res.json();
-    } catch (err) {}
+    } catch (err) { }
 
     adapters = {
       directLine: createDirectLineFromTranscript(transcript)

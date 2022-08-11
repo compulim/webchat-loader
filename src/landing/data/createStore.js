@@ -10,14 +10,14 @@ const LOCAL_STORAGE_KEY = 'REDUX_STORE';
 function onErrorResumeNext(fn) {
   try {
     return fn();
-  } catch (err) {}
+  } catch (err) { }
 }
 
 export default function () {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(
     reducer,
-    onErrorResumeNext(() => JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY))) || {},
+    onErrorResumeNext(() => JSON.parse(window.localStorage?.getItem?.(LOCAL_STORAGE_KEY))) || {},
     applyMiddleware(
       sagaMiddleware
       // () => next => action => {
@@ -35,7 +35,11 @@ export default function () {
 
     const persistedState = updateIn(state, ['transcript', 'visible'], () => false);
 
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState));
+    try {
+      window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState));
+    } catch (error) {
+      console.error(error);
+    }
 
     // console.log(store.getState());
   });

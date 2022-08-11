@@ -7,7 +7,7 @@ export default function useStateWithLocalStorage(
   { hydrate = JSON.parse, dehydrate = JSON.stringify } = {}
 ) {
   const [value, setter] = useState(() => {
-    const loadedValue = onErrorResumeNext(() => hydrate(window.localStorage.getItem(storageKey)));
+    const loadedValue = onErrorResumeNext(() => hydrate(window.localStorage?.getItem?.(storageKey)));
 
     return typeof loadedValue === 'undefined' ? initialValue : loadedValue;
   });
@@ -17,7 +17,12 @@ export default function useStateWithLocalStorage(
     useCallback(
       nextValue => {
         setter(nextValue);
-        window.localStorage.setItem(storageKey, dehydrate(nextValue));
+
+        try {
+          window.localStorage.setItem(storageKey, dehydrate(nextValue));
+        } catch (error) {
+          console.error(error);
+        }
       },
       [setter]
     )

@@ -1,3 +1,5 @@
+import 'core-js/features/promise';
+
 import { Provider } from 'react-redux';
 import { render } from 'react-dom';
 import React, { useMemo } from 'react';

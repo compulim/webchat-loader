@@ -1,3 +1,5 @@
+import { fetch } from 'whatwg-fetch';
+
 export default async function fetchSpeechAuthorizationToken(url) {
   const res = await fetch(url, { method: 'POST' });
 
