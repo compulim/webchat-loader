@@ -1,5 +1,4 @@
 import { css } from 'emotion';
-import decode from 'jwt-decode';
 import ms from 'ms';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -13,6 +12,7 @@ import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 import isURL from '../util/isURL';
 import Presets from './Presets';
 import Row from './Row';
+import tryDecodeJWT from '../util/tryDecodeJWT';
 
 const INPUT_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 const INPUT_ROW_CSS = css({
@@ -91,7 +91,7 @@ const SpeechCredentials = () => {
   const handleSubscriptionKeyFocus = useCallback(({ target }) => target.select());
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
-  const decodedAuthorizationToken = (authorizationToken && decode(authorizationToken)) || undefined;
+  const decodedAuthorizationToken = tryDecodeJWT(authorizationToken);
   const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
 
   const [, setForceRender] = useState();

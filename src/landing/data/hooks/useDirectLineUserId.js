@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import decode from 'jwt-decode';
 
-import useDirectLineToken from './useDirectLineToken';
 import setDirectLineUserId from '../action/setDirectLineUserId';
+import tryDecodeJWT from '../../util/tryDecodeJWT';
+import useDirectLineToken from './useDirectLineToken';
 
 export default function useDirectLineUserId() {
   const [token] = useDirectLineToken();
@@ -12,5 +12,5 @@ export default function useDirectLineUserId() {
   const value = useSelector(({ directLineCredentials: { userId } }) => userId);
   const setter = useCallback(value => dispatch(setDirectLineUserId(value)));
 
-  return [((token && decode(token)) || {}).user || value, setter];
+  return [(tryDecodeJWT(token) || {}).user || value, setter];
 }

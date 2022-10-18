@@ -1,8 +1,8 @@
 import { css } from 'emotion';
-import decode from 'jwt-decode';
 import ms from 'ms';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import tryDecodeJWT from '../util/tryDecodeJWT';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
@@ -97,7 +97,7 @@ const DirectLineCredential = () => {
 
   const secretDisabled = !!token || !!protocolDirectLineSpeech || !!protocolTranscript;
   const tokenDisabled = !!protocolDirectLineSpeech || !!protocolTranscript;
-  const decodedToken = token && decode(token);
+  const decodedToken = tryDecodeJWT(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
 
   const validDirectLineAppServiceExtensionToken =

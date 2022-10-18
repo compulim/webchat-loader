@@ -1,4 +1,3 @@
-import decode from 'jwt-decode';
 import updateIn from 'simple-update-in';
 
 export default function parseChatHistoryFromHARFile(text) {
@@ -26,7 +25,7 @@ export default function parseChatHistoryFromHARFile(text) {
     }
 
     const token = entry.request.queryString.find(param => param?.name === 't')?.value;
-    const { bot: botId, user: userId } = decode(token);
+    const { bot: botId, user: userId } = tryDecodeJWT(token) || {};
 
     const activities = entry._webSocketMessages?.reduce((activities, { data }) => {
       try {
