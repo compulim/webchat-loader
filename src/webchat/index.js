@@ -5,7 +5,7 @@ import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 
 import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
-import isLocalhost from './util/isLocalhost';
+import getDomainURL from '../common/util/getDomainURL';
 import loadAsset from './util/loadAsset';
 
 async function main() {
@@ -13,6 +13,7 @@ async function main() {
 
   const directLineDomainHost = urlSearchParams.get('dd');
   const protocolAppServiceExtension = urlSearchParams.get('p') === 'ase';
+  const protocolAppServiceExtensionInsecure = urlSearchParams.get('p') === 'ase-insecure';
   const protocolDirectLineSpeech = urlSearchParams.get('p') === 'dls';
   const protocolREST = urlSearchParams.get('p') === 'rest';
   const protocolTranscript = urlSearchParams.get('p') === 'blob';
@@ -26,13 +27,22 @@ async function main() {
   let userID = urlSearchParams.get('userid');
   let version = urlSearchParams.get('v') || 'latest';
 
-  const protocolWebSocket = !protocolAppServiceExtension && !protocolREST && !protocolTranscript;
-  const domain = directLineDomainHost
-    ? isLocalhost(directLineDomainHost)
-      ? `http://${directLineDomainHost}${protocolAppServiceExtension ? '/.bot' : ''}/v3/directline`
-      : `https://${directLineDomainHost}${protocolAppServiceExtension ? '/.bot' : ''}/v3/directline`
-    : undefined;
-
+  const protocolWebSocket =
+    !protocolAppServiceExtension && !protocolAppServiceExtensionInsecure && !protocolREST && !protocolTranscript;
+  const domainURL = getDomainURL(
+    directLineDomainHost,
+    protocolAppServiceExtension
+      ? 'app service extension'
+      : protocolAppServiceExtensionInsecure
+      ? 'app service extension insecure'
+      : protocolDirectLineSpeech
+      ? 'direct line speech'
+      : protocolREST
+      ? 'rest'
+      : protocolTranscript
+      ? 'transcript'
+      : 'web socket'
+  );
   let assetURLs;
 
   const WEB_CHAT_DEV_ASSET = `https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js`;
@@ -65,7 +75,7 @@ async function main() {
 
         await loadAsset(`${url}?_=${Date.now()}`);
         console.warn(`Using DirectLineJS from ${url}`);
-      } catch (err) { }
+      } catch (err) {}
     }
 
     try {
@@ -88,7 +98,7 @@ async function main() {
     if (directLineDomainHost && secret && !token) {
       userID = `dl_${random().toString(36).substr(2, 10)}`;
 
-      const res = await fetch(`https://${directLineDomainHost}/.bot/v3/directline/tokens/generate`, {
+      const res = await fetch(new URL('directline/tokens/generate', domainURL).href, {
         body: JSON.stringify({ User: { Id: userID } }),
         headers: {
           authorization: `Bearer ${secret}`,
@@ -109,7 +119,7 @@ async function main() {
 
   let adapters;
 
-  if (protocolAppServiceExtension) {
+  if (protocolAppServiceExtension || protocolAppServiceExtensionInsecure) {
     let createDirectLineAppServiceExtension;
 
     if (typeof window.DirectLine !== 'undefined') {
@@ -126,7 +136,7 @@ async function main() {
     adapters = {
       directLine: await createDirectLineAppServiceExtension({
         conversationId,
-        domain,
+        domain: domainURL.href,
         token
       })
     };
@@ -136,13 +146,13 @@ async function main() {
     adapters = await window.WebChat.createDirectLineSpeechAdapters({
       fetchCredentials: speechAuthorizationToken
         ? {
-          authorizationToken: speechAuthorizationToken,
-          region: speechRegion
-        }
+            authorizationToken: speechAuthorizationToken,
+            region: speechRegion
+          }
         : {
-          region: speechRegion,
-          subscriptionKey: speechSubscriptionKey
-        }
+            region: speechRegion,
+            subscriptionKey: speechSubscriptionKey
+          }
     });
   } else if (protocolTranscript) {
     console.warn(`Using transcript from ${transcriptBlobURL}.`);
@@ -157,7 +167,7 @@ async function main() {
       }
 
       transcript = await res.json();
-    } catch (err) { }
+    } catch (err) {}
 
     adapters = {
       directLine: createDirectLineFromTranscript(transcript)
@@ -181,7 +191,7 @@ async function main() {
 
     adapters = {
       directLine: createDirectLine({
-        domain,
+        domain: domainURL.href,
         ...(token ? { token } : secret ? { secret } : {}),
         webSocket: protocolWebSocket
       })

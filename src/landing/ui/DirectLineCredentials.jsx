@@ -9,6 +9,7 @@ import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useFetchDirectLineToken from '../data/hooks/useFetchDirectLineToken';
 import useGenerateDirectLineToken from '../data/hooks/useGenerateDirectLineToken';
 import useProtocolDirectLineAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolDirectLineAppServiceExtensionInsecure from '../data/hooks/useProtocolAppServiceExtensionInsecure';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
@@ -49,6 +50,7 @@ const DirectLineCredential = () => {
   const generateDirectLineToken = useGenerateDirectLineToken();
 
   const [protocolDirectLineAppServiceExtension] = useProtocolDirectLineAppServiceExtension();
+  const [protocolDirectLineAppServiceExtensionInsecure] = useProtocolDirectLineAppServiceExtensionInsecure();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST] = useProtocolREST();
   const [protocolTranscript] = useProtocolTranscript();
@@ -183,11 +185,12 @@ const DirectLineCredential = () => {
             Clear
           </button>
         </div>
-        {protocolDirectLineAppServiceExtension && !validDirectLineAppServiceExtensionToken && (
-          <div className={EXPIRED_FOOTNOTE_CSS}>
-            <small>This token is not for Direct Line App Service Extension.</small>
-          </div>
-        )}
+        {(protocolDirectLineAppServiceExtension || protocolDirectLineAppServiceExtensionInsecure) &&
+          !validDirectLineAppServiceExtensionToken && (
+            <div className={EXPIRED_FOOTNOTE_CSS}>
+              <small>This token is not for Direct Line App Service Extension.</small>
+            </div>
+          )}
         {(protocolREST || protocolWebSocket) && !validDirectLineToken && (
           <div className={EXPIRED_FOOTNOTE_CSS}>
             <small>This token is not for Direct Line channel.</small>

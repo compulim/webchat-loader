@@ -1,7 +1,7 @@
 import { fetch } from 'whatwg-fetch';
 
-export default async function refreshDirectLineToken({ domain, token }) {
-  const res = await fetch(`${domain}/tokens/refresh`, {
+export default async function refreshDirectLineToken({ domainURL, token }) {
+  const res = await fetch(new URL('directline/tokens/refresh', domainURL).href, {
     headers: {
       authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'

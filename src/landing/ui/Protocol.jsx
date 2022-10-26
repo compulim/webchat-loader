@@ -4,17 +4,16 @@ import React, { useCallback } from 'react';
 
 import Row from './Row';
 
-import isLocalhost from '../util/isLocalhost';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
+import useDirectLineDomainURL from '../data/hooks/useDirectLineDomainURL';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolAppServiceExtensionInsecure from '../data/hooks/useProtocolAppServiceExtensionInsecure';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
 
-const DOMAIN_PREFIX = 'https://';
-const DOMAIN_PREFIX_INSECURE = 'http://';
 const DOMAIN_SUFFIX = '/v3/directline';
 const DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION = '/.bot/v3/directline';
 
@@ -22,11 +21,15 @@ const DOMAIN_CSS = css({
   '&.domain': {
     fontSize: '80%',
 
-    '& .domain__input': {
-      backgroundColor: '#EEE',
+    '& .domain__doppelganger, & .domain__input': {
       border: 0,
       fontFamily: 'inherit',
       fontSize: 'inherit',
+      padding: 0
+    },
+
+    '& .domain__input': {
+      backgroundColor: '#EEE',
       height: '100%',
       left: 0,
       position: 'absolute',
@@ -35,8 +38,16 @@ const DOMAIN_CSS = css({
     },
 
     '& .domain__input-box': {
-      margin: 1,
+      margin: '1px 2px',
       position: 'relative'
+    },
+
+    '& .domain__protocol-button': {
+      appearance: 'none',
+      background: 'transparent',
+      border: 0,
+      fontSize: 'inherit',
+      padding: 0
     }
   }
 });
@@ -50,13 +61,17 @@ const LABEL_CSS = css({
 const RED_CSS = css({ color: 'Red' });
 
 const Protocol = () => {
+  const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
+  const [directLineDomainURL] = useDirectLineDomainURL();
   const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
+  const [protocolAppServiceExtensionInsecure, setProtocolAppServiceExtensionInsecure] =
+    useProtocolAppServiceExtensionInsecure();
   const [protocolDirectLineSpeech, setProtocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST, setProtocolREST] = useProtocolREST();
   const [protocolTranscript, setProtocolTranscript] = useProtocolTranscript();
   const [protocolWebSocket, setProtocolWebSocket] = useProtocolWebSocket();
-  const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
+  const protocolAppServiceExtensionFamily = protocolAppServiceExtension || protocolAppServiceExtensionInsecure;
 
   const handleDomainChange = useCallback(
     ({ target: { value } }) => setDirectLineDomainHost(value || ''),
@@ -64,6 +79,19 @@ const Protocol = () => {
   );
 
   const handleEditTranscriptClick = useCallback(() => setTranscriptDialogVisible(true), [setTranscriptDialogVisible]);
+
+  const handleProtocolClick = useCallback(() => {
+    if (protocolAppServiceExtension) {
+      setProtocolAppServiceExtensionInsecure();
+    } else if (protocolAppServiceExtensionInsecure) {
+      setProtocolAppServiceExtension();
+    }
+  }, [
+    protocolAppServiceExtension,
+    protocolAppServiceExtensionInsecure,
+    setProtocolAppServiceExtension,
+    setProtocolAppServiceExtensionInsecure
+  ]);
 
   return (
     <Row header="Protocol" rowLabel={false}>
@@ -108,7 +136,7 @@ const Protocol = () => {
       <div className={APP_SERVICE_EXTENSION_CSS}>
         <label className={LABEL_CSS}>
           <input
-            checked={protocolAppServiceExtension}
+            checked={protocolAppServiceExtension || protocolAppServiceExtensionInsecure}
             className={CHECKBOX_CSS}
             name="protocol"
             onChange={setProtocolAppServiceExtension}
@@ -116,24 +144,24 @@ const Protocol = () => {
           />
           &nbsp; Direct Line App Service Extension
         </label>
-        {protocolAppServiceExtension && (
+        {protocolAppServiceExtensionFamily && (
           <div className={classNames(DOMAIN_CSS + '', 'domain')}>
-            {protocolAppServiceExtension && isLocalhost(directLineDomainHost) ? DOMAIN_PREFIX_INSECURE : DOMAIN_PREFIX}
+            <button className="domain__protocol-button" onClick={handleProtocolClick}>{directLineDomainURL.protocol}//</button>
             <span className="domain__input-box">
-              <nobr className="domain__doppelganger">{protocolAppServiceExtension ? directLineDomainHost : ''}</nobr>
+              <nobr className="domain__doppelganger">{protocolAppServiceExtensionFamily ? directLineDomainHost : ''}</nobr>
               <input
                 className="domain__input"
-                disabled={!protocolAppServiceExtension}
+                disabled={!protocolAppServiceExtensionFamily}
                 onChange={handleDomainChange}
-                required={protocolAppServiceExtension}
+                required={protocolAppServiceExtensionFamily}
                 type="text"
-                value={protocolAppServiceExtension ? directLineDomainHost : ''}
+                value={protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
               />
             </span>
-            {protocolAppServiceExtension ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
+            {protocolAppServiceExtensionFamily ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
           </div>
         )}
-        {protocolAppServiceExtension && <small>This protocol is not supported on all versions of Web Chat.</small>}
+        {protocolAppServiceExtensionFamily && <small>This protocol is not supported on all versions of Web Chat.</small>}
       </div>
       <div>
         <label className={LABEL_CSS}>

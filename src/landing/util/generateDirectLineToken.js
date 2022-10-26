@@ -1,10 +1,10 @@
 import { fetch } from 'whatwg-fetch';
 import generateUserId from './generateUserId';
 
-export default async function generateDirectLineToken({ domain, secret }) {
+export default async function generateDirectLineToken({ domainURL, secret }) {
   const userId = generateUserId(true);
 
-  const res = await fetch(`${domain}/tokens/generate`, {
+  const res = await fetch(new URL('directline/tokens/generate', domainURL).href, {
     body: JSON.stringify({ User: { Id: userId } }),
     headers: {
       authorization: `Bearer ${secret}`,

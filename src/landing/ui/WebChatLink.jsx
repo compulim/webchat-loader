@@ -8,6 +8,7 @@ import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
+import useProtocolAppServiceExtensionInsecure from '../data/hooks/useProtocolAppServiceExtensionInsecure';
 import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpeech';
 import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
@@ -22,6 +23,7 @@ const WebChatLink = () => {
   const [conversationId] = useDirectLineConversationId();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
+  const [protocolAppServiceExtensionInsecure] = useProtocolAppServiceExtensionInsecure();
   const [protocolDirectLineSpeech] = useProtocolDirectLineSpeech();
   const [protocolREST] = useProtocolREST();
   const [protocolTranscript] = useProtocolTranscript();
@@ -48,7 +50,7 @@ const WebChatLink = () => {
       return;
     }
 
-    if (protocolAppServiceExtension && (!token || !domainHost)) {
+    if ((protocolAppServiceExtension || protocolAppServiceExtensionInsecure) && (!token || !domainHost)) {
       return;
     }
 
@@ -68,6 +70,8 @@ const WebChatLink = () => {
       v: version,
       p: protocolAppServiceExtension
         ? 'ase'
+        : protocolAppServiceExtensionInsecure
+        ? 'ase-insecure'
         : protocolDirectLineSpeech
         ? 'dls'
         : protocolTranscript
@@ -76,18 +80,17 @@ const WebChatLink = () => {
         ? 'ws'
         : 'rest',
 
-      ...(conversationId ? { cid: conversationId } : {}),
-
-      ...(protocolAppServiceExtension && domainHost ? { dd: domainHost } : {}),
-      ...(protocolTranscript ? { blob: transcriptContentBlobURL } : token ? { dt: token } : { ds: secret }),
-
+      ...((protocolAppServiceExtension || protocolAppServiceExtensionInsecure) && domainHost ? { dd: domainHost } : {}),
       ...(speechRegion ? { sr: speechRegion } : {}),
+      uid: userId,
+
+      ...(conversationId ? { cid: conversationId } : {}),
+      ...(protocolTranscript ? { blob: transcriptContentBlobURL } : token ? { dt: token } : { ds: secret }),
       ...(speechAuthorizationToken
         ? { st: speechAuthorizationToken }
         : speechSubscriptionKey
         ? { sk: speechSubscriptionKey }
-        : {}),
-      uid: userId
+        : {})
 
       // ws: protocolWebSocket + '',
       // ...(protocolAppServiceExtension ? { se: domainHost } : {}),

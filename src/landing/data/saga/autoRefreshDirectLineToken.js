@@ -4,7 +4,7 @@ import { SET_DIRECT_LINE_TOKEN } from '../action/setDirectLineToken';
 import refreshDirectLineToken from '../action/refreshDirectLineToken';
 import tryDecodeJWT from '../../util/tryDecodeJWT';
 
-const REFRESH_TOKEN_IF_EXPIRING_IN = 60000 * 50;
+const REFRESH_TOKEN_IF_EXPIRING_IN = 60000 * 20;
 const WAKE_INTERVAL = 30000;
 
 function sleep(durationInMS) {
@@ -13,9 +13,10 @@ function sleep(durationInMS) {
 
 export default function* autoRefreshDirectLineTokenSaga() {
   let task;
-  let token = yield select(({ directLineCredentials: { token } }) => token);
 
   for (;;) {
+    let token = yield select(({ directLineCredentials: { token } }) => token);
+
     if (task) {
       yield cancel(task);
     }
