@@ -37,8 +37,10 @@ const REFRESH_TOKEN_BUTTON_CSS = css({
   appearance: 'none',
   backgroundColor: 'transparent',
   border: 0,
+  color: 'rgba(0, 0, 238)',
   cursor: 'pointer',
   fontFamily: 'inherit',
+  fontSize: 'inherit',
   padding: 0,
   textDecoration: 'underline'
 });
