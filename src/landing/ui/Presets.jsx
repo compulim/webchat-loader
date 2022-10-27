@@ -1,5 +1,13 @@
+import { css } from 'emotion';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
+
+const ROOT_CSS = css({
+  '&.preset--disabled': {
+    color: '#CCC'
+  }
+});
 
 const Preset = ({ onDelete, onLoad, text, value }) => {
   const handleDeleteClick = useCallback(
@@ -20,7 +28,12 @@ const Preset = ({ onDelete, onLoad, text, value }) => {
 
   return (
     <Fragment>
-      <a href="#" onClick={handleLoadClick}>
+      <a
+        className={classNames(ROOT_CSS, 'preset', { 'preset--disabled': !value })}
+        href={value ? '#' : undefined}
+        onClick={handleLoadClick}
+        title={value ? '' : 'Unavailable'}
+      >
         <span>{typeof text === 'function' ? text() : text || value}</span>
       </a>
       {!!onDelete && (

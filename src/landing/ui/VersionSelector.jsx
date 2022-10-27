@@ -121,7 +121,6 @@ const VersionSelector = () => {
 
   const presetVersions = useMemo(
     () => ({
-      daily: 'dev',
       latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
       '4.15.4': '4.15.4',
       '4.15.3': '4.15.3',
@@ -147,7 +146,8 @@ const VersionSelector = () => {
       // '4.4.2': '4.4.2',
       ...(v3Version ? { v3: v3Version } : {}),
       ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
-      ...(localhostAvailable ? { 'localhost:5000': 'http://localhost:5000/' } : {})
+      daily: 'dev',
+      'localhost:5000': localhostAvailable ? 'http://localhost:5000/' : ''
     }),
     [availableVersions, localhostAvailable]
   );

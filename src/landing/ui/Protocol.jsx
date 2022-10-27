@@ -1,9 +1,11 @@
 import { css } from 'emotion';
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 
 import Row from './Row';
 
+import useDirectLineAppServiceExtensionErrorReason from '../data/hooks/useDirectLineAppServiceExtensionErrorReason';
+import useDirectLineAppServiceExtensionStatus from '../data/hooks/useDirectLineAppServiceExtensionStatus';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineDomainURL from '../data/hooks/useDirectLineDomainURL';
 import useProtocolAppServiceExtension from '../data/hooks/useProtocolAppServiceExtension';
@@ -62,6 +64,8 @@ const RED_CSS = css({ color: 'Red' });
 
 const Protocol = () => {
   const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
+  const [directLineAppServiceExtensionErrorReason] = useDirectLineAppServiceExtensionErrorReason();
+  const [directLineAppServiceExtensionStatus] = useDirectLineAppServiceExtensionStatus();
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
   const [directLineDomainURL] = useDirectLineDomainURL();
   const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
@@ -145,23 +149,36 @@ const Protocol = () => {
           &nbsp; Direct Line App Service Extension
         </label>
         {protocolAppServiceExtensionFamily && (
-          <div className={classNames(DOMAIN_CSS + '', 'domain')}>
-            <button className="domain__protocol-button" onClick={handleProtocolClick}>{directLineDomainURL.protocol}//</button>
-            <span className="domain__input-box">
-              <nobr className="domain__doppelganger">{protocolAppServiceExtensionFamily ? directLineDomainHost : ''}</nobr>
-              <input
-                className="domain__input"
-                disabled={!protocolAppServiceExtensionFamily}
-                onChange={handleDomainChange}
-                required={protocolAppServiceExtensionFamily}
-                type="text"
-                value={protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
-              />
-            </span>
-            {protocolAppServiceExtensionFamily ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
-          </div>
+          <Fragment>
+            <div className={classNames(DOMAIN_CSS + '', 'domain')}>
+              <button className="domain__protocol-button" onClick={handleProtocolClick}>
+                {directLineDomainURL.protocol}//
+              </button>
+              <span className="domain__input-box">
+                <nobr className="domain__doppelganger">
+                  {protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
+                </nobr>
+                <input
+                  className="domain__input"
+                  disabled={!protocolAppServiceExtensionFamily}
+                  onChange={handleDomainChange}
+                  required={protocolAppServiceExtensionFamily}
+                  type="text"
+                  value={protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
+                />
+              </span>
+              {protocolAppServiceExtensionFamily ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
+              <span title={directLineAppServiceExtensionErrorReason}>
+                {' '}
+                {directLineAppServiceExtensionStatus === 'error'
+                  ? '❌'
+                  : directLineAppServiceExtensionStatus === 'ready'
+                  ? '✅'
+                  : '⌛'}
+              </span>
+            </div>
+          </Fragment>
         )}
-        {protocolAppServiceExtensionFamily && <small>This protocol is not supported on all versions of Web Chat.</small>}
       </div>
       <div>
         <label className={LABEL_CSS}>
