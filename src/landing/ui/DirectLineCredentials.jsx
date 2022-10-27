@@ -63,35 +63,31 @@ const DirectLineCredential = () => {
   const tokenFromURL = /^https?:/.test(secret);
 
   const savedSecretsTexts = useMemo(
-    () => savedSecrets.map(secret => () => <code>{(secret || '').substr(0, 5) + '…'}</code>),
+    () => [
+      'MockBot',
+      'MockBot3',
+      ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')
+    ],
     [savedSecrets]
   );
 
   const handleClearSecretClick = useCallback(() => setSecret(''), [setSecret]);
   const handleClearTokenClick = useCallback(() => setToken(''), [setToken]);
   const handleFocus = useCallback(({ target }) => target.select());
-  const handleLoadMockBotToken = useCallback(
-    event => {
-      event.preventDefault();
-      setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
-      fetchDirectLineToken();
-    },
-    [fetchDirectLineToken, setSecret]
-  );
-  const handleLoadMockBot3Token = useCallback(
-    event => {
-      event.preventDefault();
-      setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
-      fetchDirectLineToken();
-    },
-    [fetchDirectLineToken, setSecret]
-  );
   const handleLoadSecret = useCallback(
     value => {
-      setSecret(value);
-      setToken('');
+      if (value === '#mockbot') {
+        setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
+        fetchDirectLineToken();
+      } else if (value === '#mockbot3') {
+        setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
+        fetchDirectLineToken();
+      } else {
+        setSecret(value);
+        setToken('');
+      }
     },
-    [setSecret]
+    [fetchDirectLineToken, setSecret, setToken]
   );
   const handleSaveSecret = useCallback(() => saveSecret(secret));
   const handleSecretChange = useCallback(({ target: { value } }) => setSecret(value), [setSecret]);
@@ -151,23 +147,13 @@ const DirectLineCredential = () => {
             </button>
           )}
         </div>
-        <small>
-          <a href="#" onClick={handleLoadMockBotToken}>
-            MockBot
-          </a>
-          &nbsp;
-          <a href="#" onClick={handleLoadMockBot3Token}>
-            MockBot3
-          </a>
-          &nbsp;
-          <Presets
-            onDelete={removeSavedSecret}
-            onLoad={handleLoadSecret}
-            onSave={secret && !savedSecrets.includes(secret) ? handleSaveSecret : undefined}
-            texts={savedSecretsTexts}
-            values={savedSecrets}
-          />
-        </small>
+        <Presets
+          onDelete={removeSavedSecret}
+          onLoad={handleLoadSecret}
+          onSave={secret && !savedSecrets.includes(secret) ? handleSaveSecret : undefined}
+          texts={savedSecretsTexts}
+          values={useMemo(() => ['#mockbot', '#mockbot3', ...savedSecrets], [savedSecrets])}
+        />
       </Row>
       <Row header="Token">
         <div className={INPUT_ROW_CSS}>

@@ -4,20 +4,24 @@ import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
 
 const ROOT_CSS = css({
-  '&.preset': {
+  '& .presets__delete-preset, & .presets__preset, & .presets__save-preset': {
     appearance: 'none',
     background: 'transparent',
     border: 0,
     color: 'rgb(0, 0, 238)',
     cursor: 'pointer',
     display: 'inline',
+    fontFamily: 'inherit',
+    fontSize: 'inherit',
     margin: 0,
     padding: 0,
     textDecoration: 'underline'
   },
 
-  '&.preset--disabled': {
-    color: '#CCC'
+  '& .presets__preset:disabled': {
+    color: '#CCC',
+    cursor: 'inherit',
+    textDecoration: 'none'
   }
 });
 
@@ -41,17 +45,18 @@ const Preset = ({ onDelete, onLoad, text, value }) => {
   return (
     <Fragment>
       <button
-        className={classNames(ROOT_CSS, 'preset', { 'preset--disabled': !value })}
+        className="presets__preset"
         disabled={!value}
         onClick={handleLoadClick}
-        title={value ? '' : 'Unavailable'}
+        title={value ? '' : 'Not available'}
+        type="button"
       >
         {typeof text === 'function' ? text() : text || value}
       </button>
-      {!!onDelete && (
-        <a href="#" onClick={handleDeleteClick}>
-          <span>[&times;]</span>
-        </a>
+      {!!onDelete && !/^#/u.test(value) && (
+        <button className="presets__delete-preset" onClick={handleDeleteClick} type="button">
+          [&times;]
+        </button>
       )}
       &nbsp;
     </Fragment>
@@ -81,16 +86,16 @@ const Presets = ({ onDelete, onLoad, onSave, texts, values }) => {
   );
 
   return (
-    <span>
+    <small className={classNames('presets', ROOT_CSS)}>
       {values.map((value, index) => (
         <Preset key={value} onDelete={onDelete} onLoad={onLoad} text={texts[index] || value} value={value} />
       ))}
       {!!onSave && (
-        <a href="#" onClick={handleSaveClick}>
-          <span>Save</span>
-        </a>
+        <button className="presets__save-preset" onClick={handleSaveClick} type="button">
+          Save
+        </button>
       )}
-    </span>
+    </small>
   );
 };
 

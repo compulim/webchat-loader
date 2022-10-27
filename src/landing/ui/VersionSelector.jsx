@@ -166,8 +166,8 @@ const VersionSelector = () => {
           style={SELECT_STYLE}
           value={version}
         >
-          <option value="dev">{devReleaseLabel}</option>
           <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
+          <option value="dev">{devReleaseLabel}</option>
           <option disabled={!localhostAvailable} value="http://localhost:5000/">
             {localhostLabel}
             {localhostAvailable ? '' : ' (not available)'}
@@ -180,9 +180,7 @@ const VersionSelector = () => {
         </select>
       </div>
       <div>
-        <small>
-          <Presets onLoad={setVersion} texts={versionTexts} values={versionValues} />
-        </small>
+        <Presets onLoad={setVersion} texts={versionTexts} values={versionValues} />
       </div>
     </Row>
   );

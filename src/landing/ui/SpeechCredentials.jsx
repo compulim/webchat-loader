@@ -62,10 +62,15 @@ const SpeechCredentials = () => {
   }, [setSubscriptionKey]);
   const handleLoadSubscriptionKey = useCallback(
     subscriptionKey => {
-      setAuthorizationToken('');
-      setSubscriptionKey(subscriptionKey);
+      if (subscriptionKey === '#mockbot') {
+        setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
+        fetchAuthorizationToken();
+      } else {
+        setAuthorizationToken('');
+        setSubscriptionKey(subscriptionKey);
+      }
     },
-    [setAuthorizationToken, setSubscriptionKey]
+    [fetchAuthorizationToken, setAuthorizationToken, setSubscriptionKey]
   );
 
   const handleAuthorizationTokenChange = useCallback(
@@ -74,14 +79,6 @@ const SpeechCredentials = () => {
   );
   const handleAuthorizationTokenFocus = useCallback(({ target }) => target.select());
   const handleClearAuthorizationTokenClick = useCallback(() => setAuthorizationToken(''), [setAuthorizationToken]);
-  const handleLoadMockBotToken = useCallback(
-    event => {
-      event.preventDefault();
-      setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
-      fetchAuthorizationToken();
-    },
-    [fetchAuthorizationToken, setSubscriptionKey]
-  );
   const handleRegionChange = useCallback(({ target: { value } }) => setRegion(value), [setRegion]);
   const handleSaveSubscriptionKey = useCallback(() => saveSubscriptionKey(subscriptionKey), [subscriptionKey]);
   const handleSubscriptionKeyChange = useCallback(
@@ -124,13 +121,11 @@ const SpeechCredentials = () => {
             </select>
           </div>
           <div>
-            <small>
-              <Presets
-                onLoad={subscriptionKeyIsURL ? undefined : setRegion}
-                texts={useMemo(() => ['West US', 'West US 2', 'East US'], [])}
-                values={useMemo(() => ['westus', 'westus2', 'eastus'], [])}
-              />
-            </small>
+            <Presets
+              onLoad={subscriptionKeyIsURL ? undefined : setRegion}
+              texts={useMemo(() => ['West US', 'West US 2', 'East US'], [])}
+              values={useMemo(() => ['westus', 'westus2', 'eastus'], [])}
+            />
           </div>
         </div>
       </Row>
@@ -174,26 +169,20 @@ const SpeechCredentials = () => {
             )}
           </div>
           <div>
-            <small>
-              <a href="#" onClick={handleLoadMockBotToken}>
-                MockBot
-              </a>
-              &nbsp;
-              <Presets
-                onDelete={removeSavedSubscriptionKey}
-                onLoad={handleLoadSubscriptionKey}
-                onSave={
-                  subscriptionKey && !savedSubscriptionKeys.includes(subscriptionKey)
-                    ? handleSaveSubscriptionKey
-                    : undefined
-                }
-                texts={useMemo(
-                  () => savedSubscriptionKeys.map(key => () => <code>{(key || '').substr(0, 5) + '…'}</code>),
-                  [savedSubscriptionKeys]
-                )}
-                values={savedSubscriptionKeys}
-              />
-            </small>
+            <Presets
+              onDelete={removeSavedSubscriptionKey}
+              onLoad={handleLoadSubscriptionKey}
+              onSave={
+                subscriptionKey && !savedSubscriptionKeys.includes(subscriptionKey)
+                  ? handleSaveSubscriptionKey
+                  : undefined
+              }
+              texts={useMemo(
+                () => ['MockBot', ...savedSubscriptionKeys.map(key => () => (key || '').substr(0, 5) + '…')],
+                [savedSubscriptionKeys]
+              )}
+              values={['#mockbot', ...savedSubscriptionKeys]}
+            />
           </div>
         </div>
       </Row>
