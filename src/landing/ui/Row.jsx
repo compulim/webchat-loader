@@ -19,17 +19,17 @@ const ROOT_CSS = css({
   }
 });
 
-const Row = ({ children, header, rowLabel = true }) => (
+const Row = ({ children, className, header, rowLabel = true }) => (
   <section className={ROOT_CSS}>
     {rowLabel ? (
       <label>
         <header>{header}</header>
-        <div>{children}</div>
+        <div className={className}>{children}</div>
       </label>
     ) : (
       <div>
         <header>{header}</header>
-        <div>{children}</div>
+        <div className={className}>{children}</div>
       </div>
     )}
   </section>
