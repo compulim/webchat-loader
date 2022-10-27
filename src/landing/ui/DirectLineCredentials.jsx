@@ -188,7 +188,7 @@ const DirectLineCredential = () => {
             <div>
               <small>
                 This token will expire in {ms(timeToExpire, { long: true })}.{' '}
-                <button className={REFRESH_TOKEN_BUTTON_CSS} onClick={refreshToken} type="button">
+                <button className={REFRESH_TOKEN_BUTTON_CSS} onClick={refreshToken} title="Auto refresh when expire in 20 minutes" type="button">
                   Refresh now
                 </button>
               </small>
