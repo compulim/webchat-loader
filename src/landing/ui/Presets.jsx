@@ -4,6 +4,18 @@ import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
 
 const ROOT_CSS = css({
+  '&.preset': {
+    appearance: 'none',
+    background: 'transparent',
+    border: 0,
+    color: 'rgb(0, 0, 238)',
+    cursor: 'pointer',
+    display: 'inline',
+    margin: 0,
+    padding: 0,
+    textDecoration: 'underline'
+  },
+
   '&.preset--disabled': {
     color: '#CCC'
   }
@@ -28,14 +40,14 @@ const Preset = ({ onDelete, onLoad, text, value }) => {
 
   return (
     <Fragment>
-      <a
+      <button
         className={classNames(ROOT_CSS, 'preset', { 'preset--disabled': !value })}
-        href={value ? '#' : undefined}
+        disabled={!value}
         onClick={handleLoadClick}
         title={value ? '' : 'Unavailable'}
       >
-        <span>{typeof text === 'function' ? text() : text || value}</span>
-      </a>
+        {typeof text === 'function' ? text() : text || value}
+      </button>
       {!!onDelete && (
         <a href="#" onClick={handleDeleteClick}>
           <span>[&times;]</span>
