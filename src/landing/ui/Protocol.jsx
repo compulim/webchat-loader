@@ -173,7 +173,7 @@ const Protocol = () => {
                 {directLineAppServiceExtensionStatus === 'error'
                   ? '❌'
                   : directLineAppServiceExtensionStatus === 'ready'
-                  ? '✅'
+                  ? '🟢'
                   : '⌛'}
               </span>
             </div>
