@@ -4,7 +4,7 @@ module.exports = {
       '@babel/plugin-transform-runtime',
       {
         corejs: 3,
-        version: '7.18.9'
+        version: '7.20.6'
       }
     ]
   ],
