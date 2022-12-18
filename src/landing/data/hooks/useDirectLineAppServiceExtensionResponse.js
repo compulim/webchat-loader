@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-export default function useDirectLineAppServiceExtensionErrorReason() {
+export default function useDirectLineAppServiceExtensionResponse() {
   return [
     useSelector(({ directLineAppServiceExtensionStatus: { reason, status } }) =>
-      status === 'error' ? reason : undefined
+      status === 'ready' ? reason : undefined
     )
   ];
 }

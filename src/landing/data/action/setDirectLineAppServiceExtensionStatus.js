@@ -3,7 +3,7 @@ const SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS = 'SET_DIRECT_LINE_APP_SERVIC
 export default function setDirectLineAppServiceExtensionStatus(status, reason) {
   return {
     payload: {
-      reason: status === 'error' ? reason : undefined,
+      reason: status === 'error' || status === 'ready' ? reason : undefined,
       status: status === 'error' || status === 'ready' ? status : 'checking'
     },
     type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS

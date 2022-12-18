@@ -19,7 +19,8 @@ export default function* pingDirectLineAppServiceExtensionSaga() {
         throw new Error(`Direct Line App Service Extension returned ${res.status}.`);
       }
 
-      const { ib, initialized, k, ob } = yield call([res, res.json]);
+      const response = yield call([res, res.json]);
+      const { ib, initialized, k, ob } = response;
 
       if (!initialized) {
         throw new Error('Direct Line App Service Extension adapter is unavailable.');
@@ -29,7 +30,7 @@ export default function* pingDirectLineAppServiceExtensionSaga() {
         throw new Error('Direct Line App Service Extension adapter could not connect to the bot.');
       }
 
-      yield put(setDirectLineAppServiceExtensionStatus('ready'));
+      yield put(setDirectLineAppServiceExtensionStatus('ready', response));
     } catch (err) {
       abortController.abort();
 

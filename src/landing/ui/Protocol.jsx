@@ -5,6 +5,7 @@ import React, { Fragment, useCallback } from 'react';
 import Row from './Row';
 
 import useDirectLineAppServiceExtensionErrorReason from '../data/hooks/useDirectLineAppServiceExtensionErrorReason';
+import useDirectLineAppServiceExtensionResponse from '../data/hooks/useDirectLineAppServiceExtensionResponse';
 import useDirectLineAppServiceExtensionStatus from '../data/hooks/useDirectLineAppServiceExtensionStatus';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineDomainURL from '../data/hooks/useDirectLineDomainURL';
@@ -65,6 +66,7 @@ const RED_CSS = css({ color: 'Red' });
 const Protocol = () => {
   const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
   const [directLineAppServiceExtensionErrorReason] = useDirectLineAppServiceExtensionErrorReason();
+  const [directLineAppServiceExtensionResponse] = useDirectLineAppServiceExtensionResponse();
   const [directLineAppServiceExtensionStatus] = useDirectLineAppServiceExtensionStatus();
   const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
   const [directLineDomainURL] = useDirectLineDomainURL();
@@ -168,7 +170,15 @@ const Protocol = () => {
                 />
               </span>
               {protocolAppServiceExtensionFamily ? DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION : DOMAIN_SUFFIX}
-              <span title={directLineAppServiceExtensionErrorReason}>
+              <span
+                title={
+                  directLineAppServiceExtensionStatus === 'error'
+                    ? directLineAppServiceExtensionErrorReason
+                    : directLineAppServiceExtensionStatus === 'ready'
+                    ? JSON.stringify(directLineAppServiceExtensionResponse)
+                    : undefined
+                }
+              >
                 {' '}
                 {directLineAppServiceExtensionStatus === 'error'
                   ? '❌'
