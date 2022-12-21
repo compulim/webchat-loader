@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'build/**/*'
+          path: build/
           retention-days: 30
 
   publish-pages:
