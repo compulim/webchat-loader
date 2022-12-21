@@ -6,13 +6,13 @@
   "scripts": {
     "build": "npm run build:babel && npm run build:esbuild && npm run build:public",
     "build:babel": "babel src --out-dir lib",
-    "build:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --outdir=build --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
+    "build:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --define:BUILD_DATE=\\\"`date +\"%Y-%m-%d\"`\\\" --define:BUILD_TIME=\\\"`date +\"%H:%m:%S\"`\\\" --define:process.env.npm_package_version=\\\"$npm_package_version\\\" --outdir=build --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
     "build:public": "cpy public/**/* build/",
     "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.dependencies | keys) + (.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "prepublishOnly": "npm run build",
     "start": "concurrently --names=\"babel,esbuild\" \"npm run start:babel\" \"npm run start:esbuild\"",
     "start:babel": "npm run build:babel -- --watch",
-    "start:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --outdir=public --servedir=public --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
+    "start:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --define:BUILD_DATE=\\\"`date +\"%Y-%m-%d\"`\\\" --define:BUILD_TIME=\\\"`date +\"%H:%m:%S\"`\\\" --define:process.env.npm_package_version=\\\"$npm_package_version\\\" --outdir=public --servedir=public --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
     "test": "jest"
   },
   "repository": {

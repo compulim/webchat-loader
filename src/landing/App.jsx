@@ -18,14 +18,26 @@ const ROOT_CSS = css({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'center'
+  },
 
-    '&.app .app__box': {
-      backgroundColor: 'White',
-      borderRadius: 4,
-      boxShadow: '0 0 10px rgba(0, 0, 0, .05)',
-      padding: '0 20px 20px'
-    }
+  '&.app .app__box': {
+    backgroundColor: 'White',
+    borderRadius: 4,
+    boxShadow: '0 0 10px rgba(0, 0, 0, .05)',
+    padding: '0 20px 20px'
+  },
+
+  '& .app__build-time': {
+    bottom: 5,
+    color: '#ddd',
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    fontSize: '80%',
+    fontWeight: 600,
+    position: 'absolute',
+    right: 5,
+    textShadow: '1px 1px rgba(255, 255, 255, 1)',
+    zIndex: -1
   }
 });
 
@@ -72,6 +84,7 @@ const App = () => {
           <WebChatLink />
         </section>
       </div>
+      <div className="app__build-time">{process.env.npm_package_version} (Build at {BUILD_DATE} {BUILD_TIME})</div>
       {transcriptDialogVisible && <TranscriptDialog />}
     </div>
   );
