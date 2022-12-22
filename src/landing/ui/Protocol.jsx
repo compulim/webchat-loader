@@ -175,7 +175,7 @@ const Protocol = () => {
                   directLineAppServiceExtensionStatus === 'error'
                     ? directLineAppServiceExtensionErrorReason
                     : directLineAppServiceExtensionStatus === 'ready'
-                    ? JSON.stringify(directLineAppServiceExtensionResponse)
+                    ? directLineAppServiceExtensionResponse
                     : undefined
                 }
               >
