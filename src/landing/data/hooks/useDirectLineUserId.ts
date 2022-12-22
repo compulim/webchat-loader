@@ -14,5 +14,5 @@ export default function useDirectLineUserId(): readonly [string, (userId: string
   const value = useSelector<StoreState, string>(({ directLineCredentials: { userId } }) => userId);
   const setter = useCallback((userId: string) => dispatch(setDirectLineUserId(userId)), [dispatch]);
 
-  return [(tryDecodeJWT<{ user: string | undefined }>(token) || {}).user || value, setter];
+  return Object.freeze([(tryDecodeJWT<{ user: string | undefined }>(token) || {}).user || value, setter]);
 }

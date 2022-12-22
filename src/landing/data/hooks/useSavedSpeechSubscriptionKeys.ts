@@ -14,8 +14,8 @@ export default function useSavedSpeechSubscriptionKey(): readonly [
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, string[]>(
-      ({ speechCredentials: { savedSubscriptionKeys } }) => savedSubscriptionKeys || []
+    useSelector<StoreState, readonly string[]>(({ speechCredentials: { savedSubscriptionKeys } }) =>
+      Object.freeze(savedSubscriptionKeys || [])
     ),
     useCallback((subscriptionKey: string) => dispatch(saveSpeechSubscriptionKey(subscriptionKey)), [dispatch]),
     useCallback((subscriptionKey: string) => dispatch(removeSavedSpeechSubscriptionKey(subscriptionKey)), [dispatch])
