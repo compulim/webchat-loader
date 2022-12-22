@@ -1,0 +1,11 @@
+import type { Action } from 'redux';
+
+const DISABLE_MOCK_BOT_SPEECH_AUTHORIZATION_TOKEN = 'DISABLE_MOCK_BOT_SPEECH_AUTHORIZATION_TOKEN';
+
+export default function disableMockBotSpeechAuthorizationToken(): Action<
+  typeof DISABLE_MOCK_BOT_SPEECH_AUTHORIZATION_TOKEN
+> {
+  return { type: DISABLE_MOCK_BOT_SPEECH_AUTHORIZATION_TOKEN };
+}
+
+export { DISABLE_MOCK_BOT_SPEECH_AUTHORIZATION_TOKEN };

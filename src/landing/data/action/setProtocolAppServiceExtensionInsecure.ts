@@ -1,0 +1,11 @@
+import type { Action } from 'redux';
+
+const SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE = 'SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE';
+
+export default function setProtocolAppServiceExtensionInsecure(): Action<
+  typeof SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE
+> {
+  return { type: SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE };
+}
+
+export { SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE };
