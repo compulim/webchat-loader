@@ -1,10 +1,8 @@
-import { useSelector } from 'react-redux';
-
-import type { StoreState } from '../createStore';
+import useSelector from './internal/useSelector';
 
 export default function useDirectLineAppServiceExtensionResponse(): readonly [string | undefined] {
   return Object.freeze([
-    useSelector<StoreState, string | undefined>(({ directLineAppServiceExtensionStatus: { reason, status } }) =>
+    useSelector(({ directLineAppServiceExtensionStatus: { reason, status } }) =>
       status === 'ready' ? reason : undefined
     )
   ]);

@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import removeSavedSpeechSubscriptionKey from '../action/removeSavedSpeechSubscriptionKey';
 import saveSpeechSubscriptionKey from '../action/saveSpeechSubscriptionKey';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useSavedSpeechSubscriptionKey(): readonly [
   readonly string[],
@@ -14,9 +13,7 @@ export default function useSavedSpeechSubscriptionKey(): readonly [
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, readonly string[]>(({ speechCredentials: { savedSubscriptionKeys } }) =>
-      Object.freeze(savedSubscriptionKeys || [])
-    ),
+    useSelector(({ speechCredentials: { savedSubscriptionKeys } }) => Object.freeze(savedSubscriptionKeys || [])),
     useCallback((subscriptionKey: string) => dispatch(saveSpeechSubscriptionKey(subscriptionKey)), [dispatch]),
     useCallback((subscriptionKey: string) => dispatch(removeSavedSpeechSubscriptionKey(subscriptionKey)), [dispatch])
   ]);

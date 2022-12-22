@@ -1,15 +1,14 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import setProtocolWebSocket from '../action/setProtocolWebSocket';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useProtocolWebSocket(): readonly [boolean, () => void] {
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, boolean>(({ protocol }) => protocol === 'web socket'),
+    useSelector(({ protocol }) => protocol === 'web socket'),
     useCallback(() => dispatch(setProtocolWebSocket()), [dispatch])
   ]);
 }

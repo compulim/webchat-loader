@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import fetchDirectLineToken from '../action/fetchDirectLineToken';
+import useDispatch from './internal/useDispatch';
 
 export default function useFetchDirectLineToken(): () => void {
   const dispatch = useDispatch();

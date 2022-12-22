@@ -1,26 +1,17 @@
 import { css } from 'emotion';
 import ms from 'ms';
-import React, {
-  ChangeEvent,
-  FocusEventHandler,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-
-import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
-import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
-import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
-import useSavedSpeechSubscriptionKeys from '../data/hooks/useSavedSpeechSubscriptionKeys';
-import useSpeechRegion from '../data/hooks/useSpeechRegion';
-import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
+import React, { FocusEventHandler, MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 
 import isURL from '../util/isURL';
 import Presets from './Presets';
 import Row from './Row';
 import tryDecodeJWT from '../util/tryDecodeJWT';
+import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
+import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
+import useSavedSpeechSubscriptionKeys from '../data/hooks/useSavedSpeechSubscriptionKeys';
+import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
+import useSpeechRegion from '../data/hooks/useSpeechRegion';
+import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 
 import type { ChangeEventHandler, FC } from 'react';
 
@@ -38,7 +29,7 @@ const RED_CSS = css({ color: 'Red' });
 const REGION_SELECT_CSS = css({ flex: 1 });
 const ROW_CSS = css({ flex: 1 });
 
-const REGIONS: Record<string, string> = {
+const REGIONS: Readonly<Record<string, string>> = Object.freeze({
   westus: 'West US',
   westus2: 'West US 2',
   eastus: 'East US',
@@ -57,7 +48,7 @@ const REGIONS: Record<string, string> = {
   westeurope: 'West Europe',
   uksouth: 'UK South',
   francecentral: 'France Central'
-};
+});
 
 const SpeechCredentials: FC = () => {
   const [authorizationToken, setAuthorizationToken] = useSpeechAuthorizationToken();
@@ -148,8 +139,8 @@ const SpeechCredentials: FC = () => {
           <div>
             <Presets
               onLoad={subscriptionKeyIsURL ? undefined : setRegion}
-              texts={useMemo(() => ['West US', 'West US 2', 'East US'], [])}
-              values={useMemo(() => ['westus', 'westus2', 'eastus'], [])}
+              texts={useMemo(() => Object.freeze(['West US', 'West US 2', 'East US']), [])}
+              values={useMemo(() => Object.freeze(['westus', 'westus2', 'eastus']), [])}
             />
           </div>
         </div>

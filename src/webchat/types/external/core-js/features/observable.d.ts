@@ -50,7 +50,7 @@ declare module 'core-js/features/observable' {
     [Symbol.observable](): Observable<T>;
 
     // Converts items to an Observable
-    static of<T>(...items: T[]): Observable<T>;
+    static of<T>(...items: readonly T[]): Observable<T>;
 
     // Converts an observable or iterable to an Observable
     static from<T>(observable: Iterable<T> | Observable<T>): Observable<T>;

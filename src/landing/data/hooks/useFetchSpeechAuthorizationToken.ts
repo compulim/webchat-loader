@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 
 import fetchSpeechAuthorizationToken from '../action/fetchSpeechAuthorizationToken';
+import useDispatch from './internal/useDispatch';
 
 export default function useFetchSpeechAuthorizationToken(): () => void {
   const dispatch = useDispatch();

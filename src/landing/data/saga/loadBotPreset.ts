@@ -1,9 +1,7 @@
-import { put, takeEvery } from 'redux-saga/effects';
-
 import { LOAD_BOT_PRESET } from '../action/loadBotPreset';
-
 import fetchDirectLineToken from '../action/fetchDirectLineToken';
 import fetchSpeechAuthorizationToken from '../action/fetchSpeechAuthorizationToken';
+import put from './internal/put';
 import setDirectLineDomainHost from '../action/setDirectLineDomainHost';
 import setDirectLineSecret from '../action/setDirectLineSecret';
 import setDirectLineToken from '../action/setDirectLineToken';
@@ -12,13 +10,14 @@ import setProtocolDirectLineSpeech from '../action/setProtocolDirectLineSpeech';
 import setProtocolWebSocket from '../action/setProtocolWebSocket';
 import setSpeechAuthorizationToken from '../action/setSpeechAuthorizationToken';
 import setSpeechSubscriptionKey from '../action/setSpeechSubscriptionKey';
+import takeEvery from './internal/takeEvery';
 
 import type loadBotPreset from '../action/loadBotPreset';
 
 type LoadBotPresetAction = ReturnType<typeof loadBotPreset>;
 
 export default function* loadBotPresetSaga() {
-  yield takeEvery(LOAD_BOT_PRESET, function* ({ payload: { name } }: LoadBotPresetAction) {
+  yield takeEvery<LoadBotPresetAction>(LOAD_BOT_PRESET, function* ({ payload: { name } }) {
     if (name === 'mockbot') {
       yield put(setDirectLineToken(''));
       yield put(setDirectLineSecret('https://webchat-mockbot.azurewebsites.net/directline/token'));

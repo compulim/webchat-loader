@@ -1,55 +1,68 @@
+import type { Action } from 'redux';
 import type { ActionWithPayload } from '../../types/ActionWithPayload';
 
-const SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS = 'SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS';
+const SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING = 'SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING';
+const SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR = 'SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR';
+const SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY = 'SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY';
 
-type SetDirectLineAppServiceExtensionStatusActionChecking = ActionWithPayload<
-  typeof SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS,
-  {
-    status: 'checking';
-  }
+type SetDirectLineAppServiceExtensionStatusActionChecking = Action<
+  typeof SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING
 >;
 
-type SetDirectLineAppServiceExtensionStatusActionErrorOrReady = ActionWithPayload<
-  typeof SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS,
+type SetDirectLineAppServiceExtensionStatusActionError = ActionWithPayload<
+  typeof SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR,
   {
     reason: string;
-    status: 'error' | 'ready';
   }
 >;
 
-type SetDirectLineAppServiceExtensionStatusAction =
-  | SetDirectLineAppServiceExtensionStatusActionChecking
-  | SetDirectLineAppServiceExtensionStatusActionErrorOrReady;
+type SetDirectLineAppServiceExtensionStatusActionReady = ActionWithPayload<
+  typeof SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY,
+  {
+    reason: string;
+  }
+>;
 
-export default function setDirectLineAppServiceExtensionStatus(
-  status: 'checking'
-): SetDirectLineAppServiceExtensionStatusActionChecking;
+// TypeScript seems buggy.
+// When the following overload are uncommented, the ReturnType<> become Error | Ready, instead of Checking | Error | Ready.
 
-export default function setDirectLineAppServiceExtensionStatus(
-  status: 'error' | 'ready',
-  reason: string
-): SetDirectLineAppServiceExtensionStatusActionErrorOrReady;
+// export default function setDirectLineAppServiceExtensionStatus(
+//   status: 'checking'
+// ): SetDirectLineAppServiceExtensionStatusActionChecking;
+
+// export default function setDirectLineAppServiceExtensionStatus(
+//   status: 'error' | 'ready',
+//   reason: string
+// ): SetDirectLineAppServiceExtensionStatusActionError | SetDirectLineAppServiceExtensionStatusActionReady;
 
 export default function setDirectLineAppServiceExtensionStatus(
   status: 'checking' | 'error' | 'ready',
   reason?: string
-): SetDirectLineAppServiceExtensionStatusAction {
-  if (status === 'error' || status === 'ready') {
+):
+  | SetDirectLineAppServiceExtensionStatusActionChecking
+  | SetDirectLineAppServiceExtensionStatusActionError
+  | SetDirectLineAppServiceExtensionStatusActionReady {
+  if (status === 'error') {
     return {
       payload: {
-        reason: reason as string,
-        status
+        reason: reason as string
       },
-      type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS
+      type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR
+    };
+  } else if (status === 'ready') {
+    return {
+      payload: {
+        reason: reason as string
+      },
+      type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY
     };
   }
 
-  return {
-    payload: {
-      status: 'checking'
-    },
-    type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS
-  };
+  return { type: SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING };
 }
 
-export { SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS };
+export {
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING,
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR,
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY
+};

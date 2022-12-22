@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 
-export default function tryDecodeJWT<T = unknown>(token: string): T | undefined {
+export default function tryDecodeJWT<T = unknown>(token: string): Readonly<T> | undefined {
   try {
-    return token ? decode(token) : undefined;
+    return token ? Object.freeze(decode<T>(token)) : undefined;
   } catch (error) {}
 }

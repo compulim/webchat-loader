@@ -1,5 +1,5 @@
-export default function tryParseJSON<T = unknown>(json: string): T | undefined {
+export default function tryParseJSON<T = unknown>(json: string): Readonly<T> | undefined {
   try {
-    return JSON.parse(json);
+    return Object.freeze(JSON.parse(json));
   } catch (err) {}
 }

@@ -7,16 +7,16 @@ type Activity = {
 };
 
 type Entry = {
-  _webSocketMessages?: { data: string }[];
+  _webSocketMessages?: readonly { data: string }[];
   request?: {
-    queryString: { name: string; value: string }[];
+    queryString: readonly { name: string; value: string }[];
     url: string;
   };
 };
 
-export default function parseChatHistoryFromHARFile(text: string) {
+export default function parseChatHistoryFromHARFile(text: string): readonly Activity[] | undefined {
   try {
-    const { log }: { log?: { entries?: Entry[] } } = JSON.parse(text) || {};
+    const { log }: Readonly<{ log?: { entries?: readonly Entry[] } }> = Object.freeze(JSON.parse(text) || {});
 
     const entry: Entry | undefined = log?.entries?.findLast(entry => {
       const urlString = entry.request?.url;
@@ -49,18 +49,20 @@ export default function parseChatHistoryFromHARFile(text: string) {
       return activities;
     }, [] as Activity[]);
 
-    return updateIn<Activity[], Activity['from']>(activities, [() => true, 'from'], from => {
-      const id = from?.id;
-      const isBot = id === botId;
-      const isUser = id === userId;
+    return Object.freeze(
+      updateIn<Activity[], Activity['from']>(activities, [() => true, 'from'], from => {
+        const id = from?.id;
+        const isBot = id === botId;
+        const isUser = id === userId;
 
-      if (isBot) {
-        return { ...from, role: 'bot' };
-      } else if (isUser) {
-        return { ...from, role: 'user' };
-      }
+        if (isBot) {
+          return { ...from, role: 'bot' };
+        } else if (isUser) {
+          return { ...from, role: 'user' };
+        }
 
-      return from;
-    });
+        return from;
+      })
+    );
   } catch (error) {}
 }

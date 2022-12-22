@@ -1,15 +1,14 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import setSpeechSubscriptionKey from '../action/setSpeechSubscriptionKey';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useSpeechSubscriptionKey(): readonly [string, (subscriptionKey: string) => void] {
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, string>(({ speechCredentials: { subscriptionKey } }) => subscriptionKey),
+    useSelector(({ speechCredentials: { subscriptionKey } }) => subscriptionKey),
     useCallback((subscriptionKey: string) => dispatch(setSpeechSubscriptionKey(subscriptionKey)), [dispatch])
   ]);
 }

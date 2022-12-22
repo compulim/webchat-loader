@@ -1,8 +1,11 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects';
-import { GENERATE_SPEECH_AUTHORIZATION_TOKEN } from '../action/generateSpeechAuthorizationToken';
+import { call } from 'redux-saga/effects';
 
+import { GENERATE_SPEECH_AUTHORIZATION_TOKEN } from '../action/generateSpeechAuthorizationToken';
 import generateSpeechAuthorizationToken from '../../util/generateSpeechAuthorizationToken';
+import put from './internal/put';
+import select from './internal/select';
 import setSpeechAuthorizationToken from '../action/setSpeechAuthorizationToken';
+import takeEvery from './internal/takeEvery';
 
 import type { ResultOfPromise } from '../../types/ResultOfPromise';
 import type { StoreState } from '../createStore';

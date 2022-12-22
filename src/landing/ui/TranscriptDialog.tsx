@@ -57,55 +57,59 @@ const DIALOG_CSS = css({
 
 const NOW = Date.now();
 
-const SAMPLE_TRANSCRIPT = [
-  {
-    id: 'a-00001',
-    text: 'What can I do for you?',
-    timestamp: new Date(NOW - 120000).toISOString(),
-    type: 'message',
-    attachments: [
-      {
-        content: {
-          type: 'AdaptiveCard',
-          body: [
-            {
-              type: 'TextBlock',
-              text: 'You can choose one of the followings.'
-            }
-          ],
-          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-          version: '1.2',
-          actions: [
-            {
-              type: 'Action.Submit',
-              title: 'What time is it?'
-            },
-            {
-              type: 'Action.Submit',
-              title: 'What is the weather?'
-            }
-          ]
-        },
-        contentType: 'application/vnd.microsoft.card.adaptive'
-      }
-    ]
-  },
-  {
-    from: {
-      role: 'user'
+const SAMPLE_TRANSCRIPT_JSON = JSON.stringify(
+  [
+    {
+      id: 'a-00001',
+      text: 'What can I do for you?',
+      timestamp: new Date(NOW - 120000).toISOString(),
+      type: 'message',
+      attachments: [
+        {
+          content: {
+            type: 'AdaptiveCard',
+            body: [
+              {
+                type: 'TextBlock',
+                text: 'You can choose one of the followings.'
+              }
+            ],
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            version: '1.2',
+            actions: [
+              {
+                type: 'Action.Submit',
+                title: 'What time is it?'
+              },
+              {
+                type: 'Action.Submit',
+                title: 'What is the weather?'
+              }
+            ]
+          },
+          contentType: 'application/vnd.microsoft.card.adaptive'
+        }
+      ]
     },
-    id: 'a-00002',
-    text: 'What time is it?',
-    timestamp: new Date(NOW - 60000).toISOString(),
-    type: 'message'
-  },
-  {
-    id: 'a-00003',
-    text: `It's ${new Date(NOW).toLocaleTimeString()}.`,
-    timestamp: new Date(NOW).toISOString(),
-    type: 'message'
-  }
-];
+    {
+      from: {
+        role: 'user'
+      },
+      id: 'a-00002',
+      text: 'What time is it?',
+      timestamp: new Date(NOW - 60000).toISOString(),
+      type: 'message'
+    },
+    {
+      id: 'a-00003',
+      text: `It's ${new Date(NOW).toLocaleTimeString()}.`,
+      timestamp: new Date(NOW).toISOString(),
+      type: 'message'
+    }
+  ],
+  null,
+  2
+);
 
 function parseTranscript(value: string): false | [] {
   try {
@@ -138,7 +142,7 @@ const TranscriptDialog: FC = () => {
   }, []);
 
   const handleLoadSampleButtonClick = useCallback<MouseEventHandler>(
-    () => setEditedContent(JSON.stringify(SAMPLE_TRANSCRIPT, null, 2) + '\n'),
+    () => setEditedContent(SAMPLE_TRANSCRIPT_JSON + '\n'),
     [setEditedContent]
   );
 
@@ -207,7 +211,7 @@ const TranscriptDialog: FC = () => {
           className={cx('transcript-dialog__text-area', { 'transcript-dialog__text-area--invalid': !isValid })}
           onChange={handleTextAreaChange}
           onKeyDown={handleTextAreaKeyDown}
-          placeholder={`Please paste transcript in JSON format.\n\n${JSON.stringify(SAMPLE_TRANSCRIPT, null, 2)}`}
+          placeholder={`Please paste transcript in JSON format.\n\n${SAMPLE_TRANSCRIPT_JSON}`}
           spellCheck={false}
           title="Transcript in JSON format"
           value={editedContent}

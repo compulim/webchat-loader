@@ -3,12 +3,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Presets from './Presets';
 import Row from './Row';
-
 import useVersion from '../data/hooks/useVersion';
 
-import type { ChangeEventHandler, FC } from 'react';
+import type { ChangeEventHandler, CSSProperties, FC } from 'react';
 
-const SELECT_STYLE = { width: '100%' };
+const SELECT_STYLE: Readonly<CSSProperties> = Object.freeze({ width: '100%' });
 
 function scriptExists(url: string): Promise<boolean> {
   return new Promise(resolve => {
@@ -30,7 +29,9 @@ function toLocalDateTime(date: Date): string {
 
 const VersionSelector: FC = () => {
   const [version, setVersion] = useVersion();
-  const [availableVersions, setAvailableVersions] = useState([]);
+  const [availableVersions, setAvailableVersions] = useState<readonly { time: string; version: string }[]>(
+    Object.freeze([])
+  );
   const [devReleaseLabel, setDevReleaseLabel] = useState('GitHub "daily"');
   const [cdnLatestLabel, setCDNLatestLabel] = useState('cdn.botframework.com/.../latest');
   const [localhostLabel, setLocalhostLabel] = useState('localhost:5000/webchat*.js and directLine.js');
@@ -40,7 +41,13 @@ const VersionSelector: FC = () => {
     try {
       const res = await fetch('https://webchat-mockbot.azurewebsites.net/versions/botframework-webchat');
 
-      setAvailableVersions((await res.json()).versions);
+      if (!res.ok) {
+        return;
+      }
+
+      const { versions } = await res.json();
+
+      setAvailableVersions(Object.freeze(versions));
     } catch (err) {
       if (err) {
         console.error(err);
@@ -48,7 +55,7 @@ const VersionSelector: FC = () => {
         return alert('Failed to fetch version list from NPMJS. Please check network trace for details.');
       }
     }
-  }, []);
+  }, [setAvailableVersions]);
 
   useEffect(() => {
     (async function () {
@@ -61,7 +68,10 @@ const VersionSelector: FC = () => {
       const {
         assets,
         target_commitish: commit
-      }: { assets: { name: string; updated_at: string }[]; target_commitish: string } = await res.json();
+      }: { assets: readonly { name: string; updated_at: string }[]; target_commitish: string } = Object.freeze(
+        await res.json()
+      );
+
       const { updated_at: updatedAtISOString } = assets.find(({ name }) => name === 'webchat.js') || { updated_at: '' };
       const updatedAt = new Date(updatedAtISOString);
 
@@ -119,48 +129,50 @@ const VersionSelector: FC = () => {
     () => (availableVersions || []).map(({ version }) => version).find(version => /-v3\./u.test(version)),
     [availableVersions]
   );
+
   const scorpioVersion = useMemo(
     () => (availableVersions || []).map(({ version }) => version).find(version => /-ibiza\./u.test(version)),
     [availableVersions]
   );
 
-  const presetVersions = useMemo(
-    () => ({
-      latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
-      '4.15.6': '4.15.6',
-      '4.15.5': '4.15.5',
-      // '4.15.4': '4.15.4',
-      // '4.15.3': '4.15.3',
-      // '4.15.2': '4.15.2',
-      // '4.15.1': '4.15.1',
-      // '4.15.0': '4.15.0',
-      '4.14.2': '4.14.2',
-      // '4.14.0': '4.14.0',
-      // '4.13.0': '4.13.0',
-      // '4.12.1': '4.12.1',
-      // '4.12.0': '4.12.0',
-      // '4.11.0': '4.11.0',
-      // '4.10.1': '4.10.1',
-      // '4.10.0': '4.10.0',
-      // '4.9.2': '4.9.2',
-      // '4.9.1': '4.9.1',
-      // '4.9.0': '4.9.0',
-      // '4.8.1': '4.8.1',
-      // '4.8.0': '4.8.0',
-      // '4.7.1': '4.7.1',
-      // '4.6.0': '4.6.0',
-      // '4.5.2': '4.5.2',
-      // '4.4.2': '4.4.2',
-      ...(v3Version ? { v3: v3Version } : {}),
-      ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
-      daily: 'dev',
-      'localhost:5000': localhostAvailable ? 'http://localhost:5000/' : ''
-    }),
+  const presetVersions = useMemo<Readonly<Record<string, string>>>(
+    () =>
+      Object.freeze({
+        latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
+        '4.15.6': '4.15.6',
+        '4.15.5': '4.15.5',
+        // '4.15.4': '4.15.4',
+        // '4.15.3': '4.15.3',
+        // '4.15.2': '4.15.2',
+        // '4.15.1': '4.15.1',
+        // '4.15.0': '4.15.0',
+        '4.14.2': '4.14.2',
+        // '4.14.0': '4.14.0',
+        // '4.13.0': '4.13.0',
+        // '4.12.1': '4.12.1',
+        // '4.12.0': '4.12.0',
+        // '4.11.0': '4.11.0',
+        // '4.10.1': '4.10.1',
+        // '4.10.0': '4.10.0',
+        // '4.9.2': '4.9.2',
+        // '4.9.1': '4.9.1',
+        // '4.9.0': '4.9.0',
+        // '4.8.1': '4.8.1',
+        // '4.8.0': '4.8.0',
+        // '4.7.1': '4.7.1',
+        // '4.6.0': '4.6.0',
+        // '4.5.2': '4.5.2',
+        // '4.4.2': '4.4.2',
+        ...(v3Version ? { v3: v3Version } : {}),
+        ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
+        daily: 'dev',
+        'localhost:5000': localhostAvailable ? 'http://localhost:5000/' : ''
+      }),
     [availableVersions, localhostAvailable]
   );
 
-  const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
-  const versionValues = useMemo(() => Object.values(presetVersions), [presetVersions]);
+  const versionTexts = useMemo(() => Object.freeze(Object.keys(presetVersions)), [presetVersions]);
+  const versionValues = useMemo(() => Object.freeze(Object.values(presetVersions)), [presetVersions]);
 
   const handleVersionChange = useCallback<ChangeEventHandler<HTMLSelectElement>>(
     ({ target: { value } }) => setVersion(value),

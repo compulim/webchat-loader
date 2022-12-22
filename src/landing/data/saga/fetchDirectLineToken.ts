@@ -1,8 +1,11 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 
 import { FETCH_DIRECT_LINE_TOKEN } from '../action/fetchDirectLineToken';
 import fetchDirectLineToken from '../../util/fetchDirectLineToken';
+import put from './internal/put';
+import select from './internal/select';
 import setDirectLineToken from '../action/setDirectLineToken';
+import takeEvery from './internal/takeEvery';
 import tryDecodeJWT from '../../util/tryDecodeJWT';
 
 import type { ResultOfPromise } from '../../types/ResultOfPromise';

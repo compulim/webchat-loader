@@ -1,4 +1,8 @@
-import { SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS } from '../action/setDirectLineAppServiceExtensionStatus';
+import {
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING,
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR,
+  SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY
+} from '../action/setDirectLineAppServiceExtensionStatus';
 
 import type setDirectLineAppServiceExtensionStatus from '../action/setDirectLineAppServiceExtensionStatus';
 
@@ -11,18 +15,16 @@ type State = {
 
 export default function directLineAppServiceExtensionStatus(
   state: State = { status: 'checking' },
-  { payload, type }: SetDirectLineAppServiceExtensionStatusAction
+  action: SetDirectLineAppServiceExtensionStatusAction
 ): State {
-  if (type === SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS) {
-    const { reason, status } = payload;
+  const { type } = action;
 
-    if (status === 'error') {
-      return { reason, status };
-    } else if (status === 'ready') {
-      return { reason, status };
-    }
-
+  if (type === SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_CHECKING) {
     return { status: 'checking' };
+  } else if (type === SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_ERROR) {
+    return { reason: action.payload.reason, status: 'error' };
+  } else if (type === SET_DIRECT_LINE_APP_SERVICE_EXTENSION_STATUS_READY) {
+    return { reason: action.payload.reason, status: 'ready' };
   }
 
   return state;

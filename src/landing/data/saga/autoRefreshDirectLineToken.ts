@@ -1,11 +1,15 @@
-import { call, cancel, fork, put, select, take } from 'redux-saga/effects';
+import { call, cancel, fork } from 'redux-saga/effects';
 
-import { SET_DIRECT_LINE_TOKEN } from '../action/setDirectLineToken';
+import setDirectLineToken, { SET_DIRECT_LINE_TOKEN } from '../action/setDirectLineToken';
+import put from './internal/put';
 import refreshDirectLineToken from '../action/refreshDirectLineToken';
+import select from './internal/select';
+import take from './internal/take';
 import tryDecodeJWT from '../../util/tryDecodeJWT';
 
-import type { StoreState } from '../createStore';
 import type { Task } from 'redux-saga';
+
+type SetDirectLineTokenAction = ReturnType<typeof setDirectLineToken>;
 
 const REFRESH_TOKEN_IF_EXPIRING_IN = 60000 * 20;
 const WAKE_INTERVAL = 30000;
@@ -18,7 +22,7 @@ export default function* autoRefreshDirectLineTokenSaga() {
   let task: Task | undefined = undefined;
 
   for (;;) {
-    let token = (yield select(({ directLineCredentials: { token } }: StoreState): string => token)) as string;
+    let token: string = yield select(({ directLineCredentials: { token } }) => token);
 
     if (task) {
       yield cancel(task);
@@ -38,6 +42,6 @@ export default function* autoRefreshDirectLineTokenSaga() {
 
     ({
       payload: { token }
-    } = yield take(SET_DIRECT_LINE_TOKEN));
+    } = (yield take(SET_DIRECT_LINE_TOKEN)) as SetDirectLineTokenAction);
   }
 }

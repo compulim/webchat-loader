@@ -30,7 +30,7 @@ type SetDirectLineUserIdAction = ReturnType<typeof setDirectLineUserId>;
 type State = {
   conversationId: string;
   domainHost: string;
-  savedSecrets: string[];
+  savedSecrets: readonly string[];
   secret: string;
   token: string;
   tokenURL: string;
@@ -40,7 +40,7 @@ type State = {
 const DEFAULT_STATE: State = {
   conversationId: '',
   domainHost: 'webchat-mockbot-se.azurewebsites.net',
-  savedSecrets: [],
+  savedSecrets: Object.freeze([]),
   secret: '',
   token: '',
   tokenURL: '',

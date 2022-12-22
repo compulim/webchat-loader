@@ -1,12 +1,15 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 
 import { REFRESH_DIRECT_LINE_TOKEN } from '../action/refreshDirectLineToken';
 import getDomainURL from '../../../common/util/getDomainURL';
+import put from './internal/put';
 import refreshDirectLineToken from '../../util/refreshDirectLineToken';
+import select from './internal/select';
 import setDirectLineToken from '../action/setDirectLineToken';
+import takeEvery from './internal/takeEvery';
 
+import type { ResultOfPromise } from '../../types/ResultOfPromise';
 import type { StoreState } from '../createStore';
-import { ResultOfPromise } from '../../types/ResultOfPromise';
 
 export default function* refreshDirectLineTokenSaga() {
   yield takeEvery(REFRESH_DIRECT_LINE_TOKEN, function* () {

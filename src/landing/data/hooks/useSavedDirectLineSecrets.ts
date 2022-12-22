@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import removeSavedDirectLineSecret from '../action/removeSavedDirectLineSecret';
 import saveDirectLineSecret from '../action/saveDirectLineSecret';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useSavedDirectLineSecrets(): readonly [
   readonly string[],
@@ -14,9 +13,7 @@ export default function useSavedDirectLineSecrets(): readonly [
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, readonly string[]>(({ directLineCredentials: { savedSecrets } }) =>
-      Object.freeze(savedSecrets)
-    ),
+    useSelector(({ directLineCredentials: { savedSecrets } }) => Object.freeze(savedSecrets)),
     useCallback((secret: string) => dispatch(saveDirectLineSecret(secret)), [dispatch]),
     useCallback((secret: string) => dispatch(removeSavedDirectLineSecret(secret)), [dispatch])
   ]);

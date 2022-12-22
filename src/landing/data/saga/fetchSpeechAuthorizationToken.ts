@@ -1,11 +1,15 @@
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 
 import { FETCH_SPEECH_AUTHORIZATION_TOKEN } from '../action/fetchSpeechAuthorizationToken';
 import fetchSpeechAuthorizationToken from '../../util/fetchSpeechAuthorizationToken';
+import put from './internal/put';
+import select from './internal/select';
 import setSpeechAuthorizationToken from '../action/setSpeechAuthorizationToken';
 import setSpeechRegion from '../action/setSpeechRegion';
+import takeEvery from './internal/takeEvery';
 import tryDecodeJWT from '../../util/tryDecodeJWT';
 
+import type { ResultOfPromise } from '../../types/ResultOfPromise';
 import type { StoreState } from '../createStore';
 
 export default function* fetchSpeechAuthorizationTokenSaga() {
@@ -19,9 +23,11 @@ export default function* fetchSpeechAuthorizationTokenSaga() {
         return;
       }
 
-      const { token } = yield call(fetchSpeechAuthorizationToken, url);
+      const { token } = (yield call(fetchSpeechAuthorizationToken, url)) as ResultOfPromise<
+        ReturnType<typeof fetchSpeechAuthorizationToken>
+      >;
 
-      const { region } = tryDecodeJWT<{ region: string }>(token) || {};
+      const { region } = tryDecodeJWT<{ region: string }>(token) || { region: '' };
 
       if (region) {
         yield put(setSpeechRegion(region));

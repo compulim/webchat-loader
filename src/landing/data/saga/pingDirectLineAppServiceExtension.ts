@@ -1,8 +1,10 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call } from 'redux-saga/effects';
 
 import { PING_DIRECT_LINE_APP_SERVICE_EXTENSION } from '../action/pingDirectLineAppServiceExtension';
 import getDomainURL from '../../../common/util/getDomainURL';
+import put from './internal/put';
 import setDirectLineAppServiceExtensionStatus from '../action/setDirectLineAppServiceExtensionStatus';
+import takeLatest from './internal/takeLatest';
 
 import type { ResultOfPromise } from '../../types/ResultOfPromise';
 import type pingDirectLineAppServiceExtension from '../action/pingDirectLineAppServiceExtension';

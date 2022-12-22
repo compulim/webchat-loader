@@ -43,25 +43,25 @@ async function main() {
       ? 'transcript'
       : 'web socket'
   );
-  let assetURLs;
+  let assetURLs: readonly string[] = Object.freeze([]);
 
   const WEB_CHAT_DEV_ASSET = `https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js`;
 
   if (/^0/.test(version)) {
-    assetURLs = [
+    assetURLs = Object.freeze([
       `https://unpkg.com/botframework-webchat@${version}/botchat.js`,
       `https://unpkg.com/botframework-webchat@${version}/botchat.css`,
       `https://unpkg.com/botframework-webchat@${version}/CognitiveServices.js`
-    ];
+    ]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (/^4\.\d+\.\d+-/.test(version)) {
-    assetURLs = [`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`];
+    assetURLs = Object.freeze([`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (/^4/.test(version)) {
-    assetURLs = [`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`];
+    assetURLs = Object.freeze([`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (version === 'dev') {
-    assetURLs = [WEB_CHAT_DEV_ASSET];
+    assetURLs = Object.freeze([WEB_CHAT_DEV_ASSET]);
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
   } else {
     try {
@@ -115,7 +115,7 @@ async function main() {
     }
   }
 
-  await Promise.all((assetURLs || []).map(url => loadAsset(url)));
+  await Promise.all(assetURLs.map(url => loadAsset(url)));
 
   let adapters;
 

@@ -1,15 +1,14 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import setProtocolREST from '../action/setProtocolREST';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useProtocolREST(): readonly [boolean, () => void] {
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, boolean>(({ protocol }) => protocol === 'rest'),
+    useSelector(({ protocol }) => protocol === 'rest'),
     useCallback(() => dispatch(setProtocolREST()), [dispatch])
   ]);
 }

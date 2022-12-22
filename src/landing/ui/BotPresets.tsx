@@ -31,7 +31,7 @@ const ROOT_CSS = css({
   }
 });
 
-const PRESETS = [
+const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.freeze([
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Web Socket with speech-enabled.' },
   {
     id: 'mockbot3',
@@ -54,7 +54,7 @@ const PRESETS = [
     name: '[Dev] http://localhost:3978/directline/tokens',
     title: 'Bot using tokens fetched locally.'
   }
-];
+]);
 
 type Props = PropsWithChildren<{
   onLoad: (value: string) => void;

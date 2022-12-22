@@ -30,14 +30,14 @@ type SetSpeechKeyAction =
 type State = {
   authorizationToken: string;
   region: string;
-  savedSubscriptionKeys: string[];
+  savedSubscriptionKeys: readonly string[];
   subscriptionKey: string;
 };
 
 const DEFAULT_STATE: State = {
   authorizationToken: '',
   region: 'westus',
-  savedSubscriptionKeys: [] as string[],
+  savedSubscriptionKeys: Object.freeze([]),
   subscriptionKey: ''
 };
 
@@ -59,7 +59,7 @@ export default function setSpeechKey(state: State = DEFAULT_STATE, { payload, ty
       state,
       ['savedSubscriptionKeys'],
       (keys: State['savedSubscriptionKeys']): State['savedSubscriptionKeys'] =>
-        [...(keys || []), subscriptionKey].sort(caseInsensitiveCompare)
+        Object.freeze([...(keys || []), subscriptionKey].sort(caseInsensitiveCompare))
     );
   } else if (type === SET_SPEECH_AUTHORIZATION_TOKEN) {
     state = updateIn(state, ['authorizationToken'], (): State['authorizationToken'] => payload.authorizationToken);

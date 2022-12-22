@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import React, { useMemo } from 'react';
 
 import isURL from '../util/isURL';
-
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -47,12 +46,12 @@ const WebChatLink: FC = () => {
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
 
-  const transcriptContentBlobURL = useMemo(
+  const transcriptContentBlobURL = useMemo<string>(
     () => transcriptContent && URL.createObjectURL(new Blob([transcriptContent], { type: 'application/json' })),
     [transcriptContent]
   );
 
-  const searchParams = useMemo(() => {
+  const searchParams = useMemo<undefined | URLSearchParams>(() => {
     const isDirectLineTokenURL = isURL(secret);
     const isSpeechTokenURL = isURL(speechSubscriptionKey);
 
@@ -123,7 +122,10 @@ const WebChatLink: FC = () => {
     version
   ]);
 
-  const webChatURL = useMemo(() => searchParams && `webchat.html?${searchParams.toString()}`, [searchParams]);
+  const webChatURL = useMemo<string | undefined>(
+    () => searchParams && `webchat.html?${searchParams.toString()}`,
+    [searchParams]
+  );
 
   return webChatURL ? (
     <a className={classNames('webchat-link', ROOT_CSS)} href={webChatURL} rel="noopener noreferrer" target="_blank">

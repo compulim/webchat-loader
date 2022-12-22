@@ -1,9 +1,12 @@
-import { fork, put, select, takeEvery } from 'redux-saga/effects';
+import { fork } from 'redux-saga/effects';
 
 import { SET_DIRECT_LINE_DOMAIN_HOST } from '../action/setDirectLineDomainHost';
 import { SET_PROTOCOL_APP_SERVICE_EXTENSION } from '../action/setProtocolAppServiceExtension';
 import { SET_PROTOCOL_APP_SERVICE_EXTENSION_INSECURE } from '../action/setProtocolAppServiceExtensionInsecure';
 import pingDirectLineAppServiceExtension from '../action/pingDirectLineAppServiceExtension';
+import put from './internal/put';
+import select from './internal/select';
+import takeEvery from './internal/takeEvery';
 
 import type { Action } from 'redux';
 import type { StoreState } from '../createStore';

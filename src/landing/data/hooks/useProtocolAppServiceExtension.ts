@@ -1,15 +1,14 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import setProtocolAppServiceExtension from '../action/setProtocolAppServiceExtension';
-
-import type { StoreState } from '../createStore';
+import useDispatch from './internal/useDispatch';
+import useSelector from './internal/useSelector';
 
 export default function useProtocolAppServiceExtension(): readonly [boolean, () => void] {
   const dispatch = useDispatch();
 
   return Object.freeze([
-    useSelector<StoreState, boolean>(({ protocol }) => protocol === 'app service extension'),
+    useSelector(({ protocol }) => protocol === 'app service extension'),
     useCallback(() => dispatch(setProtocolAppServiceExtension()), [dispatch])
   ]);
 }
