@@ -12,6 +12,8 @@ import useTranscriptDialogVisible from './data/hooks/useTranscriptDialogVisible'
 import VersionSelector from './ui/VersionSelector';
 import WebChatLink from './ui/WebChatLink';
 
+import type { FC } from 'react';
+
 const ROOT_CSS = css({
   '&.app': {
     alignItems: 'center',
@@ -31,7 +33,8 @@ const ROOT_CSS = css({
   '& .app__build-time': {
     bottom: 5,
     color: '#ddd',
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    fontFamily:
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
     fontSize: '80%',
     fontWeight: 600,
     position: 'absolute',
@@ -41,7 +44,7 @@ const ROOT_CSS = css({
   }
 });
 
-const App = () => {
+const App: FC = () => {
   const [transcriptDialogVisible] = useTranscriptDialogVisible();
 
   return (
@@ -84,7 +87,9 @@ const App = () => {
           <WebChatLink />
         </section>
       </div>
-      <div className="app__build-time">{process.env.npm_package_version} (Build at {BUILD_DATE} {BUILD_TIME})</div>
+      <div className="app__build-time">
+        {process.env.npm_package_version} (Build at {BUILD_DATE} {BUILD_TIME})
+      </div>
       {transcriptDialogVisible && <TranscriptDialog />}
     </div>
   );

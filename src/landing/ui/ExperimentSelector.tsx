@@ -1,7 +1,17 @@
 import React, { useCallback } from 'react';
 
-const ExperimentSelector = ({ onChange, value }) => {
-  const handleChange = useCallback(({ target: { value } }) => onChange(value));
+import type { ChangeEventHandler, FC } from 'react';
+
+type Props = {
+  onChange: (value: string) => void;
+  value: string;
+};
+
+const ExperimentSelector: FC<Props> = ({ onChange, value }) => {
+  const handleChange = useCallback<ChangeEventHandler<HTMLSelectElement>>(
+    ({ target: { value } }) => onChange(value),
+    [onChange]
+  );
 
   return (
     <section className="row">

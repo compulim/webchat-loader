@@ -1,6 +1,14 @@
 import { css } from 'emotion';
 import ms from 'ms';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FocusEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 
 import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
 import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
@@ -13,6 +21,8 @@ import isURL from '../util/isURL';
 import Presets from './Presets';
 import Row from './Row';
 import tryDecodeJWT from '../util/tryDecodeJWT';
+
+import type { ChangeEventHandler, FC } from 'react';
 
 const INPUT_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 const INPUT_ROW_CSS = css({
@@ -28,7 +38,7 @@ const RED_CSS = css({ color: 'Red' });
 const REGION_SELECT_CSS = css({ flex: 1 });
 const ROW_CSS = css({ flex: 1 });
 
-const REGIONS = {
+const REGIONS: Record<string, string> = {
   westus: 'West US',
   westus2: 'West US 2',
   eastus: 'East US',
@@ -49,7 +59,7 @@ const REGIONS = {
   francecentral: 'France Central'
 };
 
-const SpeechCredentials = () => {
+const SpeechCredentials: FC = () => {
   const [authorizationToken, setAuthorizationToken] = useSpeechAuthorizationToken();
   const [region, setRegion] = useSpeechRegion();
   const [savedSubscriptionKeys, saveSubscriptionKey, removeSavedSubscriptionKey] = useSavedSpeechSubscriptionKeys();
@@ -60,7 +70,7 @@ const SpeechCredentials = () => {
   const handleClearSubscriptionKeyClick = useCallback(() => {
     setSubscriptionKey('');
   }, [setSubscriptionKey]);
-  const handleLoadSubscriptionKey = useCallback(
+  const handleLoadSubscriptionKey = useCallback<(subscriptionKey: string) => void>(
     subscriptionKey => {
       if (subscriptionKey === '#mockbot') {
         setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
@@ -73,25 +83,40 @@ const SpeechCredentials = () => {
     [fetchAuthorizationToken, setAuthorizationToken, setSubscriptionKey]
   );
 
-  const handleAuthorizationTokenChange = useCallback(
+  const handleAuthorizationTokenChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target: { value } }) => setAuthorizationToken(value),
     [setAuthorizationToken]
   );
-  const handleAuthorizationTokenFocus = useCallback(({ target }) => target.select());
-  const handleClearAuthorizationTokenClick = useCallback(() => setAuthorizationToken(''), [setAuthorizationToken]);
-  const handleRegionChange = useCallback(({ target: { value } }) => setRegion(value), [setRegion]);
-  const handleSaveSubscriptionKey = useCallback(() => saveSubscriptionKey(subscriptionKey), [subscriptionKey]);
-  const handleSubscriptionKeyChange = useCallback(
+  const handleAuthorizationTokenFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
+    ({ target }) => target.select(),
+    []
+  );
+  const handleClearAuthorizationTokenClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+    () => setAuthorizationToken(''),
+    [setAuthorizationToken]
+  );
+  const handleRegionChange = useCallback<ChangeEventHandler<HTMLSelectElement>>(
+    ({ target: { value } }) => setRegion(value),
+    [setRegion]
+  );
+  const handleSaveSubscriptionKey = useCallback<() => void>(
+    () => saveSubscriptionKey(subscriptionKey),
+    [subscriptionKey]
+  );
+  const handleSubscriptionKeyChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target: { value } }) => setSubscriptionKey(value),
     [setSubscriptionKey]
   );
-  const handleSubscriptionKeyFocus = useCallback(({ target }) => target.select());
+  const handleSubscriptionKeyFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
+    ({ target }) => target.select(),
+    []
+  );
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
-  const decodedAuthorizationToken = tryDecodeJWT(authorizationToken);
+  const decodedAuthorizationToken = tryDecodeJWT<{ exp: number }>(authorizationToken);
   const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
 
-  const [, setForceRender] = useState();
+  const [, setForceRender] = useState<{}>();
 
   useEffect(() => {
     if (decodedAuthorizationToken) {
@@ -194,7 +219,7 @@ const SpeechCredentials = () => {
               onChange={handleAuthorizationTokenChange}
               onFocus={handleAuthorizationTokenFocus}
               required={subscriptionKeyIsURL}
-              title={decodedAuthorizationToken && JSON.stringify(decodedAuthorizationToken, null, 2)}
+              title={decodedAuthorizationToken ? JSON.stringify(decodedAuthorizationToken, null, 2) : undefined}
               value={authorizationToken}
             />
             <button disabled={!authorizationToken} onClick={handleClearAuthorizationTokenClick} type="button">
@@ -203,7 +228,7 @@ const SpeechCredentials = () => {
           </div>
         </div>
         {!!authorizationToken &&
-          (timeToExpire > 0 ? (
+          (timeToExpire && timeToExpire > 0 ? (
             <div>
               <small>This token will expire in {ms(timeToExpire, { long: true })}.</small>
             </div>

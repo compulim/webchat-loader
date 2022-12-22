@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
 
+import type { FC, MouseEventHandler } from 'react';
+
 const ROOT_CSS = css({
   '& .presets__delete-preset, & .presets__preset, & .presets__save-preset': {
     appearance: 'none',
@@ -25,16 +27,23 @@ const ROOT_CSS = css({
   }
 });
 
-const Preset = ({ onDelete, onLoad, text, value }) => {
-  const handleDeleteClick = useCallback(
+type PresetProps = {
+  onDelete?: (value: string) => void;
+  onLoad?: (value: string) => void;
+  text?: string | (() => string);
+  value: string;
+};
+
+const Preset: FC<PresetProps> = ({ onDelete, onLoad, text, value }) => {
+  const handleDeleteClick = useCallback<MouseEventHandler>(
     event => {
       event.preventDefault();
-      onDelete(value);
+      onDelete?.(value);
     },
     [value]
   );
 
-  const handleLoadClick = useCallback(
+  const handleLoadClick = useCallback<MouseEventHandler>(
     event => {
       event.preventDefault();
       onLoad && onLoad(value);
@@ -76,11 +85,19 @@ Preset.propTypes = {
   value: PropTypes.string.isRequired
 };
 
-const Presets = ({ onDelete, onLoad, onSave, texts, values }) => {
-  const handleSaveClick = useCallback(
+type PresetsProps = {
+  onDelete?: (value: string) => void;
+  onLoad?: (value: string) => void;
+  onSave?: () => void;
+  texts: readonly (string | (() => string))[];
+  values: readonly string[];
+};
+
+const Presets: FC<PresetsProps> = ({ onDelete, onLoad, onSave, texts, values }) => {
+  const handleSaveClick = useCallback<MouseEventHandler>(
     event => {
       event.preventDefault();
-      onSave();
+      onSave?.();
     },
     [onSave]
   );
@@ -109,8 +126,8 @@ Presets.propTypes = {
   onDelete: PropTypes.func,
   onLoad: PropTypes.func,
   onSave: PropTypes.func,
-  texts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.string])).isRequired,
-  values: PropTypes.arrayOf(PropTypes.string).isRequired
+  texts: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.func, PropTypes.string]).isRequired).isRequired,
+  values: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
 };
 
 export default Presets;

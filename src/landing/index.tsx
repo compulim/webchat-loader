@@ -7,7 +7,9 @@ import React, { useMemo } from 'react';
 import App from './App';
 import createStore from './data/createStore';
 
-const Main = () => {
+import type { FC } from 'react';
+
+const Main: FC<{}> = () => {
   const store = useMemo(createStore, []);
 
   return (

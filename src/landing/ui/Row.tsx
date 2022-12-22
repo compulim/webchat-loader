@@ -1,6 +1,8 @@
 import { css } from 'emotion';
 import React from 'react';
 
+import type { FC, PropsWithChildren } from 'react';
+
 const ROOT_CSS = css({
   margin: '1em 0',
 
@@ -19,7 +21,13 @@ const ROOT_CSS = css({
   }
 });
 
-const Row = ({ children, className, header, rowLabel = true }) => (
+type Props = PropsWithChildren<{
+  className?: string;
+  header: string;
+  rowLabel?: boolean;
+}>;
+
+const Row: FC<Props> = ({ children, className, header, rowLabel = true }) => (
   <section className={ROOT_CSS}>
     {rowLabel ? (
       <label>

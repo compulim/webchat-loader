@@ -20,6 +20,8 @@ import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
 import Presets from './Presets';
 import Row from './Row';
 
+import type { ChangeEventHandler, FC, FocusEventHandler } from 'react';
+
 const EXPIRED_FOOTNOTE_CSS = css({ color: 'Red' });
 const INPUT_ROW_CSS = css({
   display: 'flex',
@@ -47,7 +49,7 @@ const REFRESH_TOKEN_BUTTON_CSS = css({
 
 const SECRET_AND_TOKEN_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 
-const DirectLineCredential = () => {
+const DirectLineCredential: FC = () => {
   const fetchDirectLineToken = useFetchDirectLineToken();
   const generateDirectLineToken = useGenerateDirectLineToken();
 
@@ -64,19 +66,16 @@ const DirectLineCredential = () => {
   const refreshToken = useRefreshToken();
   const tokenFromURL = /^https?:/.test(secret);
 
-  const savedSecretsTexts = useMemo(
-    () => [
-      'MockBot',
-      'MockBot3',
-      ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')
-    ],
+  const savedSecretsTexts = useMemo<readonly (string | (() => string))[]>(
+    () =>
+      Object.freeze(['MockBot', 'MockBot3', ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')]),
     [savedSecrets]
   );
 
-  const handleClearSecretClick = useCallback(() => setSecret(''), [setSecret]);
-  const handleClearTokenClick = useCallback(() => setToken(''), [setToken]);
-  const handleFocus = useCallback(({ target }) => target.select());
-  const handleLoadSecret = useCallback(
+  const handleClearSecretClick = useCallback<() => void>(() => setSecret(''), [setSecret]);
+  const handleClearTokenClick = useCallback<() => void>(() => setToken(''), [setToken]);
+  const handleFocus = useCallback<FocusEventHandler<HTMLInputElement>>(({ target }) => target.select(), []);
+  const handleLoadSecret = useCallback<(value: string) => void>(
     value => {
       if (value === '#mockbot') {
         setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
@@ -91,20 +90,26 @@ const DirectLineCredential = () => {
     },
     [fetchDirectLineToken, setSecret, setToken]
   );
-  const handleSaveSecret = useCallback(() => saveSecret(secret));
-  const handleSecretChange = useCallback(({ target: { value } }) => setSecret(value), [setSecret]);
-  const handleTokenChange = useCallback(({ target: { value } }) => setToken(value), [setToken]);
+  const handleSaveSecret = useCallback<() => void>(() => saveSecret(secret), [saveSecret]);
+  const handleSecretChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target: { value } }) => setSecret(value),
+    [setSecret]
+  );
+  const handleTokenChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target: { value } }) => setToken(value),
+    [setToken]
+  );
 
   const secretDisabled = !!token || !!protocolDirectLineSpeech || !!protocolTranscript;
   const tokenDisabled = !!protocolDirectLineSpeech || !!protocolTranscript;
-  const decodedToken = tryDecodeJWT(token);
+  const decodedToken = tryDecodeJWT<{ exp: number; iss: string }>(token);
   const timeToExpire = decodedToken && decodedToken.exp * 1000 - Date.now();
 
   const validDirectLineAppServiceExtensionToken =
     !decodedToken || decodedToken.iss === 'https://directlineextension.botframework.com/';
   const validDirectLineToken = !decodedToken || decodedToken.iss === 'https://directline.botframework.com/';
 
-  const [, setForceRender] = useState();
+  const [, setForceRender] = useState<{}>();
 
   useEffect(() => {
     if (decodedToken) {
@@ -186,11 +191,16 @@ const DirectLineCredential = () => {
         )}
         {secretDisabled &&
           !tokenDisabled &&
-          (timeToExpire > 0 ? (
+          (timeToExpire && timeToExpire > 0 ? (
             <div>
               <small>
                 This token will expire in {ms(timeToExpire, { long: true })}.{' '}
-                <button className={REFRESH_TOKEN_BUTTON_CSS} onClick={refreshToken} title="Auto refresh when expire in 20 minutes" type="button">
+                <button
+                  className={REFRESH_TOKEN_BUTTON_CSS}
+                  onClick={refreshToken}
+                  title="Auto refresh when expire in 20 minutes"
+                  type="button"
+                >
                   Refresh now
                 </button>
               </small>

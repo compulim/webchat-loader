@@ -6,9 +6,11 @@ import Row from './Row';
 
 import useVersion from '../data/hooks/useVersion';
 
+import type { ChangeEventHandler, FC } from 'react';
+
 const SELECT_STYLE = { width: '100%' };
 
-function scriptExists(url) {
+function scriptExists(url: string): Promise<boolean> {
   return new Promise(resolve => {
     const script = document.createElement('script');
 
@@ -22,11 +24,11 @@ function scriptExists(url) {
   });
 }
 
-function toLocalDateTime(date) {
+function toLocalDateTime(date: Date): string {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-const VersionSelector = () => {
+const VersionSelector: FC = () => {
   const [version, setVersion] = useVersion();
   const [availableVersions, setAvailableVersions] = useState([]);
   const [devReleaseLabel, setDevReleaseLabel] = useState('GitHub "daily"');
@@ -56,8 +58,11 @@ const VersionSelector = () => {
         return;
       }
 
-      const { assets, target_commitish: commit } = await res.json();
-      const { updated_at: updatedAtISOString } = assets.find(({ name }) => name === 'webchat.js');
+      const {
+        assets,
+        target_commitish: commit
+      }: { assets: { name: string; updated_at: string }[]; target_commitish: string } = await res.json();
+      const { updated_at: updatedAtISOString } = assets.find(({ name }) => name === 'webchat.js') || { updated_at: '' };
       const updatedAt = new Date(updatedAtISOString);
 
       setDevReleaseLabel(`GitHub "daily" ${commit.substr(0, 7)} (${toLocalDateTime(updatedAt)})`);
@@ -76,7 +81,7 @@ const VersionSelector = () => {
 
       const lastModifiedHeader = res.headers.get('last-modified');
 
-      setCDNLatestLabel(`cdn.botframework.com/.../latest (${toLocalDateTime(new Date(lastModifiedHeader))})`);
+      setCDNLatestLabel(`cdn.botframework.com/.../latest (${toLocalDateTime(new Date(lastModifiedHeader || ''))})`);
     })();
   }, []);
 
@@ -157,7 +162,10 @@ const VersionSelector = () => {
   const versionTexts = useMemo(() => Object.keys(presetVersions), [presetVersions]);
   const versionValues = useMemo(() => Object.values(presetVersions), [presetVersions]);
 
-  const handleVersionChange = useCallback(({ target: { value } }) => setVersion(value), [setVersion]);
+  const handleVersionChange = useCallback<ChangeEventHandler<HTMLSelectElement>>(
+    ({ target: { value } }) => setVersion(value),
+    [setVersion]
+  );
 
   return (
     <Row header="Version">

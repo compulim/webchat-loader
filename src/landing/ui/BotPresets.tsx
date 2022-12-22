@@ -7,6 +7,8 @@ import Row from './Row';
 
 import loadBotPreset from '../data/action/loadBotPreset';
 
+import type { FC, MouseEventHandler, PropsWithChildren } from 'react';
+
 const ROOT_CSS = css({
   '& .bot-presets__preset': {
     appearance: 'none',
@@ -54,8 +56,14 @@ const PRESETS = [
   }
 ];
 
-const BotPreset = ({ children, onLoad, title, value }) => {
-  const handleClick = useCallback(
+type Props = PropsWithChildren<{
+  onLoad: (value: string) => void;
+  title: string;
+  value: string;
+}>;
+
+const BotPreset: FC<Props> = ({ children, onLoad, title, value }) => {
+  const handleClick = useCallback<MouseEventHandler>(
     event => {
       event.preventDefault();
       onLoad && onLoad(value);
@@ -65,14 +73,15 @@ const BotPreset = ({ children, onLoad, title, value }) => {
 
   return (
     <button className="bot-presets__preset" onClick={handleClick} title={title} type="button">
+      {/* @ts-ignore */}
       <nobr>{children}</nobr>
     </button>
   );
 };
 
-const BotPresets = () => {
+const BotPresets: FC = () => {
   const dispatch = useDispatch();
-  const handleLoad = useCallback(value => dispatch(loadBotPreset(value)), []);
+  const handleLoad = useCallback<(value: string) => void>(value => dispatch(loadBotPreset(value)), []);
 
   return (
     <Row className={classNames('bot-presets', ROOT_CSS)} header="Preset">

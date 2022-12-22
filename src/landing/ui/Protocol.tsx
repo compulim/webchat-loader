@@ -1,6 +1,6 @@
 import { css } from 'emotion';
 import classNames from 'classnames';
-import React, { Fragment, useCallback } from 'react';
+import React, { ChangeEventHandler, Fragment, useCallback } from 'react';
 
 import Row from './Row';
 
@@ -16,6 +16,8 @@ import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
+
+import type { FC } from 'react';
 
 const DOMAIN_SUFFIX = '/v3/directline';
 const DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION = '/.bot/v3/directline';
@@ -63,12 +65,12 @@ const LABEL_CSS = css({
 });
 const RED_CSS = css({ color: 'Red' });
 
-const Protocol = () => {
+const Protocol: FC = () => {
   const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
   const [directLineAppServiceExtensionErrorReason] = useDirectLineAppServiceExtensionErrorReason();
   const [directLineAppServiceExtensionResponse] = useDirectLineAppServiceExtensionResponse();
   const [directLineAppServiceExtensionStatus] = useDirectLineAppServiceExtensionStatus();
-  const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost('');
+  const [directLineDomainHost, setDirectLineDomainHost] = useDirectLineDomainHost();
   const [directLineDomainURL] = useDirectLineDomainURL();
   const [protocolAppServiceExtension, setProtocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolAppServiceExtensionInsecure, setProtocolAppServiceExtensionInsecure] =
@@ -79,7 +81,7 @@ const Protocol = () => {
   const [protocolWebSocket, setProtocolWebSocket] = useProtocolWebSocket();
   const protocolAppServiceExtensionFamily = protocolAppServiceExtension || protocolAppServiceExtensionInsecure;
 
-  const handleDomainChange = useCallback(
+  const handleDomainChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target: { value } }) => setDirectLineDomainHost(value || ''),
     [setDirectLineDomainHost]
   );
@@ -157,8 +159,10 @@ const Protocol = () => {
                 {directLineDomainURL.protocol}//
               </button>
               <span className="domain__input-box">
+                {/* @ts-ignore */}
                 <nobr className="domain__doppelganger">
                   {protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
+                  {/* @ts-ignore */}
                 </nobr>
                 <input
                   className="domain__input"

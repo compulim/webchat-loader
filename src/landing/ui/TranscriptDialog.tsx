@@ -6,6 +6,8 @@ import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible
 import parseChatHistoryFromHARFile from '../util/parseChatHistoryFromHARFile';
 import FileUploadButton from './FileUploadButton';
 
+import type { ChangeEventHandler, FC, KeyboardEventHandler, MouseEventHandler } from 'react';
+
 const DIALOG_CSS = css({
   '&.transcript-dialog': {
     backgroundColor: 'White',
@@ -105,9 +107,9 @@ const SAMPLE_TRANSCRIPT = [
   }
 ];
 
-function parseTranscript(value) {
+function parseTranscript(value: string): false | [] {
   try {
-    const parsedTranscript = JSON.parse(value);
+    const parsedTranscript = JSON.parse(value) as [];
 
     if (Array.isArray(parsedTranscript)) {
       return parsedTranscript;
@@ -117,7 +119,7 @@ function parseTranscript(value) {
   return false;
 }
 
-const TranscriptDialog = () => {
+const TranscriptDialog: FC = () => {
   const [savedContent, setSavedContent] = useTranscriptDialogContent();
   const [, setVisible] = useTranscriptDialogVisible();
 
@@ -127,18 +129,20 @@ const TranscriptDialog = () => {
     return transcript && transcript.length ? JSON.stringify(transcript, null, 2) + '\n' : '';
   });
 
-  const handleUploadHARFile = useCallback(text => {
-    const chatHistory = parseChatHistoryFromHARFile(text);
+  const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(content => {
+    if (typeof content === 'string') {
+      const chatHistory = parseChatHistoryFromHARFile(content);
 
-    setEditedContent(chatHistory ? JSON.stringify(chatHistory, null, 2) : '');
+      setEditedContent(chatHistory ? JSON.stringify(chatHistory, null, 2) : '');
+    }
   }, []);
 
-  const handleLoadSampleButtonClick = useCallback(
+  const handleLoadSampleButtonClick = useCallback<MouseEventHandler>(
     () => setEditedContent(JSON.stringify(SAMPLE_TRANSCRIPT, null, 2) + '\n'),
     [setEditedContent]
   );
 
-  const handleSaveButtonClick = useCallback(() => {
+  const handleSaveButtonClick = useCallback<() => void>(() => {
     if (editedContent) {
       const transcript = parseTranscript(editedContent);
 
@@ -153,9 +157,13 @@ const TranscriptDialog = () => {
       setVisible(false);
     }
   }, [editedContent, setSavedContent, setVisible]);
-  const handleTextAreaChange = useCallback(({ target: { value } }) => setEditedContent(value), [setEditedContent]);
 
-  const handleTextAreaKeyDown = useCallback(
+  const handleTextAreaChange = useCallback<ChangeEventHandler<HTMLTextAreaElement>>(
+    ({ target: { value } }) => setEditedContent(value),
+    [setEditedContent]
+  );
+
+  const handleTextAreaKeyDown = useCallback<KeyboardEventHandler>(
     event => {
       const { ctrlKey, key } = event;
 

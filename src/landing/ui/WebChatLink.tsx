@@ -21,13 +21,15 @@ import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useVersion from '../data/hooks/useVersion';
 
+import type { FC } from 'react';
+
 const ROOT_CSS = css({
   '&.webchat-link--disabled': {
     color: '#CCC'
   }
 });
 
-const WebChatLink = () => {
+const WebChatLink: FC = () => {
   const [conversationId] = useDirectLineConversationId();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
