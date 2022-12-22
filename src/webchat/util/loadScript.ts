@@ -1,6 +1,6 @@
 import createElement from './createElement';
 
-export default function loadScript(src, integrity) {
+export default function loadScript(src: string, integrity?: string): Promise<void> {
   return new Promise((resolve, reject) => {
     document.head.appendChild(
       createElement('script', {

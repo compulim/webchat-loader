@@ -1,6 +1,15 @@
 const NON_PIXEL_STYLES = ['flex', 'z-index', 'zoom'];
 
-export default function createElement(tag, attributes = {}, ...children) {
+type Attributes = any & {
+  className?: string;
+  style?: StyleSheet;
+};
+
+export default function createElement(
+  tag: string,
+  attributes: Attributes = {},
+  ...children: HTMLElement[]
+): HTMLElement {
   const element = document.createElement(tag);
 
   Object.keys(attributes).forEach(name => {
@@ -12,7 +21,7 @@ export default function createElement(tag, attributes = {}, ...children) {
       element.addEventListener(name.substr(2).toLowerCase(), value.bind(element));
     } else if (name === 'style') {
       const { style } = attributes;
-      const styleStrings = [];
+      const styleStrings: string[] = [];
 
       Object.keys(style).forEach(name => {
         let value = style[name];
