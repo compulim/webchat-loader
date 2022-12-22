@@ -122,8 +122,9 @@ const VersionSelector = () => {
   const presetVersions = useMemo(
     () => ({
       latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
+      '4.15.6': '4.15.6',
       '4.15.5': '4.15.5',
-      '4.15.4': '4.15.4',
+      // '4.15.4': '4.15.4',
       // '4.15.3': '4.15.3',
       // '4.15.2': '4.15.2',
       // '4.15.1': '4.15.1',
