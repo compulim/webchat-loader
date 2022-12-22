@@ -11,12 +11,9 @@ import type { StoreState } from '../createStore';
 export default function* fetchDirectLineTokenSaga() {
   yield takeEvery(FETCH_DIRECT_LINE_TOKEN, function* () {
     try {
-      const { secret, userId } = (yield select(
-        ({ directLineCredentials: { secret, userId } }: StoreState): { secret: string; userId: string } => ({
-          secret,
-          userId
-        })
-      )) as { secret: string; userId: string };
+      const [secret, userId] = (yield select(
+        ({ directLineCredentials: { secret, userId } }: StoreState): [string, string] => [secret, userId]
+      )) as [string, string];
 
       let url = secret;
 

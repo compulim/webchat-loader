@@ -4,22 +4,14 @@ import { GENERATE_SPEECH_AUTHORIZATION_TOKEN } from '../action/generateSpeechAut
 import generateSpeechAuthorizationToken from '../../util/generateSpeechAuthorizationToken';
 import setSpeechAuthorizationToken from '../action/setSpeechAuthorizationToken';
 
+import type { ResultOfPromise } from '../../types/ResultOfPromise';
 import type { StoreState } from '../createStore';
-import { ResultOfPromise } from '../../types/ResultOfPromise';
 
 export default function* generateDirectLineTokenSaga() {
   yield takeEvery(GENERATE_SPEECH_AUTHORIZATION_TOKEN, function* () {
-    const { region, subscriptionKey } = (yield select(
-      ({
-        speechCredentials: { region, subscriptionKey }
-      }: StoreState): { region: string; subscriptionKey: string } => ({
-        region,
-        subscriptionKey
-      })
-    )) as {
-      region: string;
-      subscriptionKey: string;
-    };
+    const [region, subscriptionKey] = (yield select(
+      ({ speechCredentials: { region, subscriptionKey } }: StoreState): [string, string] => [region, subscriptionKey]
+    )) as [string, string];
 
     try {
       const { authorizationToken } = (yield call(generateSpeechAuthorizationToken, {

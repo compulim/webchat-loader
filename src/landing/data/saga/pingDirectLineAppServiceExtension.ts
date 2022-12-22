@@ -4,8 +4,8 @@ import { PING_DIRECT_LINE_APP_SERVICE_EXTENSION } from '../action/pingDirectLine
 import getDomainURL from '../../../common/util/getDomainURL';
 import setDirectLineAppServiceExtensionStatus from '../action/setDirectLineAppServiceExtensionStatus';
 
-import type pingDirectLineAppServiceExtension from '../action/pingDirectLineAppServiceExtension';
 import type { ResultOfPromise } from '../../types/ResultOfPromise';
+import type pingDirectLineAppServiceExtension from '../action/pingDirectLineAppServiceExtension';
 
 type PingDirectLineAppServiceExtensionAction = ReturnType<typeof pingDirectLineAppServiceExtension>;
 

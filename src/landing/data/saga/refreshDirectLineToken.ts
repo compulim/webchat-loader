@@ -11,16 +11,13 @@ import { ResultOfPromise } from '../../types/ResultOfPromise';
 export default function* refreshDirectLineTokenSaga() {
   yield takeEvery(REFRESH_DIRECT_LINE_TOKEN, function* () {
     try {
-      const { domainHost, protocol, token } = (yield select(
-        ({
-          directLineCredentials: { domainHost, token },
-          protocol
-        }: StoreState): { domainHost: string; protocol: string; token: string } => ({
+      const [domainHost, protocol, token] = (yield select(
+        ({ directLineCredentials: { domainHost, token }, protocol }: StoreState): [string, string, string] => [
           domainHost,
           protocol,
           token
-        })
-      )) as { domainHost: string; protocol: string; token: string };
+        ]
+      )) as [string, string, string];
 
       if (!token) {
         return;

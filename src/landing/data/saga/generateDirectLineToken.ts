@@ -10,16 +10,13 @@ import type { StoreState } from '../createStore';
 
 export default function* generateDirectLineTokenSaga() {
   yield takeEvery(GENERATE_DIRECT_LINE_TOKEN, function* () {
-    const { domainHost, protocol, secret } = (yield select(
-      ({
-        directLineCredentials: { domainHost, secret },
-        protocol
-      }: StoreState): { domainHost: string; protocol: string; secret: string } => ({
+    const [domainHost, protocol, secret] = (yield select(
+      ({ directLineCredentials: { domainHost, secret }, protocol }: StoreState): [string, string, string] => [
         domainHost,
         protocol,
         secret
-      })
-    )) as { domainHost: string; protocol: string; secret: string };
+      ]
+    )) as [string, string, string];
 
     try {
       const { token } = (yield call<typeof generateDirectLineToken>(generateDirectLineToken, {
