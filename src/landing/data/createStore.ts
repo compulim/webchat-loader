@@ -6,20 +6,15 @@ import reducer from './reducer';
 import saga from './saga';
 
 import type { StoreStateOf } from '../types/StoreStateOf';
+import tryParseJSON from '../util/tryParseJSON';
 
 const LOCAL_STORAGE_KEY = 'REDUX_STORE';
-
-function onErrorResumeNext<T extends () => any>(fn: T): ReturnType<T> | undefined {
-  try {
-    return fn();
-  } catch (err) {}
-}
 
 export default function createStore() {
   const sagaMiddleware = createSagaMiddleware();
   const store = createReduxStore(
     reducer,
-    onErrorResumeNext(() => JSON.parse(window.localStorage?.getItem?.(LOCAL_STORAGE_KEY) || '')) || {},
+    tryParseJSON(window.localStorage?.getItem?.(LOCAL_STORAGE_KEY) || '') || {},
     applyMiddleware(
       sagaMiddleware
       // () => next => action => {
