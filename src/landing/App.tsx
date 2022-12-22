@@ -1,10 +1,9 @@
 import { css } from 'emotion';
 import classNames from 'classnames';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import BotPresets from './ui/BotPresets';
 import DirectLineCredentials from './ui/DirectLineCredentials';
-// import ExperimentSelector from './ui/ExperimentSelector';
 import Protocol from './ui/Protocol';
 import SpeechCredentials from './ui/SpeechCredentials';
 import TranscriptDialog from './ui/TranscriptDialog';
@@ -46,6 +45,7 @@ const ROOT_CSS = css({
 
 const App: FC = () => {
   const [transcriptDialogVisible] = useTranscriptDialogVisible();
+  const buildTimestamp = useMemo<Date>(() => new Date(BUILD_TIMESTAMP || ''), []);
 
   return (
     <div className={classNames(ROOT_CSS + '', 'app')}>
@@ -88,7 +88,8 @@ const App: FC = () => {
         </section>
       </div>
       <div className="app__build-time">
-        {process.env.npm_package_version} (Build at {BUILD_DATE} {BUILD_TIME})
+        {process.env.npm_package_version} (Build at {buildTimestamp.toLocaleDateString()}{' '}
+        {buildTimestamp.toLocaleTimeString()})
       </div>
       {transcriptDialogVisible && <TranscriptDialog />}
     </div>
