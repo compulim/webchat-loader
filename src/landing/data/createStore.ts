@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { applyMiddleware, createStore as createReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import onErrorResumeNext from 'on-error-resume-next';
 import updateIn from 'simple-update-in';
 
 import reducer from './reducer';
@@ -19,11 +20,11 @@ const LOCAL_STORAGE_KEY = 'REDUX_STORE';
 
 export default function createStore() {
   const sagaMiddleware = createSagaMiddleware();
-  const store = configureStore({
+  const store = createReduxStore(
     reducer,
-    preloadedState: tryParseJSON(window.localStorage?.getItem?.(LOCAL_STORAGE_KEY) || '') || {},
-    middleware: [sagaMiddleware]
-  });
+    tryParseJSON(onErrorResumeNext(() => window.localStorage?.getItem?.(LOCAL_STORAGE_KEY)) || '') || {},
+    applyMiddleware(sagaMiddleware)
+  );
 
   sagaMiddleware.run(saga);
 
