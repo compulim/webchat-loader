@@ -13,8 +13,10 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        forceAllTransforms: true,
-        modules: false
+        modules: false,
+        targets: {
+          ie: '11'
+        }
       }
     ],
     '@babel/preset-react'
