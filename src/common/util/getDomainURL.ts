@@ -1,6 +1,6 @@
 import isLocalhost from './isLocalhost';
 
-export default function getDomainURL(domainHost: string, protocol: string): URL {
+export default function getDomainURL(domainHost: string | undefined, protocol: string): URL {
   if (domainHost) {
     try {
       if (isLocalhost(domainHost) || protocol === 'app service extension insecure') {

@@ -11,21 +11,21 @@ import loadAsset from './util/loadAsset';
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
 
-  const directLineDomainHost = urlSearchParams.get('dd');
-  const protocolAppServiceExtension = urlSearchParams.get('p') === 'ase';
-  const protocolAppServiceExtensionInsecure = urlSearchParams.get('p') === 'ase-insecure';
-  const protocolDirectLineSpeech = urlSearchParams.get('p') === 'dls';
-  const protocolREST = urlSearchParams.get('p') === 'rest';
-  const protocolTranscript = urlSearchParams.get('p') === 'blob';
-  const speechAuthorizationToken = urlSearchParams.get('st');
-  const speechSubscriptionKey = urlSearchParams.get('sk');
-  const speechRegion = urlSearchParams.get('sr');
-  const transcriptBlobURL = urlSearchParams.get('blob');
-  let conversationId = urlSearchParams.get('cid');
-  let secret = urlSearchParams.get('ds');
-  let token = urlSearchParams.get('dt');
-  let userID = urlSearchParams.get('userid');
-  let version = urlSearchParams.get('v') || 'latest';
+  const directLineDomainHost: string | undefined = urlSearchParams.get('dd') || undefined;
+  const protocolAppServiceExtension: boolean = urlSearchParams.get('p') === 'ase';
+  const protocolAppServiceExtensionInsecure: boolean = urlSearchParams.get('p') === 'ase-insecure';
+  const protocolDirectLineSpeech: boolean = urlSearchParams.get('p') === 'dls';
+  const protocolREST: boolean = urlSearchParams.get('p') === 'rest';
+  const protocolTranscript: boolean = urlSearchParams.get('p') === 'blob';
+  const speechAuthorizationToken: string | undefined = urlSearchParams.get('st') || undefined;
+  const speechSubscriptionKey: string | undefined = urlSearchParams.get('sk') || undefined;
+  const speechRegion: string | undefined = urlSearchParams.get('sr') || undefined;
+  const transcriptBlobURL: string = urlSearchParams.get('blob') || '';
+  let conversationId: string | undefined = urlSearchParams.get('cid') || undefined;
+  let secret: string | undefined = urlSearchParams.get('ds') || undefined;
+  let token: string | undefined = urlSearchParams.get('dt') || undefined;
+  let userID: string | undefined = urlSearchParams.get('userid') || undefined;
+  let version: string = urlSearchParams.get('v') || 'latest';
 
   const protocolWebSocket =
     !protocolAppServiceExtension && !protocolAppServiceExtensionInsecure && !protocolREST && !protocolTranscript;
@@ -109,7 +109,7 @@ async function main() {
 
       const result = await res.json();
 
-      secret = null;
+      secret = undefined;
       token = result.token;
       conversationId = result.conversationId;
     }
@@ -122,15 +122,17 @@ async function main() {
   if (protocolAppServiceExtension || protocolAppServiceExtensionInsecure) {
     let createDirectLineAppServiceExtension;
 
-    if (typeof window.DirectLine !== 'undefined') {
+    if (typeof (window as any).DirectLine !== 'undefined') {
       console.warn('Using DirectLineJS from the bundle of directLine.js.');
-      createDirectLineAppServiceExtension = options => new window.DirectLine.DirectLineStreaming(options);
-    } else if (window.WebChat && window.WebChat.createDirectLineAppServiceExtension) {
+      createDirectLineAppServiceExtension = (options: any) =>
+        new (window as any).DirectLine.DirectLineStreaming(options);
+    } else if ((window as any).WebChat?.createDirectLineAppServiceExtension) {
       console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
-      createDirectLineAppServiceExtension = options => new window.WebChat.createDirectLineAppServiceExtension(options);
+      createDirectLineAppServiceExtension = (options: any) =>
+        new (window as any).WebChat.createDirectLineAppServiceExtension(options);
     } else {
       console.warn('Using DirectLineJS from Web Chat Loader.');
-      createDirectLineAppServiceExtension = options => new NPMDirectLineStreaming(options);
+      createDirectLineAppServiceExtension = (options: any) => new NPMDirectLineStreaming(options);
     }
 
     adapters = {
@@ -143,7 +145,7 @@ async function main() {
   } else if (protocolDirectLineSpeech) {
     console.warn('Using Direct Line Speech chat adapter from the bundle of Web Chat v4.');
 
-    adapters = await window.WebChat.createDirectLineSpeechAdapters({
+    adapters = await (window as any).WebChat.createDirectLineSpeechAdapters({
       fetchCredentials: speechAuthorizationToken
         ? {
             authorizationToken: speechAuthorizationToken,
@@ -175,18 +177,18 @@ async function main() {
   } else {
     let createDirectLine;
 
-    if (typeof window.DirectLine !== 'undefined') {
+    if (typeof (window as any).DirectLine !== 'undefined') {
       console.warn('Using DirectLineJS from the bundle of directLine.js.');
-      createDirectLine = options => new window.DirectLine.DirectLine(options);
-    } else if (window.WebChat && window.WebChat.createDirectLine) {
+      createDirectLine = (options: any) => new (window as any).DirectLine.DirectLine(options);
+    } else if ((window as any).WebChat?.createDirectLine) {
       console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
-      createDirectLine = options => new window.WebChat.createDirectLine(options);
-    } else if (window.BotChat && window.BotChat.DirectLine) {
+      createDirectLine = (options: any) => new (window as any).WebChat.createDirectLine(options);
+    } else if ((window as any).BotChat?.DirectLine) {
       console.warn('Using DirectLineJS from the bundle of Web Chat v3.');
-      createDirectLine = options => new window.BotChat.DirectLine(options);
+      createDirectLine = (options: any) => new (window as any).BotChat.DirectLine(options);
     } else {
       console.warn('Using DirectLineJS from Web Chat Loader.');
-      createDirectLine = options => new NPMDirectLine(options);
+      createDirectLine = (options: any) => new NPMDirectLine(options);
     }
 
     adapters = {
@@ -200,57 +202,63 @@ async function main() {
 
   const rootElement = document.getElementById('webchat');
 
-  if (/^0/.test(version)) {
-    rootElement.style.position = 'relative';
+  if (rootElement) {
+    if (/^0/.test(version)) {
+      rootElement.style.position = 'relative';
 
-    window.BotChat.App(
-      {
-        botConnection: adapters.directLine,
-        speechOptions: {
-          speechRecognizer: new CognitiveServices.SpeechRecognizer({ subscriptionKey: speechSubscriptionKey }),
-          speechSynthesizer: new CognitiveServices.SpeechSynthesizer({
-            gender: CognitiveServices.SynthesisGender.Female,
-            subscriptionKey: speechSubscriptionKey,
-            voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
-          })
+      (window as any).BotChat.App(
+        {
+          botConnection: adapters.directLine,
+          speechOptions: {
+            speechRecognizer: new (window as any).CognitiveServices.SpeechRecognizer({
+              subscriptionKey: speechSubscriptionKey
+            }),
+            speechSynthesizer: new (window as any).CognitiveServices.SpeechSynthesizer({
+              gender: (window as any).CognitiveServices.SynthesisGender.Female,
+              subscriptionKey: speechSubscriptionKey,
+              voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+            })
+          },
+          user: { id: userID, name: 'You' }
         },
-        user: { id: userID, name: 'You' }
-      },
-      rootElement
-    );
-  } else {
-    if (!protocolDirectLineSpeech) {
-      if (speechAuthorizationToken || speechSubscriptionKey) {
-        const speechOptions = {
-          // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
-          // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',
-          // speechSynthesisDeploymentId: '12345678-1234-5678-abcd-12345678abcd'
-          // textNormalization: 'itn'
-          // enableTelemetry: true
-        };
+        rootElement
+      );
+    } else {
+      if (!protocolDirectLineSpeech) {
+        if (speechAuthorizationToken || speechSubscriptionKey) {
+          const speechOptions = {
+            // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
+            // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',
+            // speechSynthesisDeploymentId: '12345678-1234-5678-abcd-12345678abcd'
+            // textNormalization: 'itn'
+            // enableTelemetry: true
+          };
 
-        adapters.webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          ...speechOptions,
-          credentials: () => ({
-            region: speechRegion,
-            ...(speechAuthorizationToken
-              ? { authorizationToken: speechAuthorizationToken }
-              : { subscriptionKey: speechSubscriptionKey })
-          })
-        });
+          adapters.webSpeechPonyfillFactory = await (
+            window as any
+          ).WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+            ...speechOptions,
+            credentials: () => ({
+              region: speechRegion,
+              ...(speechAuthorizationToken
+                ? { authorizationToken: speechAuthorizationToken }
+                : { subscriptionKey: speechSubscriptionKey })
+            })
+          });
+        }
       }
-    }
 
-    window.WebChat.renderWebChat(
-      {
-        ...adapters,
-        sendTypingIndicator: true
-      },
-      rootElement
-    );
+      (window as any).WebChat.renderWebChat(
+        {
+          ...adapters,
+          sendTypingIndicator: true
+        },
+        rootElement
+      );
+    }
   }
 
-  document.querySelector('#webchat > *').focus();
+  (document.querySelector('#webchat > *') as HTMLElement).focus?.();
 }
 
 main().catch(err => console.error(err));
