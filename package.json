@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "npm run build:typescript && npm run build:babel && npm run build:esbuild && npm run build:public",
-    "build:babel": "babel src --out-dir lib",
+    "build:babel": "babel src --extensions=.js,.jsx,.ts,.tsx --out-dir lib",
     "build:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --define:BUILD_DATE=\\\"`date +\"%Y-%m-%d\"`\\\" --define:BUILD_TIME=\\\"`date +\"%H:%m:%S\"`\\\" --define:process.env.npm_package_version=\\\"$npm_package_version\\\" --outdir=build --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
     "build:public": "cpy public/**/* build/",
     "build:typescript": "tsc --project src",
