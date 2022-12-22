@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import generateSpeechAuthorizationToken from '../action/generateSpeechAuthorizationToken';
 
-export default function useGenerateSpeechAuthorizationToken() {
+export default function useGenerateSpeechAuthorizationToken(): () => void {
   const dispatch = useDispatch();
 
-  return useCallback(() => dispatch(generateSpeechAuthorizationToken()));
+  return useCallback(() => dispatch(generateSpeechAuthorizationToken()), [dispatch]);
 }

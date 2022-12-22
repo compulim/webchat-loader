@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import setProtocolTranscript from '../action/setProtocolTranscript';
 
-export default function useProtocolTranscript() {
+import type { StoreState } from '../createStore';
+
+export default function useProtocolTranscript(): readonly [boolean, () => void] {
   const dispatch = useDispatch();
 
-  return [
-    useSelector(({ protocol }) => protocol === 'transcript'),
+  return Object.freeze([
+    useSelector<StoreState, boolean>(({ protocol }) => protocol === 'transcript'),
     useCallback(() => dispatch(setProtocolTranscript()), [dispatch])
-  ];
+  ]);
 }

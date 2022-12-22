@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import fetchDirectLineToken from '../action/fetchDirectLineToken';
 
-export default function useFetchDirectLineToken() {
+export default function useFetchDirectLineToken(): () => void {
   const dispatch = useDispatch();
 
-  return useCallback(() => dispatch(fetchDirectLineToken()));
+  return useCallback(() => dispatch(fetchDirectLineToken()), [dispatch]);
 }

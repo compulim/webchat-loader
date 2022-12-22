@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import setProtocolDirectLineSpeech from '../action/setProtocolDirectLineSpeech';
 
-export default function useProtocolDirectLineSpeech() {
+import type { StoreState } from '../createStore';
+
+export default function useProtocolDirectLineSpeech(): readonly [boolean, () => void] {
   const dispatch = useDispatch();
 
-  return [
-    useSelector(({ protocol }) => protocol === 'direct line speech'),
+  return Object.freeze([
+    useSelector<StoreState, boolean>(({ protocol }) => protocol === 'direct line speech'),
     useCallback(() => dispatch(setProtocolDirectLineSpeech()), [dispatch])
-  ];
+  ]);
 }
