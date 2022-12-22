@@ -4,9 +4,16 @@ import updateIn from 'simple-update-in';
 
 import reducer from './reducer';
 import saga from './saga';
-
-import type { StoreStateOf } from '../types/StoreStateOf';
 import tryParseJSON from '../util/tryParseJSON';
+
+import type { ActionOf } from '../types/ActionOf';
+import type { StoreStateOf } from '../types/StoreStateOf';
+import type fetchDirectLineToken from './action/fetchDirectLineToken';
+import type fetchSpeechAuthorizationToken from './action/fetchSpeechAuthorizationToken';
+import type generateDirectLineToken from './action/generateDirectLineToken';
+import type generateSpeechAuthorizationToken from './action/generateSpeechAuthorizationToken';
+import type pingDirectLineAppServiceExtension from './action/pingDirectLineAppServiceExtension';
+import type refreshDirectLineToken from './action/refreshDirectLineToken';
 
 const LOCAL_STORAGE_KEY = 'REDUX_STORE';
 
@@ -36,5 +43,14 @@ export default function createStore() {
 
   return store;
 }
+
+export type Action =
+  | ActionOf<ReturnType<typeof createStore>>
+  | ReturnType<typeof fetchDirectLineToken>
+  | ReturnType<typeof fetchSpeechAuthorizationToken>
+  | ReturnType<typeof generateDirectLineToken>
+  | ReturnType<typeof generateSpeechAuthorizationToken>
+  | ReturnType<typeof pingDirectLineAppServiceExtension>
+  | ReturnType<typeof refreshDirectLineToken>;
 
 export type StoreState = StoreStateOf<ReturnType<typeof createStore>>;

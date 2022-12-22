@@ -1,6 +1,6 @@
 import { takeLatest as reduxSagaTakeLatest } from 'redux-saga/effects';
 
-import type { Action } from '../../reducer';
+import type { Action } from '../../createStore';
 import type { Action as ReduxAction } from 'redux';
 import type { ActionPattern, ForkEffect } from 'redux-saga/effects';
 
