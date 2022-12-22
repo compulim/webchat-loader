@@ -209,16 +209,20 @@ async function main() {
       (window as any).BotChat.App(
         {
           botConnection: adapters.directLine,
-          speechOptions: {
-            speechRecognizer: new (window as any).CognitiveServices.SpeechRecognizer({
-              subscriptionKey: speechSubscriptionKey
-            }),
-            speechSynthesizer: new (window as any).CognitiveServices.SpeechSynthesizer({
-              gender: (window as any).CognitiveServices.SynthesisGender.Female,
-              subscriptionKey: speechSubscriptionKey,
-              voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
-            })
-          },
+          ...(speechSubscriptionKey
+            ? {
+                speechOptions: {
+                  speechRecognizer: new (window as any).CognitiveServices.SpeechRecognizer({
+                    subscriptionKey: speechSubscriptionKey
+                  }),
+                  speechSynthesizer: new (window as any).CognitiveServices.SpeechSynthesizer({
+                    gender: (window as any).CognitiveServices.SynthesisGender.Female,
+                    subscriptionKey: speechSubscriptionKey,
+                    voiceName: 'Microsoft Server Speech Text to Speech Voice (en-US, JessaRUS)'
+                  })
+                }
+              }
+            : {}),
           user: { id: userID, name: 'You' }
         },
         rootElement
