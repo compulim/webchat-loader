@@ -26,6 +26,7 @@ const ROOT_CSS = css({
     backgroundColor: 'White',
     borderRadius: 4,
     boxShadow: '0 0 10px rgba(0, 0, 0, .05)',
+    minWidth: 480,
     padding: '0 20px 20px'
   },
 
