@@ -75,7 +75,7 @@ export default function createDirectLineFromTranscript(activities: any) {
 
       for (const activity of activities) {
         activityDeferredObservable?.next?.(activity);
-        await sleep(200);
+        await sleep(0);
       }
     })();
   });
