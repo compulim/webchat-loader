@@ -4,14 +4,15 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "npm run build:typescript && npm run build:babel && npm run build:esbuild && npm run build:public",
+    "build": "npm run build:external:semver && npm run build:typescript && npm run build:babel && npm run build:esbuild && npm run build:public",
     "build:babel": "babel src --extensions=.js,.jsx,.ts,.tsx --out-dir lib",
     "build:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --define:BUILD_TIMESTAMP=\\\"`TZ=etc/utc date -Iseconds`\\\" --define:process.env.npm_package_version=\\\"$npm_package_version\\\" --outdir=build --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
+    "build:external:semver": "babel --config-file ./src/external/semver.babel.config.json --out-dir ./src/external/semver/ node_modules/semver",
     "build:public": "cpy public/**/* build/",
     "build:typescript": "tsc --project src",
     "bump": "npm install --legacy-peer-deps $(cat package.json | jq -r '(.dependencies | keys) + (.devDependencies | keys) - ((.skipBump // {}) | keys) | .[]' | awk '{print $1 \"@latest\"}')",
     "prepublishOnly": "npm run build",
-    "start": "concurrently --names=\"babel,esbuild,typescript\" \"npm run start:babel\" \"npm run start:esbuild\" \"npm run start:typescript\"",
+    "start": "npm run build:external:semver && concurrently --names=\"babel,esbuild,typescript\" \"npm run start:babel\" \"npm run start:esbuild\" \"npm run start:typescript\"",
     "start:babel": "npm run build:babel -- --watch",
     "start:esbuild": "esbuild landing=lib/landing/index.js webchat=lib/webchat/index.js --bundle --define:BUILD_TIMESTAMP=\\\"`TZ=etc/utc date -Iseconds`\\\" --define:process.env.npm_package_version=\\\"$npm_package_version\\\" --outdir=public --servedir=public --sourcemap=external --target=chrome100,edge100,firefox100,ie11,safari15",
     "start:typescript": "tsc --preserveWatchOutput --project src --watch",
@@ -70,6 +71,7 @@
     "react-redux": "^7.2.0",
     "redux": "^4.2.0",
     "redux-saga": "^1.2.2",
+    "semver": "^7.3.8",
     "simple-update-in": "^2.2.0",
     "whatwg-fetch": "^3.6.2"
   }

@@ -1,11 +1,20 @@
 import { fetch } from 'whatwg-fetch';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+/* @ts-ignore */
+import coerce from '../../external/semver/functions/coerce';
+/* @ts-ignore */
+import compare from '../../external/semver/functions/compare';
 import Presets from './Presets';
 import Row from './Row';
 import useVersion from '../data/hooks/useVersion';
 
 import type { ChangeEventHandler, CSSProperties, FC } from 'react';
+
+type Version = {
+  time: string;
+  version: string;
+};
 
 const SELECT_STYLE: Readonly<CSSProperties> = Object.freeze({ width: '100%' });
 
@@ -56,6 +65,37 @@ const VersionSelector: FC = () => {
       }
     }
   }, [setAvailableVersions]);
+
+  const groupedAvailableVersions = useMemo(() => {
+    // const final: Map<string, Version[]> = new Map();
+    let lastGroup: [string, Version[]] | undefined;
+
+    return availableVersions.reduce<Map<string, Version[]>>((final, version) => {
+      const coercedVersion = coerce(version.version) + '';
+
+      if (lastGroup && coercedVersion === lastGroup[0]) {
+        lastGroup[1].push(version);
+      } else {
+        lastGroup = [coercedVersion, [version]];
+        final.set(coercedVersion, lastGroup[1]);
+      }
+
+      return final;
+    }, new Map());
+
+    // for (const version of availableVersions) {
+    //   const coercedVersion = coerce(version.version);
+
+    //   if (lastGroup && coercedVersion === lastGroup[0]) {
+    //     lastGroup[1].push(version);
+    //   } else {
+    //     lastGroup = [coercedVersion, [version]];
+    //     final.set(coercedVersion, lastGroup[1]);
+    //   }
+    // }
+
+    // return final;
+  }, [availableVersions]);
 
   useEffect(() => {
     (async function () {
@@ -194,11 +234,30 @@ const VersionSelector: FC = () => {
             {localhostLabel}
             {localhostAvailable ? '' : ' (not available)'}
           </option>
-          {(availableVersions || []).map(({ time, version }) => (
-            <option key={version} value={version}>
-              {version} ({new Date(time).toLocaleDateString()})
-            </option>
-          ))}
+          {Array.from(groupedAvailableVersions.entries())
+            .sort(([x], [y]) => compare(x, y))
+            .reverse()
+            .map(([coercedVersion, versions]) => {
+              if (versions.length === 1) {
+                const [{ time, version }] = versions;
+
+                return (
+                  <option key={version} value={version}>
+                    {version} ({new Date(time).toLocaleDateString()})
+                  </option>
+                );
+              } else {
+                return (
+                  <optgroup key={coercedVersion} label={coercedVersion}>
+                    {versions.map(({ time, version }) => (
+                      <option key={version} value={version}>
+                        {version} ({new Date(time).toLocaleDateString()})
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              }
+            })}
         </select>
       </div>
       <div>
