@@ -1,10 +1,11 @@
 import { css, cx } from 'emotion';
+import { LoremIpsum } from 'lorem-ipsum';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import FileUploadButton from './FileUploadButton';
+import parseChatHistoryFromHARFile from '../util/parseChatHistoryFromHARFile';
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
-import parseChatHistoryFromHARFile from '../util/parseChatHistoryFromHARFile';
-import FileUploadButton from './FileUploadButton';
 
 import type { ChangeEventHandler, FC, KeyboardEventHandler, MouseEventHandler } from 'react';
 
@@ -55,6 +56,7 @@ const DIALOG_CSS = css({
   }
 });
 
+const GENERATE_COUNT = 50;
 const NOW = Date.now();
 
 const SAMPLE_TRANSCRIPT_JSON = JSON.stringify(
@@ -133,6 +135,29 @@ const TranscriptDialog: FC = () => {
     return transcript && transcript.length ? JSON.stringify(transcript, null, 2) + '\n' : '';
   });
 
+  const handleGenerateClick = useCallback<() => void>(() => {
+    const loremIpsum = new LoremIpsum();
+    const nextEditedContent = [];
+    let timestamp = new Date();
+
+    for (let i = 0; i < GENERATE_COUNT; i++) {
+      nextEditedContent.unshift({
+        from: {
+          role: i % 2 ? 'bot' : 'user'
+          // role: 'bot'
+        },
+        id: `a-${GENERATE_COUNT - i}`,
+        text: `${GENERATE_COUNT - i}: ${loremIpsum.generateParagraphs(1)}`,
+        timestamp: timestamp.toISOString(),
+        type: 'message'
+      });
+
+      timestamp.setUTCSeconds(timestamp.getUTCSeconds() - 301);
+    }
+
+    setEditedContent(JSON.stringify(nextEditedContent, null, 2));
+  }, [setEditedContent]);
+
   const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(content => {
     if (typeof content === 'string') {
       const chatHistory = parseChatHistoryFromHARFile(content);
@@ -204,6 +229,10 @@ const TranscriptDialog: FC = () => {
         </button>
         &nbsp;
         <FileUploadButton onUpload={handleUploadHARFile}>Upload HAR file</FileUploadButton>
+        &nbsp;
+        <button disabled={!editedContent} onClick={handleGenerateClick} type="button">
+          Generate
+        </button>
       </div>
       <div className="transcript-dialog__body">
         <textarea
