@@ -86,12 +86,15 @@ export default function createDirectLineFromTranscript(activities: any) {
     end: () => {},
     postActivity: (activity: any) => {
       const id = Math.random().toString(36).substring(2, 7);
-
-      activityDeferredObservable?.next?.({
+      const postingActivity = {
         ...activity,
         id,
         timestamp: new Date().toISOString()
-      });
+      };
+
+      activityDeferredObservable?.next?.(postingActivity);
+
+      console.log('Posting activity', postingActivity);
 
       return Observable.from([id]);
     }
