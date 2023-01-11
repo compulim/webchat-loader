@@ -2,11 +2,14 @@ import 'core-js/features/promise';
 
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
+import { render } from 'react-dom';
 import random from 'math-random';
+import React from 'react';
 
 import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
 import getDomainURL from '../common/util/getDomainURL';
 import loadAsset from './util/loadAsset';
+import KeyLogs from './ui/KeyLogs';
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
@@ -263,6 +266,12 @@ async function main() {
   }
 
   (document.querySelector('#webchat > *') as HTMLElement).focus?.();
+
+  showKeyLogs();
+}
+
+function showKeyLogs() {
+  render(<KeyLogs />, document.getElementById('react-root'));
 }
 
 main().catch(err => console.error(err));

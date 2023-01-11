@@ -53,9 +53,49 @@
         text-shadow: 1px 1px rgba(255, 255, 255, 1);
         z-index: -1;
       }
-    </style>
+
+      #key-logs {
+        align-items: flex-end;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 30px);
+        justify-content: flex-end;
+        left: 0;
+        overflow: hidden;
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        width: calc(100vw - 10px);
+        z-index: -1;
+      }
+
+      .key-logs__entry {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      .key-logs__key {
+        background-color: White;
+        border-radius: 8px;
+        border: solid 1px #EEE;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        color: #999;
+        font-family: Consolas, Menlo, 'Courier New', Courier, monospace;
+        font-size: x-large;
+        margin-left: 5px;
+        padding: .1em .4em;
+        text-transform: uppercase;
+      }
+
+      .key-logs__key--repeat {
+        border: 0;
+        background-color: inherit;
+        box-shadow: inherit;
+      }
+</style>
   </head>
   <body>
+    <div id="react-root"></div>
     <div id="webchat" role="main"></div>
     <div id="version"></div>
     <script src="webchat.js"></script>
