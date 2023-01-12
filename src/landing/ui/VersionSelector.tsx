@@ -1,5 +1,6 @@
+import { css } from 'emotion';
 import { fetch } from 'whatwg-fetch';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 /* @ts-ignore */
 import coerce from '../../external/semver/functions/coerce';
@@ -10,11 +11,31 @@ import Row from './Row';
 import useVersion from '../data/hooks/useVersion';
 
 import type { ChangeEventHandler, CSSProperties, FC } from 'react';
+import useFetchArtifactBundleURL from '../data/hooks/useFetchArtifactBundleURL';
+import useFetchArtifactBundleURLReason from '../data/hooks/useFetchArtifactBundleURLReason';
+import useFetchArtifactBundleURLStatus from '../data/hooks/useFetchArtifactBundleURLStatus';
 
 type Version = {
   time: string;
   version: string;
 };
+
+const ROOT_CSS = css({
+  '.version-selector__artifact-box': {
+    border: 0,
+    fontSize: '90%',
+    width: '100%'
+  },
+
+  '.version-selector__artifact-box-label': {
+    display: 'inline-block',
+    fontWeight: 'initial',
+    textAlign: 'initial',
+    width: 150
+  },
+
+  '.version-selector__artifact-box-input': {}
+});
 
 const SELECT_STYLE: Readonly<CSSProperties> = Object.freeze({ width: '100%' });
 
@@ -45,6 +66,9 @@ const VersionSelector: FC = () => {
   const [cdnLatestLabel, setCDNLatestLabel] = useState('cdn.botframework.com/.../latest');
   const [localhostLabel, setLocalhostLabel] = useState('localhost:5000/webchat*.js and directLine.js');
   const [localhostAvailable, setLocalhostAvailable] = useState(false);
+  const [artifactNumber, setArtifactNumber] = useState('');
+  const [personalAccessToken, setPersonalAccessToken] = useState('');
+  const [showGitHubArtifactPanel, setShowGitHubArtifactPanel] = useState(false);
 
   useMemo(async () => {
     try {
@@ -203,6 +227,7 @@ const VersionSelector: FC = () => {
         // '4.6.0': '4.6.0',
         // '4.5.2': '4.5.2',
         // '4.4.2': '4.4.2',
+        'gh-artifact': 'gh-artifact',
         ...(v3Version ? { v3: v3Version } : {}),
         ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
         daily: 'dev',
@@ -219,8 +244,52 @@ const VersionSelector: FC = () => {
     [setVersion]
   );
 
+  const handlePresetChange = useCallback(
+    (preset: string) => {
+      if (preset === 'gh-artifact') {
+        setShowGitHubArtifactPanel(true);
+      } else {
+        setShowGitHubArtifactPanel(false);
+        setVersion(preset);
+      }
+    },
+    [setShowGitHubArtifactPanel, setVersion]
+  );
+
+  const handleArtifactNumberChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target: { value } }) => {
+      const match = /^https:\/\/github.com\/microsoft\/BotFramework-WebChat\/suites\/\d+\/artifacts\/(\d+)$/.exec(
+        value
+      );
+
+      setArtifactNumber(match ? match[1] : value);
+    },
+    [setArtifactNumber]
+  );
+
+  const handlePersonalAccessTokenChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target: { value } }) => setPersonalAccessToken(value),
+    [setPersonalAccessToken]
+  );
+
+  const fetchArtifactBundleURL = useFetchArtifactBundleURL();
+
+  const handleDownloadArtifactClick = useCallback(
+    () => fetchArtifactBundleURL(+artifactNumber, personalAccessToken),
+    [artifactNumber, fetchArtifactBundleURL, personalAccessToken]
+  );
+
+  const [fetchArtifactBundleURLReason] = useFetchArtifactBundleURLReason();
+  const [fetchArtifactBundleURLStatus] = useFetchArtifactBundleURLStatus();
+
+  const fetchArtifactBundleURLStatusIsIdleDownloaded = fetchArtifactBundleURLStatus === 'idle:downloaded';
+
+  useEffect(() => {
+    fetchArtifactBundleURLStatusIsIdleDownloaded && setShowGitHubArtifactPanel(false);
+  }, [fetchArtifactBundleURLStatusIsIdleDownloaded, setShowGitHubArtifactPanel]);
+
   return (
-    <Row header="Version">
+    <Row className={ROOT_CSS} header="Version">
       <div>
         <select
           disabled={availableVersions.length < 2}
@@ -228,6 +297,7 @@ const VersionSelector: FC = () => {
           style={SELECT_STYLE}
           value={version}
         >
+          {/^blob:/u.test(version) && <option value={version}>{version}</option>}
           <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
           <option value="dev">{devReleaseLabel}</option>
           <option disabled={!localhostAvailable} value="http://localhost:5000/">
@@ -261,8 +331,54 @@ const VersionSelector: FC = () => {
         </select>
       </div>
       <div>
-        <Presets onLoad={setVersion} texts={versionTexts} values={versionValues} />
+        <Presets onLoad={handlePresetChange} texts={versionTexts} values={versionValues} />
       </div>
+      {showGitHubArtifactPanel && (
+        <div className="version-selector__artifact-box">
+          <div>
+            <label>
+              <span className="version-selector__artifact-box-label">Artifact number</span>
+              <input
+                className="version-selector__artifact-box-input"
+                onChange={handleArtifactNumberChange}
+                type="text"
+                value={artifactNumber}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              <span className="version-selector__artifact-box-label">Personal access token</span>
+              <input
+                className="version-selector__artifact-box-input"
+                onChange={handlePersonalAccessTokenChange}
+                type="password"
+                value={personalAccessToken}
+              />
+            </label>
+          </div>
+          <div>
+            <button
+              disabled={!+artifactNumber || !personalAccessToken || /^busy:/.test(fetchArtifactBundleURLStatus)}
+              onClick={handleDownloadArtifactClick}
+              type="button"
+            >
+              {fetchArtifactBundleURLStatus === 'busy:authorize'
+                ? 'Authorizing…'
+                : fetchArtifactBundleURLStatus === 'busy:download'
+                ? 'Downloading…'
+                : fetchArtifactBundleURLStatus === 'busy:extract'
+                ? 'Extracting…'
+                : 'Download artifact'}
+            </button>
+            {fetchArtifactBundleURLStatus === 'error' && (
+              <Fragment>
+                &nbsp;<span title={fetchArtifactBundleURLReason}>❌</span>
+              </Fragment>
+            )}
+          </div>
+        </div>
+      )}
     </Row>
   );
 };

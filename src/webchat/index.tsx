@@ -3,6 +3,7 @@ import 'core-js/features/promise';
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
 import { render } from 'react-dom';
+import { unzip } from 'fflate';
 import random from 'math-random';
 import React from 'react';
 
@@ -63,6 +64,10 @@ async function main() {
   } else if (/^4/.test(version)) {
     assetURLs = Object.freeze([`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
+  } else if (version.startsWith(`blob:${location.origin}/`)) {
+    console.warn(`Using Web Chat from ${version}`);
+
+    assetURLs = Object.freeze([version]);
   } else if (version === 'dev') {
     assetURLs = Object.freeze([WEB_CHAT_DEV_ASSET]);
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);

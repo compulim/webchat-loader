@@ -9,6 +9,7 @@ import tryParseJSON from '../util/tryParseJSON';
 
 import type { ActionOf } from '../types/ActionOf';
 import type { StoreStateOf } from '../types/StoreStateOf';
+import type fetchArtifactBundleURL from './action/fetchArtifactBundleURL';
 import type fetchDirectLineToken from './action/fetchDirectLineToken';
 import type fetchSpeechAuthorizationToken from './action/fetchSpeechAuthorizationToken';
 import type generateDirectLineToken from './action/generateDirectLineToken';
@@ -31,7 +32,10 @@ export default function createStore() {
   store.subscribe(() => {
     const state = store.getState();
 
-    const persistedState = updateIn(state, ['transcript', 'visible'], () => false);
+    let persistedState = updateIn(state, ['transcript', 'visible'], () => false);
+
+    persistedState = updateIn(persistedState, ['directLineAppServiceExtensionStatus'], () => false);
+    persistedState = updateIn(persistedState, ['fetchArtifactBundleURLStatus'], () => false);
 
     try {
       window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedState));
@@ -47,6 +51,7 @@ export default function createStore() {
 
 export type Action =
   | ActionOf<ReturnType<typeof createStore>>
+  | ReturnType<typeof fetchArtifactBundleURL>
   | ReturnType<typeof fetchDirectLineToken>
   | ReturnType<typeof fetchSpeechAuthorizationToken>
   | ReturnType<typeof generateDirectLineToken>
