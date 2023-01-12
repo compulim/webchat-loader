@@ -83,12 +83,14 @@ const KeyLogs = () => {
 
   return (
     <div id="key-logs">
-      {keyLog.map(keys =>
+      {keyLog.map((keys, index) =>
         keys.size ? (
-          <div className="key-logs__entry">
+          <div className="key-logs__entry" key={index}>
             {Array.from(keys).map((key, index) =>
               key === '…' ? (
-                <kbd className="key-logs__key key-logs__key--repeat">&hellip;</kbd>
+                <kbd className="key-logs__key key-logs__key--repeat" key={index}>
+                  &hellip;
+                </kbd>
               ) : (
                 <kbd className="key-logs__key" key={index}>
                   {key === ' ' ? 'SPACE' : key}
