@@ -3,7 +3,7 @@ import 'core-js/features/promise';
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import { fetch } from 'whatwg-fetch';
 import { render } from 'react-dom';
-import { unzip } from 'fflate';
+// import { unzip } from 'fflate';
 import random from 'math-random';
 import React from 'react';
 
@@ -11,6 +11,7 @@ import createDirectLineFromTranscript from './util/createDirectLineFromTranscrip
 import getDomainURL from '../common/util/getDomainURL';
 import loadAsset from './util/loadAsset';
 import KeyLogs from './ui/KeyLogs';
+import isLocalhostURL from './util/isLocalhostURL';
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
@@ -61,9 +62,6 @@ async function main() {
   } else if (/^4\.\d+\.\d+-/.test(version)) {
     assetURLs = Object.freeze([`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
-  } else if (/^4/.test(version)) {
-    assetURLs = Object.freeze([`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`]);
-    console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (version.startsWith(`blob:${location.origin}/`)) {
     console.warn(`Using Web Chat from ${version}`);
 
@@ -71,20 +69,20 @@ async function main() {
   } else if (version === 'dev') {
     assetURLs = Object.freeze([WEB_CHAT_DEV_ASSET]);
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
-  } else {
-    try {
-      const url = `${version}directline.js`;
+  } else if (isLocalhostURL(version)) {
+    // try {
+    //   const url = `${version}directline.js`;
 
-      await loadAsset(`${url}?_=${Date.now()}`);
-      console.warn(`Using DirectLineJS from ${url}`);
-    } catch (err) {
-      try {
-        const url = `${version}directLine.js`;
+    //   await loadAsset(`${url}?_=${Date.now()}`);
+    //   console.warn(`Using DirectLineJS from ${url}`);
+    // } catch (err) {
+    //   try {
+    //     const url = `${version}directLine.js`;
 
-        await loadAsset(`${url}?_=${Date.now()}`);
-        console.warn(`Using DirectLineJS from ${url}`);
-      } catch (err) {}
-    }
+    //     await loadAsset(`${url}?_=${Date.now()}`);
+    //     console.warn(`Using DirectLineJS from ${url}`);
+    //   } catch (err) {}
+    // }
 
     try {
       const url = `${version}webchat-es5.js`;
@@ -121,9 +119,21 @@ async function main() {
       token = result.token;
       conversationId = result.conversationId;
     }
+  } else {
+    if (version !== 'latest' && !version.startsWith('4.')) {
+      version = 'latest';
+    }
+
+    assetURLs = Object.freeze([`https://cdn.botframework.com/botframework-webchat/${version}/webchat-es5.js`]);
+    console.warn(`Using Web Chat from ${assetURLs[0]}`);
   }
 
-  await Promise.all(assetURLs.map(url => loadAsset(url)));
+  await Promise.all([
+    ...assetURLs.map(url => loadAsset(url)),
+    loadAsset('http://localhost:5000/directline.js')
+      .catch(() => loadAsset('http://localhost:5000/directLine.js'))
+      .catch(() => {})
+  ]);
 
   let adapters;
 

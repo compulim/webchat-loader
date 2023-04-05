@@ -202,7 +202,7 @@ const VersionSelector: FC = () => {
   const presetVersions = useMemo<Readonly<Record<string, string>>>(
     () =>
       Object.freeze({
-        latest: 'https://cdn.botframework.com/botframework-webchat/latest/',
+        latest: 'latest',
         '4.15.7': '4.15.7',
         '4.15.6': '4.15.6',
         // '4.15.5': '4.15.5',
