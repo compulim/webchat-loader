@@ -90,36 +90,26 @@ const VersionSelector: FC = () => {
     }
   }, [setAvailableVersions]);
 
-  const groupedAvailableVersions = useMemo(() => {
-    // const final: Map<string, Version[]> = new Map();
-    let lastGroup: [string, Version[]] | undefined;
+  const groupedAvailableVersions = useMemo(
+    () =>
+      availableVersions.reduce<Map<string, Version[]>>((final, version) => {
+        const coercedVersion = coerce(version.version) + '';
 
-    return availableVersions.reduce<Map<string, Version[]>>((final, version) => {
-      const coercedVersion = coerce(version.version) + '';
+        let group = final.get(coercedVersion);
 
-      if (lastGroup && coercedVersion === lastGroup[0]) {
-        lastGroup[1].push(version);
-      } else {
-        lastGroup = [coercedVersion, [version]];
-        final.set(coercedVersion, lastGroup[1]);
-      }
+        if (!group) {
+          group = [];
+          final.set(coercedVersion, group);
+        }
 
-      return final;
-    }, new Map());
+        group.push(version);
 
-    // for (const version of availableVersions) {
-    //   const coercedVersion = coerce(version.version);
+        return final;
+      }, new Map()),
+    [availableVersions]
+  );
 
-    //   if (lastGroup && coercedVersion === lastGroup[0]) {
-    //     lastGroup[1].push(version);
-    //   } else {
-    //     lastGroup = [coercedVersion, [version]];
-    //     final.set(coercedVersion, lastGroup[1]);
-    //   }
-    // }
-
-    // return final;
-  }, [availableVersions]);
+  console.log({ availableVersions, groupedAvailableVersions: Object.fromEntries(groupedAvailableVersions.entries()) });
 
   useEffect(() => {
     (async function () {
