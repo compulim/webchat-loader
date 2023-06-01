@@ -30,8 +30,6 @@ export default function* pingDirectLineAppServiceExtensionSaga() {
 
         const responseText = (yield call([res, res.text])) as string;
 
-        console.log({ responseText, tokens: responseText.split(/\r?\n\r?\n/) });
-
         const response = JSON.parse(responseText.split(/\r?\n\r?\n/)[0]) as {
           IB: boolean;
           Initialized: boolean;
