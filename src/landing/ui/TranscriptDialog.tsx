@@ -116,15 +116,26 @@ const SAMPLE_TRANSCRIPT_JSON = JSON.stringify(
 const SAMPLE_TRANSCRIPT_JSON_2 = JSON.stringify(
   [
     {
-      conversation: {
-        id: 'c-00001'
-      },
       from: {
-        id: 'bot'
+        role: 'bot'
       },
       type: 'message',
-      timestamp: '2023-09-06T12:34:56.000Z',
-      text: 'Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].\n\n[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1\n[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"\n[3]: cite:1 "Introduction Configuring proxy settings is a fundamental aspect..."\n',
+      text: 'Hi! I’m Cody, the devbot. How can I help?'
+    },
+    {
+      from: {
+        role: 'user'
+      },
+      type: 'message',
+      text: "Can you explain how to configure PAD's proxy settings?"
+    },
+    {
+      from: {
+        role: 'bot'
+      },
+      type: 'message',
+      timestamp: '2023-10-03T17:00:00.000Z',
+      text: 'Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].\n\n[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1 "Use a proxy server in Windows"\n[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"\n[3]: cite:1 "Introduction Configuring proxy settings is a fundamental aspect..."\n',
       entities: [
         {
           '@context': 'https://schema.org',
