@@ -55,6 +55,8 @@ const WebChatLink: FC = () => {
     const isDirectLineTokenURL = isURL(secret);
     const isSpeechTokenURL = isURL(speechSubscriptionKey);
 
+    console.log({ protocolWebSocket, isDirectLineTokenURL, token, secret });
+
     if (protocolDirectLineSpeech && !speechSubscriptionKey && !speechAuthorizationToken) {
       return;
     }
@@ -67,7 +69,9 @@ const WebChatLink: FC = () => {
       return;
     }
 
-    if ((protocolREST || protocolWebSocket) && (isDirectLineTokenURL ? !token : !secret)) {
+    if ((protocolREST || protocolWebSocket) && !token && (!secret || isDirectLineTokenURL)) {
+      console.log('CANNOT');
+
       return;
     }
 
