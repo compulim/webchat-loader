@@ -168,7 +168,8 @@ const DirectLineCredential: FC = () => {
             disabled={tokenDisabled}
             onChange={handleTokenChange}
             onFocus={handleFocus}
-            required={tokenFromURL}
+            placeholder={tokenFromURL ? '<Click "Fetch token">' : ''}
+            required={tokenFromURL || !secret}
             title={decodedToken && JSON.stringify(decodedToken, null, 2)}
             type="text"
             value={token}
@@ -190,7 +191,11 @@ const DirectLineCredential: FC = () => {
         )}
         {secretDisabled &&
           !tokenDisabled &&
-          (timeToExpire && timeToExpire > 0 ? (
+          (!decodedToken ? (
+            <div className={EXPIRED_FOOTNOTE_CSS}>
+              <small>This token is not a valid JSON Web Token.</small>
+            </div>
+          ) : timeToExpire && timeToExpire > 0 ? (
             <div>
               <small>
                 This token will expire in {ms(timeToExpire, { long: true })}.{' '}
