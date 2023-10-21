@@ -67,7 +67,12 @@ const DirectLineCredential: FC = () => {
 
   const savedSecretsTexts = useMemo<readonly (string | (() => string))[]>(
     () =>
-      Object.freeze(['MockBot', 'MockBot3', 'Relay Bot'...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')]),
+      Object.freeze([
+        'MockBot',
+        'MockBot3',
+        'Relay Bot',
+        ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')
+      ]),
     [savedSecrets]
   );
 
