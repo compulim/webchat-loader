@@ -67,7 +67,7 @@ const DirectLineCredential: FC = () => {
 
   const savedSecretsTexts = useMemo<readonly (string | (() => string))[]>(
     () =>
-      Object.freeze(['MockBot', 'MockBot3', ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')]),
+      Object.freeze(['MockBot', 'MockBot3', 'Relay Bot'...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')]),
     [savedSecrets]
   );
 
@@ -81,6 +81,9 @@ const DirectLineCredential: FC = () => {
         fetchDirectLineToken();
       } else if (value === '#mockbot3') {
         setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
+        fetchDirectLineToken();
+      } else if (value === '#relay-bot') {
+        setSecret('https://webchat-relaybot.azurewebsites.net/api/token/directline');
         fetchDirectLineToken();
       } else {
         setSecret(value);
@@ -158,7 +161,7 @@ const DirectLineCredential: FC = () => {
           onLoad={handleLoadSecret}
           onSave={secret && !savedSecrets.includes(secret) ? handleSaveSecret : undefined}
           texts={savedSecretsTexts}
-          values={useMemo(() => ['#mockbot', '#mockbot3', ...savedSecrets], [savedSecrets])}
+          values={useMemo(() => ['#mockbot', '#mockbot3', '#relay-bot', ...savedSecrets], [savedSecrets])}
         />
       </Row>
       <Row header="Token">

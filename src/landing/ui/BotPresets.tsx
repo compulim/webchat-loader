@@ -50,6 +50,11 @@ const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.
   //   title: 'MockBot via Direct Line App Service Extension with speech-enabled.'
   // },
   {
+    id: 'relaybot',
+    name: '[Preview] Relay Bot',
+    title: 'Relay to any bot with a Direct Line token.'
+  },
+  {
     id: 'dev',
     name: '[Dev] http://localhost:3978/directline/tokens',
     title: 'Bot using tokens fetched locally.'

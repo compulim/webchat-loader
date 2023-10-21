@@ -92,6 +92,16 @@ export default function* loadBotPresetSaga() {
       yield put(setSpeechAuthorizationToken(''));
       yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
       yield put(fetchSpeechAuthorizationToken());
+    } else if (name === 'relaybot') {
+      yield put(setDirectLineToken(''));
+      yield put(setDirectLineSecret('https://webchat-relaybot.azurewebsites.net/api/token/directline'));
+      yield put(fetchDirectLineToken());
+
+      yield put(setProtocolWebSocket());
+
+      yield put(setSpeechAuthorizationToken(''));
+      yield put(setSpeechSubscriptionKey(''));
+      yield put(fetchSpeechAuthorizationToken());
     }
   });
 }
