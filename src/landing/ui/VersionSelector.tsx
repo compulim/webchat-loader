@@ -224,6 +224,7 @@ const VersionSelector: FC = () => {
         ...(v3Version ? { v3: v3Version } : {}),
         ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
         daily: 'dev',
+        url: 'url',
         'localhost:5000': localhostAvailable ? 'http://localhost:5000/' : ''
       }),
     [availableVersions, localhostAvailable]
@@ -241,6 +242,10 @@ const VersionSelector: FC = () => {
     (preset: string) => {
       if (preset === 'gh-artifact') {
         setShowGitHubArtifactPanel(true);
+      } else if (preset === 'url') {
+        const url = prompt('Enter URL of webchat.js', 'https://');
+
+        url && setVersion(url);
       } else {
         setShowGitHubArtifactPanel(false);
         setVersion(preset);
@@ -290,7 +295,7 @@ const VersionSelector: FC = () => {
           style={SELECT_STYLE}
           value={version}
         >
-          {/^blob:/u.test(version) && <option value={version}>{version}</option>}
+          {/^(blob|https?):/u.test(version) && <option value={version}>{version}</option>}
           <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
           <option value="dev">{devReleaseLabel}</option>
           <option disabled={!localhostAvailable} value="http://localhost:5000/">

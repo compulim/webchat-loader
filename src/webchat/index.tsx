@@ -66,6 +66,10 @@ async function main() {
     console.warn(`Using Web Chat from ${version}`);
 
     assetURLs = Object.freeze([version]);
+  } else if (/^https?:\/\//iu.test(version)) {
+    console.warn(`Using Web Chat from ${version}`);
+
+    assetURLs = Object.freeze([version]);
   } else if (version === 'dev') {
     assetURLs = Object.freeze([WEB_CHAT_DEV_ASSET]);
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
