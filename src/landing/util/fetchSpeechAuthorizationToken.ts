@@ -9,7 +9,7 @@ export default async function fetchSpeechAuthorizationToken(url: string): Promis
 
   const contentType = res.headers.get('content-type');
 
-  if (/^application\/json(,|$)/u.test(contentType || '')) {
+  if (/^application\/json(;|$)/u.test(contentType || '')) {
     return await res.json();
   } else {
     return { token: await res.text() };

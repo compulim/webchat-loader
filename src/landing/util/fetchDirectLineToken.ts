@@ -9,7 +9,7 @@ export default async function fetchDirectLineToken(url: string): Promise<{ token
 
   const contentType = res.headers.get('content-type');
 
-  if (/^application\/json(,|$)/u.test(contentType || '')) {
+  if (/^application\/json(;|$)/u.test(contentType || '')) {
     return await res.json();
   } else {
     return { token: await res.text() };
