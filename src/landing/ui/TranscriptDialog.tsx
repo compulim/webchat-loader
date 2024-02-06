@@ -266,7 +266,7 @@ const SAMPLE_TRANSCRIPT_JSON_3 = JSON.stringify(
           '@type': 'VoteAction',
           'type': 'https://schema.org/VoteAction',
           actionOption: 'upvote',
-          actionStatus: 'PotentialActionStatus',
+          'actionOption-input': 'required',
           description: 'Upvote',
           target: {
             '@type': 'EntryPoint',
@@ -279,7 +279,7 @@ const SAMPLE_TRANSCRIPT_JSON_3 = JSON.stringify(
           '@type': 'VoteAction',
           'type': 'https://schema.org/VoteAction',
           actionOption: 'downvote',
-          actionStatus: 'PotentialActionStatus',
+          'actionOption-input': 'required',
           description: 'Downvote',
           target: {
             '@type': 'EntryPoint',
