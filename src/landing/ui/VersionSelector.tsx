@@ -1,14 +1,14 @@
 import { css } from 'emotion';
-import { fetch } from 'whatwg-fetch';
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { fetch } from 'whatwg-fetch';
 
 /* @ts-ignore */
 import coerce from '../../external/semver/functions/coerce';
 /* @ts-ignore */
 import compare from '../../external/semver/functions/compare';
+import useVersion from '../data/hooks/useVersion';
 import Presets from './Presets';
 import Row from './Row';
-import useVersion from '../data/hooks/useVersion';
 
 import type { ChangeEventHandler, CSSProperties, FC } from 'react';
 import useFetchArtifactBundleURL from '../data/hooks/useFetchArtifactBundleURL';
@@ -226,7 +226,7 @@ const VersionSelector: FC = () => {
         ...(scorpioVersion ? { scorpio: scorpioVersion } : {}),
         daily: 'dev',
         url: 'url',
-        'localhost:5000': localhostAvailable ? 'http://localhost:5000/' : ''
+        'localhost:5000': localhostAvailable ? 'http://localhost:5000/webchat-es5.js' : ''
       }),
     [availableVersions, localhostAvailable]
   );
@@ -296,10 +296,12 @@ const VersionSelector: FC = () => {
           style={SELECT_STYLE}
           value={version}
         >
-          {/^(blob|https?):/u.test(version) && <option value={version}>{version}</option>}
+          {/^(blob|https?):/u.test(version) && version !== 'http://localhost:5000/webchat-es5.js' && (
+            <option value={version}>{version}</option>
+          )}
           <option value="https://cdn.botframework.com/botframework-webchat/latest/">{cdnLatestLabel}</option>
           <option value="dev">{devReleaseLabel}</option>
-          <option disabled={!localhostAvailable} value="http://localhost:5000/">
+          <option disabled={!localhostAvailable} value="http://localhost:5000/webchat-es5.js">
             {localhostLabel}
             {localhostAvailable ? '' : ' (not available)'}
           </option>
