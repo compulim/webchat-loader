@@ -9,10 +9,51 @@ type Activity = {
 type Entry = {
   _webSocketMessages?: readonly { data: string }[];
   request?: {
+    method: string;
+    postData?: { text: string };
     queryString: readonly { name: string; value: string }[];
     url: string;
   };
+  response?: {
+    content?: {
+      text?: string;
+    };
+  };
 };
+
+function parseDirectToEngineHARFile(text: string): readonly Activity[] | undefined {
+  try {
+    const {
+      log: { entries }
+    } = JSON.parse(text) as { log: { entries: Entry[] } };
+
+    const relatedEntries = entries.filter(
+      ({ request }) =>
+        request?.method === 'POST' &&
+        /^\/environments\/[0-9a-f\-]+\/bots\/[0-9a-f\-]+\/test\/conversations/iu.test(new URL(request.url).pathname)
+    );
+
+    return Object.freeze(
+      relatedEntries
+        .reduce((activities, entry) => {
+          const requestPostDataText = entry.request?.postData?.text;
+          const activityInRequest = requestPostDataText
+            ? (JSON.parse(requestPostDataText).activity as Activity)
+            : undefined;
+
+          const responseContentText = entry.response?.content?.text;
+          const activitiesInResponse: Activity[] = responseContentText
+            ? (JSON.parse(responseContentText) as { activities: Activity[] }).activities
+            : [];
+
+          return [...activities, ...(activityInRequest ? [activityInRequest] : []), ...activitiesInResponse];
+        }, [] as Activity[])
+        .filter(Boolean)
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 export default function parseChatHistoryFromHARFile(text: string): readonly Activity[] | undefined {
   try {
@@ -35,7 +76,7 @@ export default function parseChatHistoryFromHARFile(text: string): readonly Acti
     });
 
     if (!entry?._webSocketMessages?.length) {
-      return;
+      return parseDirectToEngineHARFile(text);
     }
 
     const token = entry.request?.queryString.find((param: { name: string }) => param?.name === 't')?.value;
