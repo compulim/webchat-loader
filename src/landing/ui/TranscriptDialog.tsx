@@ -488,7 +488,27 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
             }
           ],
           potentialAction: [{ '@type': 'LikeAction' }, { '@type': 'DislikeAction' }],
-          type: 'https://schema.org/Message'
+          type: 'https://schema.org/Message',
+          usageInfo: {
+            '@type': 'CreativeWork',
+            description:
+              'Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.',
+            keywords: [
+              {
+                '@type': 'DefinedTerm',
+                inDefinedTermSet: 'https://example.com/encryption-status',
+                name: 'encryptionStatus',
+                termCode: 'encrypted'
+              }
+            ],
+            name: 'Confidential\\Any User (No Protection)',
+            pattern: {
+              '@type': 'DefinedTerm',
+              inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+              name: 'color',
+              termCode: 'orange'
+            }
+          }
         }
       ]
     }
