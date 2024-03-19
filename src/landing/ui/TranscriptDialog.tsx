@@ -480,7 +480,14 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                   additionalType: 'https://copilotstudio.microsoft.com/sensitivity-labels/v1',
                   description:
                     'Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.',
-                  name: 'Confidential\\Any User (No Protection)'
+                  keywords: ['content-encrypted'],
+                  name: 'Confidential\\Any User (No Protection)',
+                  pattern: {
+                    '@type': 'DefinedTermSet',
+                    inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                    name: 'color',
+                    termCode: 'orange'
+                  }
                 }
               },
               claimInterpreter: {
@@ -490,6 +497,7 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
               }
             }
           ],
+          keywords: ['ai-generated-content'],
           potentialAction: [{ '@type': 'LikeAction' }, { '@type': 'DislikeAction' }],
           type: 'https://schema.org/Message',
           usageInfo: { '@id': '_:s1' }
