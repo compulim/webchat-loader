@@ -480,7 +480,7 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                   additionalType: 'https://copilotstudio.microsoft.com/sensitivity-labels/v1',
                   description:
                     'Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.',
-                  keywords: ['content-encrypted'],
+                  keywords: ['encrypted-content'],
                   name: 'Confidential\\Any User (No Protection)',
                   pattern: {
                     '@type': 'DefinedTermSet',
