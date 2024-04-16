@@ -52,8 +52,13 @@
         min-width: 320px;
       }
 
-      #webchat > *:not(.theme-switcher) {
+      /* #webchat > *:not(.theme-switcher) {
         height: 100%;
+      } */
+
+      .landing__web-chat {
+        height: 100%;
+        position: relative;
       }
 
       #version {
@@ -119,6 +124,7 @@
         left: 5px;
         opacity: 30%;
         position: fixed;
+        user-select: none;
       }
 
       .theme-switcher__label {

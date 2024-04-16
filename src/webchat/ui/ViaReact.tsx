@@ -13,7 +13,7 @@ export default memo(function (props) {
       <Fragment>
         <ThemeSwitcher mode={mode} onChange={setMode} />
         <FluentThemeProvider>
-          <ReactWebChat sendTypingIndicator={true} {...props} />
+          <ReactWebChat className="landing__web-chat" sendTypingIndicator={true} {...props} />
         </FluentThemeProvider>
       </Fragment>
     );
@@ -21,7 +21,7 @@ export default memo(function (props) {
     return (
       <Fragment>
         <ThemeSwitcher mode={mode} onChange={setMode} />
-        <ReactWebChat sendTypingIndicator={true} {...props} />
+        <ReactWebChat className="landing__web-chat" sendTypingIndicator={true} {...props} />
       </Fragment>
     );
   }

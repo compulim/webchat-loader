@@ -26,7 +26,7 @@ export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
             type="radio"
             value="fluent"
           />
-          Fluent
+          Fluent UI
         </label>
         <label className="theme-switcher__label">
           <input
