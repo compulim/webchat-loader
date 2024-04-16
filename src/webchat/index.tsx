@@ -151,7 +151,7 @@ async function main() {
       .catch(() => {})
   ]);
 
-  fluentThemeURL && (await loadAsset(fluentThemeURL).catch(()=>{}));
+  fluentThemeURL && (await loadAsset(fluentThemeURL).catch(() => {}));
 
   let adapters;
 
