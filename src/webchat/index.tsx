@@ -1,17 +1,21 @@
 import 'core-js/features/promise';
 
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
+import ReactDOM, { render } from 'react-dom';
 import { fetch } from 'whatwg-fetch';
-import { render } from 'react-dom';
 // import { unzip } from 'fflate';
 import random from 'math-random';
 import React from 'react';
 
-import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
 import getDomainURL from '../common/util/getDomainURL';
-import loadAsset from './util/loadAsset';
 import KeyLogs from './ui/KeyLogs';
+import ViaReact from './ui/ViaReact';
+import createDirectLineFromTranscript from './util/createDirectLineFromTranscript';
 import isLocalhostURL from './util/isLocalhostURL';
+import loadAsset from './util/loadAsset';
+
+window.React = React;
+window.ReactDOM = ReactDOM;
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
@@ -49,6 +53,7 @@ async function main() {
       : 'web socket'
   );
   let assetURLs: readonly string[] = Object.freeze([]);
+  let fluentThemeURL: string | undefined = undefined;
 
   const WEB_CHAT_DEV_ASSET = `https://github.com/microsoft/BotFramework-WebChat/releases/download/daily/webchat-es5.js`;
 
@@ -62,6 +67,7 @@ async function main() {
   } else if (/^4\.\d+\.\d+-/.test(version)) {
     assetURLs = Object.freeze([`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
+    fluentThemeURL = `https://unpkg.com/botframework-webchat-fluent-theme@${version}/dist/botframework-webchat-fluent-theme.development.js`;
   } else if (version.startsWith(`blob:${location.origin}/`)) {
     console.warn(`Using Web Chat from ${version}`);
 
@@ -70,6 +76,10 @@ async function main() {
     console.warn(`Using Web Chat from ${version}`);
 
     assetURLs = Object.freeze([version]);
+    fluentThemeURL = version.replace(
+      /\/webchat(-es5)?\.js(\?|$)/iu,
+      '/botframework-webchat-fluent-theme.development.js$2'
+    );
   } else if (version === 'dev') {
     assetURLs = Object.freeze([WEB_CHAT_DEV_ASSET]);
     console.warn(`Using Web Chat from ${WEB_CHAT_DEV_ASSET}`);
@@ -90,6 +100,8 @@ async function main() {
 
     try {
       const url = `${version}webchat-es5.js`;
+
+      fluentThemeURL = `${version}botframework-webchat-fluent-theme.development.js`;
 
       await loadAsset(`${url}?_=${Date.now()}`);
       console.warn(`Using Web Chat from ${url}`);
@@ -138,6 +150,8 @@ async function main() {
       .catch(() => loadAsset('http://localhost:5000/directLine.js'))
       .catch(() => {})
   ]);
+
+  fluentThemeURL && (await loadAsset(fluentThemeURL).catch(()=>{}));
 
   let adapters;
 
@@ -274,13 +288,15 @@ async function main() {
         }
       }
 
-      (window as any).WebChat.renderWebChat(
-        {
-          ...adapters,
-          sendTypingIndicator: true
-        },
-        rootElement
-      );
+      // (window as any).WebChat.renderWebChat(
+      //   {
+      //     ...adapters,
+      //     sendTypingIndicator: true
+      //   },
+      //   rootElement
+      // );
+
+      (window.ReactDOM as any).render(window.React.createElement(ViaReact, adapters), rootElement);
     }
   }
 

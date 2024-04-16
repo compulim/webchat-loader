@@ -34,7 +34,7 @@ const ROOT_CSS = css({
     left: 0,
     position: 'fixed!important', // Should override the one from react-scrolling-background.
     top: 0
-  },
+  } as any,
 
   '& .app__box': {
     backgroundColor: 'White',
