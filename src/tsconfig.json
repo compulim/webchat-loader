@@ -4,6 +4,7 @@
     "jsx": "react",
     "lib": ["DOM", "ESNext"],
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "types": []
   }
 }

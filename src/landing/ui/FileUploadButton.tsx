@@ -1,6 +1,6 @@
+import { css, cx } from 'emotion';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { css, cx } from 'emotion';
 
 import type { ChangeEventHandler, FC, FormEventHandler, PropsWithChildren } from 'react';
 
@@ -77,7 +77,7 @@ FileUploadButton.defaultProps = {
 };
 
 FileUploadButton.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element), PropTypes.string]),
+  children: PropTypes.any,
   onError: PropTypes.func,
   onUpload: PropTypes.func,
   resultType: PropTypes.oneOf(['text'])

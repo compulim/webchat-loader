@@ -6,6 +6,13 @@ module.exports = {
         corejs: 3,
         version: '7.20.6'
       }
+    ],
+    [
+      'babel-plugin-transform-define',
+      {
+        'WebChatLoader.npm_package_name': process.env.npm_package_name,
+        'WebChatLoader.npm_package_version': process.env.npm_package_version
+      }
     ]
   ],
   presets: [
