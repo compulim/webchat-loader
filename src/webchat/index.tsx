@@ -218,7 +218,7 @@ async function main() {
       createDirectLine = (options: any) => new (window as any).DirectLine.DirectLine(options);
     } else if ((window as any).WebChat?.createDirectLine) {
       console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
-      createDirectLine = (options: any) => new (window as any).WebChat.createDirectLine(options);
+      createDirectLine = (options: any) => (window as any).WebChat.createDirectLine(options);
     } else if ((window as any).BotChat?.DirectLine) {
       console.warn('Using DirectLineJS from the bundle of Web Chat v3.');
       createDirectLine = (options: any) => new (window as any).BotChat.DirectLine(options);
