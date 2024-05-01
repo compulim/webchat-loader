@@ -445,7 +445,8 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                 '@type': 'Project',
                 slogan: 'Surfaced with Azure OpenAI',
                 url: 'https://www.microsoft.com/en-us/ai/responsible-ai'
-              }
+              },
+              position: '1'
             },
             {
               '@id':
@@ -462,7 +463,8 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                 '@type': 'Project',
                 slogan: 'Surfaced with Azure OpenAI',
                 url: 'https://www.microsoft.com/en-us/ai/responsible-ai'
-              }
+              },
+              position: '2'
             },
             {
               '@id': '_:c1',
@@ -494,7 +496,8 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                 '@type': 'Project',
                 slogan: 'Surfaced with Azure OpenAI',
                 url: 'https://www.microsoft.com/en-us/ai/responsible-ai'
-              }
+              },
+              position: '3'
             }
           ],
           keywords: ['ai-generated-content'],
