@@ -10,7 +10,9 @@ export default memo(function (props) {
 
   const [mode, setMode] = useState<'fluent' | 'white label'>(() => {
     try {
-      return sessionStorage.getItem(SESSION_STORAGE_THEME_KEY) || 'white label';
+      if (sessionStorage.getItem(SESSION_STORAGE_THEME_KEY) === 'fluent') {
+        return 'fluent';
+      }
     } catch {}
 
     return 'white label';
