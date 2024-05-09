@@ -1,6 +1,6 @@
 import { css, cx } from 'emotion';
 import { LoremIpsum } from 'lorem-ipsum';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
@@ -525,6 +525,7 @@ function parseTranscript(value: string): false | [] {
 }
 
 const TranscriptDialog: FC = () => {
+  const [forceEnableLoadButton, setForceEnableLoadButton] = useState(false);
   const [savedContent, setSavedContent] = useTranscriptDialogContent();
   const [, setVisible] = useTranscriptDialogVisible();
 
@@ -646,6 +647,23 @@ const TranscriptDialog: FC = () => {
     return !!parseTranscript(editedContent);
   }, [editedContent]);
 
+  useEffect(() => {
+    const handleKeyUpDown = (event: KeyboardEvent) => {
+      console.log(event);
+      event.key === 'Control' && setForceEnableLoadButton(event.type !== 'keyup');
+    };
+
+    window.addEventListener('keydown', handleKeyUpDown, { capture: true });
+    window.addEventListener('keyup', handleKeyUpDown, { capture: true });
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyUpDown);
+      window.removeEventListener('keyup', handleKeyUpDown);
+    };
+  }, []);
+
+  const disableLoadButton = !forceEnableLoadButton && !!editedContent;
+
   return (
     <div className={cx(DIALOG_CSS, 'transcript-dialog')}>
       <div className="transcript-dialog__button-bar">
@@ -653,31 +671,31 @@ const TranscriptDialog: FC = () => {
           Save (CTRL+S)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSampleButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSampleButtonClick} type="button">
           Load sample
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSample2ButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSample2ButtonClick} type="button">
           Load sample 2 (Citation)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSample3ButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSample3ButtonClick} type="button">
           Load sample 3 (VoteAction)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSample4ButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSample4ButtonClick} type="button">
           Load sample 4 (CSAT v1)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSample5ButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSample5ButtonClick} type="button">
           Load sample 5 (CSAT v2)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleLoadSample6ButtonClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleLoadSample6ButtonClick} type="button">
           Load sample 6 (Citation v2)
         </button>
         &nbsp;
-        <button disabled={!!editedContent} onClick={handleGenerateClick} type="button">
+        <button disabled={disableLoadButton} onClick={handleGenerateClick} type="button">
           Generate lorem ipsum
         </button>
         &nbsp;
