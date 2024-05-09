@@ -534,28 +534,33 @@ const TranscriptDialog: FC = () => {
     return transcript && transcript.length ? JSON.stringify(transcript, null, 2) + '\n' : '';
   });
 
-  const handleGenerateClick = useCallback<() => void>(() => {
-    const loremIpsum = new LoremIpsum();
-    const nextEditedContent = [];
-    let timestamp = new Date();
+  const handleGenerateClick = useCallback<MouseEventHandler>(
+    event => {
+      const count =
+        (event.shiftKey && +(prompt('How many messages do you want to generate?', '50') || 0)) || GENERATE_COUNT;
+      const loremIpsum = new LoremIpsum();
+      const nextEditedContent = [];
+      let timestamp = new Date();
 
-    for (let i = 0; i < GENERATE_COUNT; i++) {
-      nextEditedContent.unshift({
-        from: {
-          role: i % 2 ? 'bot' : 'user'
-          // role: 'bot'
-        },
-        id: `a-${GENERATE_COUNT - i}`,
-        text: `${GENERATE_COUNT - i}: ${loremIpsum.generateParagraphs(1)}`,
-        timestamp: timestamp.toISOString(),
-        type: 'message'
-      });
+      for (let i = 0; i < count; i++) {
+        nextEditedContent.unshift({
+          from: {
+            role: i % 2 ? 'bot' : 'user'
+            // role: 'bot'
+          },
+          id: `a-${count - i}`,
+          text: `${count - i}: ${loremIpsum.generateParagraphs(1)}`,
+          timestamp: timestamp.toISOString(),
+          type: 'message'
+        });
 
-      timestamp.setUTCSeconds(timestamp.getUTCSeconds() - 301);
-    }
+        timestamp.setUTCSeconds(timestamp.getUTCSeconds() - 301);
+      }
 
-    setEditedContent(JSON.stringify(nextEditedContent, null, 2));
-  }, [setEditedContent]);
+      setEditedContent(JSON.stringify(nextEditedContent, null, 2));
+    },
+    [setEditedContent]
+  );
 
   const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(content => {
     if (typeof content === 'string') {
