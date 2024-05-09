@@ -648,10 +648,8 @@ const TranscriptDialog: FC = () => {
   }, [editedContent]);
 
   useEffect(() => {
-    const handleKeyUpDown = (event: KeyboardEvent) => {
-      console.log(event);
+    const handleKeyUpDown = (event: KeyboardEvent) =>
       event.key === 'Control' && setForceEnableLoadButton(event.type !== 'keyup');
-    };
 
     window.addEventListener('keydown', handleKeyUpDown, { capture: true });
     window.addEventListener('keyup', handleKeyUpDown, { capture: true });
