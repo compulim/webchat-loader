@@ -8,6 +8,7 @@ import parseChatHistoryFromHARFile from '../util/parseChatHistoryFromHARFile';
 import FileUploadButton from './FileUploadButton';
 
 import type { ChangeEventHandler, FC, KeyboardEventHandler, MouseEventHandler } from 'react';
+import preChatMessageWithStarterPrompts from '../sample/preChatMessageWithStarterPrompts';
 
 const DIALOG_CSS = css({
   '&.transcript-dialog': {
@@ -512,6 +513,8 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
   2
 );
 
+const SAMPLE_STARTER_PROMPTS = JSON.stringify(preChatMessageWithStarterPrompts, null, 2);
+
 function parseTranscript(value: string): false | [] {
   try {
     const parsedTranscript = JSON.parse(value) as [];
@@ -598,6 +601,11 @@ const TranscriptDialog: FC = () => {
 
   const handleLoadSample6ButtonClick = useCallback<MouseEventHandler>(
     () => setEditedContent(SAMPLE_TRANSCRIPT_JSON_6 + '\n'),
+    [setEditedContent]
+  );
+
+  const handleLoadSample7ButtonClick = useCallback<MouseEventHandler>(
+    () => setEditedContent(SAMPLE_STARTER_PROMPTS + '\n'),
     [setEditedContent]
   );
 
@@ -691,6 +699,10 @@ const TranscriptDialog: FC = () => {
         &nbsp;
         <button disabled={disableLoadButton} onClick={handleLoadSample6ButtonClick} type="button">
           Load sample 6 (Citation v2)
+        </button>
+        &nbsp;
+        <button disabled={disableLoadButton} onClick={handleLoadSample7ButtonClick} type="button">
+          Load sample 7 (Starter prompts)
         </button>
         &nbsp;
         <button disabled={disableLoadButton} onClick={handleGenerateClick} type="button">
