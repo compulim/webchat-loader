@@ -483,7 +483,7 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
                   additionalType: 'https://copilotstudio.microsoft.com/sensitivity-labels/v1',
                   description:
                     'Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.',
-                  keywords: ['encrypted-content'],
+                  keywords: ['EncryptedContent'],
                   name: 'Confidential\\Any User (No Protection)',
                   pattern: {
                     '@type': 'DefinedTermSet',
@@ -501,7 +501,7 @@ const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(
               position: '3'
             }
           ],
-          keywords: ['ai-generated-content'],
+          keywords: ['AIGeneratedContent'],
           potentialAction: [{ '@type': 'LikeAction' }, { '@type': 'DislikeAction' }],
           type: 'https://schema.org/Message',
           usageInfo: { '@id': '_:s1' }
