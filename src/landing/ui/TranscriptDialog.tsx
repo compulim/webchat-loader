@@ -528,6 +528,7 @@ function parseTranscript(value: string): false | [] {
 }
 
 const TranscriptDialog: FC = () => {
+  const abortController = useMemo(() => new AbortController(), []);
   const [forceEnableLoadButton, setForceEnableLoadButton] = useState(false);
   const [savedContent, setSavedContent] = useTranscriptDialogContent();
   const [, setVisible] = useTranscriptDialogVisible();
@@ -566,16 +567,19 @@ const TranscriptDialog: FC = () => {
     [setEditedContent]
   );
 
-  const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(content => {
-    (async function () {
-      if (typeof content === 'string') {
-        const chatHistory = await Array.fromAsync(parseChatHistoryFromHARFile(content));
+  const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(
+    content => {
+      (async function () {
+        if (typeof content === 'string') {
+          const chatHistory = await Array.fromAsync(parseChatHistoryFromHARFile(content));
 
-        // TODO: Fix this async.
-        setEditedContent(chatHistory ? JSON.stringify(chatHistory || [], null, 2) : '');
-      }
-    })();
-  }, []);
+          abortController.signal.aborted ||
+            setEditedContent(chatHistory ? JSON.stringify(chatHistory || [], null, 2) : '');
+        }
+      })();
+    },
+    [abortController]
+  );
 
   const handleLoadSampleButtonClick = useCallback<MouseEventHandler>(
     () => setEditedContent(SAMPLE_TRANSCRIPT_JSON + '\n'),
@@ -670,6 +674,8 @@ const TranscriptDialog: FC = () => {
       window.removeEventListener('keyup', handleKeyUpDown);
     };
   }, []);
+
+  useEffect(() => () => abortController.abort(), [abortController]);
 
   const disableLoadButton = !forceEnableLoadButton && !!editedContent;
 
