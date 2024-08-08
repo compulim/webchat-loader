@@ -5,7 +5,6 @@ import { array, looseObject, object, optional, parse, string, type InferOutput }
 import tryDecodeJWT from './tryDecodeJWT';
 
 type Activity = InferOutput<typeof activitySchema>;
-type Entry = InferOutput<typeof entrySchema>;
 
 const activitySchema = looseObject({
   from: optional(object({ id: optional(string()), role: optional(string()) }))
