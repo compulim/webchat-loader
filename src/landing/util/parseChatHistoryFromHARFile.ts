@@ -86,6 +86,7 @@ async function* parseDirectToEngineHARFile(text: string): AsyncIterableIterator<
         if (entry.response?.content?.text) {
           const responseContentText = entry.response.content.text;
 
+          // TODO: Should mimick { chunkType: 'delta' } here.
           if (entry.response.content.mimeType === 'application/json') {
             yield* parse(object({ activities: array(activitySchema) }), JSON.parse(responseContentText)).activities;
           } else if (entry.response.content.mimeType === 'text/event-stream') {
