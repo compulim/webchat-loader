@@ -3,8 +3,10 @@
     "esModuleInterop": true,
     "jsx": "react",
     "lib": ["DOM", "ESNext"],
+    "moduleResolution": "Bundler",
     "noEmit": true,
     "strict": true,
+    "target": "ESNext",
     "types": []
   }
 }

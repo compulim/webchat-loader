@@ -64,7 +64,7 @@ const FileUploadButton: FC<Props> = ({ children, onError, onUpload, resultType }
   return (
     <form className={cx(ROOT_CSS, 'file-upload-button')} onSubmit={handleSubmit}>
       <button type="button">{children}</button>
-      <input className="file-upload-button__file" onChange={handleChange} type="file" />
+      <input accept=".har" className="file-upload-button__file" onChange={handleChange} type="file" />
     </form>
   );
 };

@@ -567,11 +567,14 @@ const TranscriptDialog: FC = () => {
   );
 
   const handleUploadHARFile = useCallback<(content: ArrayBuffer | null | string) => void>(content => {
-    if (typeof content === 'string') {
-      const chatHistory = parseChatHistoryFromHARFile(content);
+    (async function () {
+      if (typeof content === 'string') {
+        const chatHistory = await Array.fromAsync(parseChatHistoryFromHARFile(content));
 
-      setEditedContent(chatHistory ? JSON.stringify(chatHistory, null, 2) : '');
-    }
+        // TODO: Fix this async.
+        setEditedContent(chatHistory ? JSON.stringify(chatHistory || [], null, 2) : '');
+      }
+    })();
   }, []);
 
   const handleLoadSampleButtonClick = useCallback<MouseEventHandler>(
