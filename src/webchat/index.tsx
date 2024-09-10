@@ -159,15 +159,15 @@ async function main() {
     let createDirectLineAppServiceExtension;
 
     if (typeof (window as any).DirectLine !== 'undefined') {
-      console.warn('Using DirectLineJS from the bundle of directLine.js.');
+      console.warn('Using DirectLineJS ASE from the bundle of directLine.js.');
       createDirectLineAppServiceExtension = (options: any) =>
         new (window as any).DirectLine.DirectLineStreaming(options);
     } else if ((window as any).WebChat?.createDirectLineAppServiceExtension) {
-      console.warn('Using DirectLineJS from the bundle of Web Chat v4.');
+      console.warn('Using DirectLineJS ASE from the bundle of Web Chat v4.');
       createDirectLineAppServiceExtension = (options: any) =>
         new (window as any).WebChat.createDirectLineAppServiceExtension(options);
     } else {
-      console.warn('Using DirectLineJS from Web Chat Loader.');
+      console.warn('Using DirectLineJS ASE from Web Chat Loader.');
       createDirectLineAppServiceExtension = (options: any) => new NPMDirectLineStreaming(options);
     }
 
