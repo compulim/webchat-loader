@@ -20,14 +20,16 @@ export default function* loadBotPresetSaga() {
   yield takeEvery<LoadBotPresetAction>(LOAD_BOT_PRESET, function* ({ payload: { name } }) {
     if (name === 'mockbot') {
       yield put(setDirectLineToken(''));
-      yield put(setDirectLineSecret('https://webchat-mockbot.azurewebsites.net/directline/token'));
+      yield put(setDirectLineSecret('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline'));
       yield put(fetchDirectLineToken());
 
       yield put(setProtocolWebSocket());
 
       yield put(setSpeechAuthorizationToken(''));
-      yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
-      yield put(fetchSpeechAuthorizationToken());
+      yield put(setSpeechSubscriptionKey(''));
+
+      // yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
+      // yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot3') {
       yield put(setDirectLineToken(''));
       yield put(setDirectLineSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline'));
@@ -60,15 +62,17 @@ export default function* loadBotPresetSaga() {
       yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot-ase') {
       yield put(setDirectLineToken(''));
-      yield put(setDirectLineSecret('https://webchat-mockbot-streaming.azurewebsites.net/directline/token'));
+      yield put(setDirectLineSecret('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease'));
       yield put(fetchDirectLineToken());
 
       yield put(setProtocolAppServiceExtension());
-      yield put(setDirectLineDomainHost('webchat-mockbot-streaming.azurewebsites.net'));
+      yield put(setDirectLineDomainHost('hawo-mockbot4-bot-app.azurewebsites.net'));
 
       yield put(setSpeechAuthorizationToken(''));
-      yield put(setSpeechSubscriptionKey('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token'));
-      yield put(fetchSpeechAuthorizationToken());
+      yield put(setSpeechSubscriptionKey(''));
+
+      // yield put(setSpeechSubscriptionKey('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token'));
+      // yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'dev') {
       yield put(setDirectLineToken(''));
       yield put(setDirectLineSecret('http://localhost:3978/directline/token'));
