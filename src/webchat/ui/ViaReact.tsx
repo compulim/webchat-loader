@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo, useState } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useState } from 'react';
 import ThemeSwitcher from './ThemeSwitcher';
 
 const SESSION_STORAGE_THEME_KEY = 'THEME';
@@ -25,6 +25,9 @@ export default memo(function (props) {
       sessionStorage.setItem(SESSION_STORAGE_THEME_KEY, mode);
     } catch {}
   }, [mode]);
+
+  // TODO: Fix should not need to reload.
+  useEffect(() => () => location.reload(), [mode]);
 
   if (FluentThemeProvider && (mode === 'copilot' || mode === 'fluent')) {
     return (
