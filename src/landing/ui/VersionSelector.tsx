@@ -1,11 +1,8 @@
 import { css } from 'emotion';
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { coerce, compare } from 'semver';
 import { fetch } from 'whatwg-fetch';
 
-/* @ts-ignore */
-import coerce from '../../external/semver/functions/coerce';
-/* @ts-ignore */
-import compare from '../../external/semver/functions/compare';
 import useVersion from '../data/hooks/useVersion';
 import Presets from './Presets';
 import Row from './Row';
@@ -193,9 +190,11 @@ const VersionSelector: FC = () => {
     () =>
       Object.freeze({
         latest: 'latest',
+        '4.18.0': '4.18.0',
+        '4.17.0': '4.17.0',
         '4.16.0': '4.16.0',
-        '4.15.9': '4.15.9',
-        '4.15.8': '4.15.8',
+        // '4.15.9': '4.15.9',
+        // '4.15.8': '4.15.8',
         // '4.15.7': '4.15.7',
         // '4.15.6': '4.15.6',
         // '4.15.5': '4.15.5',

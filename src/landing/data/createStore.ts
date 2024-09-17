@@ -1,11 +1,11 @@
+import { onErrorResumeNext } from 'on-error-resume-next';
 import { applyMiddleware, createStore as createReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import onErrorResumeNext from 'on-error-resume-next';
 import updateIn from 'simple-update-in';
 
+import tryParseJSON from '../util/tryParseJSON';
 import reducer from './reducer';
 import saga from './saga';
-import tryParseJSON from '../util/tryParseJSON';
 
 import type { ActionOf } from '../types/ActionOf';
 import type { StoreStateOf } from '../types/StoreStateOf';

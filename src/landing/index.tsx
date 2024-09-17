@@ -1,9 +1,9 @@
 import 'core-js/features/array';
 import 'core-js/features/promise';
 
-import { Provider } from 'react-redux';
-import { render } from 'react-dom';
 import React, { useMemo } from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 
 import App from './App';
 import createStore from './data/createStore';
@@ -21,3 +21,5 @@ const Main: FC<{}> = () => {
 };
 
 render(<Main />, document.getElementById('root'));
+
+IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload());

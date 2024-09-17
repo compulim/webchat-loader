@@ -8,10 +8,12 @@ export default memo(function (props) {
     WebChat: { FluentThemeProvider, ReactWebChat }
   } = window as any;
 
-  const [mode, setMode] = useState<'fluent' | 'white label'>(() => {
+  const [mode, setMode] = useState<'copilot' | 'fluent' | 'white label'>(() => {
     try {
-      if (sessionStorage.getItem(SESSION_STORAGE_THEME_KEY) === 'fluent') {
-        return 'fluent';
+      const theme = sessionStorage.getItem(SESSION_STORAGE_THEME_KEY);
+
+      if (theme === 'copilot' || theme === 'fluent') {
+        return theme;
       }
     } catch {}
 
@@ -24,11 +26,11 @@ export default memo(function (props) {
     } catch {}
   }, [mode]);
 
-  if (FluentThemeProvider && mode === 'fluent') {
+  if (FluentThemeProvider && (mode === 'copilot' || mode === 'fluent')) {
     return (
       <Fragment>
         <ThemeSwitcher mode={mode} onChange={setMode} />
-        <FluentThemeProvider>
+        <FluentThemeProvider variant={mode}>
           <ReactWebChat className="landing__web-chat" sendTypingIndicator={true} {...props} />
         </FluentThemeProvider>
       </Fragment>

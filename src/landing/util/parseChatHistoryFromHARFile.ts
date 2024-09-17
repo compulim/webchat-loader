@@ -1,7 +1,8 @@
 import { createParser } from 'eventsource-parser';
 import { Observable, observableValues } from 'iter-fest';
-import onErrorResumeNext from 'on-error-resume-next';
+import { onErrorResumeNext } from 'on-error-resume-next';
 import { array, looseObject, object, optional, parse, string, type InferOutput } from 'valibot';
+
 import tryDecodeJWT from './tryDecodeJWT';
 
 type Activity = InferOutput<typeof activitySchema>;

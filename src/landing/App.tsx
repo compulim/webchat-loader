@@ -108,7 +108,7 @@ const App: FC = () => {
         </section>
       </div>
       <div className="app__build-time">
-        {WebChatLoader.npm_package_version} (Build at {buildTimestamp.toLocaleDateString()}{' '}
+        {npm_package_version} (Build at {buildTimestamp.toLocaleDateString()}{' '}
         {buildTimestamp.toLocaleTimeString()})
       </div>
       {transcriptDialogVisible && <TranscriptDialog />}

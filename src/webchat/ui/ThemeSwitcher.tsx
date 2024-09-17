@@ -1,6 +1,6 @@
 import React, { memo, useCallback, type FormEventHandler } from 'react';
 
-type Mode = 'fluent' | 'white label';
+type Mode = 'copilot' | 'fluent' | 'white label';
 
 type Props = {
   mode: Mode;
@@ -9,7 +9,7 @@ type Props = {
 
 export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
   const handleChange = useCallback<FormEventHandler<HTMLInputElement>>(
-    ({ currentTarget: { value } }) => onChange(value === 'fluent' ? 'fluent' : 'white label'),
+    ({ currentTarget: { value } }) => onChange(value === 'copilot' || value === 'fluent' ? value : 'white label'),
     [onChange]
   );
 
@@ -18,6 +18,16 @@ export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
   return (
     hasFluentThemeProvider && (
       <div className="theme-switcher">
+        <label className="theme-switcher__label">
+          <input
+            checked={mode === 'copilot'}
+            className="theme-switcher__radio-button"
+            onChange={handleChange}
+            type="radio"
+            value="copilot"
+          />
+          Copilot
+        </label>
         <label className="theme-switcher__label">
           <input
             checked={mode === 'fluent'}
@@ -30,7 +40,7 @@ export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
         </label>
         <label className="theme-switcher__label">
           <input
-            checked={mode !== 'fluent'}
+            checked={mode !== 'copilot' && mode !== 'fluent'}
             className="theme-switcher__radio-button"
             onChange={handleChange}
             type="radio"
