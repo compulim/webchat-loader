@@ -1,6 +1,4 @@
-import Observable from 'core-js/features/observable';
-
-import type { SubscriptionObserver } from 'core-js/features/observable';
+import { Observable, type SubscriptionObserver } from 'iter-fest/observable';
 
 export default function passThrough<T>(observable: Observable<T>, modifier?: (value: T) => T): Observable<T> {
   return new Observable((observer: SubscriptionObserver<T>) => {

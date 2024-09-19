@@ -1,5 +1,3 @@
-import 'core-js/features/promise';
-
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 import ReactDOM, { render } from 'react-dom';
 import { fetch } from 'whatwg-fetch';

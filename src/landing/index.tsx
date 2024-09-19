@@ -1,6 +1,3 @@
-import 'core-js/features/array';
-import 'core-js/features/promise';
-
 import React, { useMemo } from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

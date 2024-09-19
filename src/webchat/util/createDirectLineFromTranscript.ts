@@ -1,7 +1,5 @@
-import Observable from 'core-js/features/observable';
+import { Observable, type Observer, type SubscriptionObserver } from 'iter-fest/observable';
 import sleep from './sleep';
-
-import type { Observer, Subscription, SubscriptionObserver } from 'core-js/features/observable';
 
 function removeInline<T>(array: T[], value: T) {
   const index = array.indexOf(value);
@@ -83,7 +81,7 @@ export default function createDirectLineFromTranscript(activities: any) {
   return {
     activity$: shareObservable(activityDeferredObservable.observable),
     connectionStatus$: shareObservable(connectionStatusDeferredObservable.observable),
-    end: () => {},
+    end: () => { },
     postActivity: (activity: any) => {
       const id = Math.random().toString(36).substring(2, 7);
       const postingActivity = {

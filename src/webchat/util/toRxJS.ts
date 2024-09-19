@@ -1,5 +1,4 @@
-import type { Subscription } from 'core-js/features/observable';
-import type Observable from 'core-js/features/observable';
+import { type Observable, type Subscription } from 'iter-fest';
 
 export default function toRxJS<T>(observable: Observable<T>): {
   subscribe: (subscriber: (value: T) => void) => Subscription;
