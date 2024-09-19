@@ -1,4 +1,4 @@
-import { Observable, type Observer, type SubscriptionObserver } from 'iter-fest/observable';
+import { Observable, type Observer, type Subscription, type SubscriptionObserver } from 'iter-fest/observable';
 import sleep from './sleep';
 
 function removeInline<T>(array: T[], value: T) {
