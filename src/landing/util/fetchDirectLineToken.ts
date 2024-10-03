@@ -1,6 +1,12 @@
+import { object, optional, parse, string, type InferOutput } from 'valibot';
 import { fetch } from 'whatwg-fetch';
 
-export default async function fetchDirectLineToken(url: string): Promise<{ token: string }> {
+const responseSchema = object({
+  domain: optional(string()),
+  token: string()
+});
+
+export default async function fetchDirectLineToken(url: string): Promise<InferOutput<typeof responseSchema>> {
   const res = await fetch(url, { method: 'POST' });
 
   if (!res.ok) {
@@ -10,7 +16,7 @@ export default async function fetchDirectLineToken(url: string): Promise<{ token
   const contentType = res.headers.get('content-type');
 
   if (/^application\/json(;|$)/u.test(contentType || '')) {
-    return await res.json();
+    return parse(responseSchema, await res.json());
   } else {
     return { token: await res.text() };
   }

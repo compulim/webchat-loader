@@ -1,14 +1,15 @@
 import { call } from 'redux-saga/effects';
 
-import { FETCH_DIRECT_LINE_TOKEN } from '../action/fetchDirectLineToken';
 import fetchDirectLineToken from '../../util/fetchDirectLineToken';
+import tryDecodeJWT from '../../util/tryDecodeJWT';
+import { FETCH_DIRECT_LINE_TOKEN } from '../action/fetchDirectLineToken';
+import setDirectLineToken from '../action/setDirectLineToken';
 import put from './internal/put';
 import select from './internal/select';
-import setDirectLineToken from '../action/setDirectLineToken';
 import takeEvery from './internal/takeEvery';
-import tryDecodeJWT from '../../util/tryDecodeJWT';
 
 import type { ResultOfPromise } from '../../types/ResultOfPromise';
+import setDirectLineDomainHost from '../action/setDirectLineDomainHost';
 import type { StoreState } from '../createStore';
 
 export default function* fetchDirectLineTokenSaga() {
@@ -26,12 +27,16 @@ export default function* fetchDirectLineTokenSaga() {
 
       url = url.replace(/\{userid\}/giu, userId);
 
-      let { token } = (yield call(fetchDirectLineToken, url)) as ResultOfPromise<
+      let { domain, token } = (yield call(fetchDirectLineToken, url)) as ResultOfPromise<
         ReturnType<typeof fetchDirectLineToken>
       >;
 
       if (new URL(url).hostname === 'covid19healthbot.cdc.gov') {
         token = (tryDecodeJWT<{ connectorToken: string }>(token) || {}).connectorToken || '';
+      }
+
+      if (domain) {
+        yield put(setDirectLineDomainHost(new URL(domain).host));
       }
 
       yield put(setDirectLineToken(token));

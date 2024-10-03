@@ -32,23 +32,28 @@ const ROOT_CSS = css({
 });
 
 const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.freeze([
-  { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Web Socket with speech-enabled.' },
+  { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Direct Line Web Socket.' },
   {
     id: 'mockbot-ase',
-    name: '[Public] MockBot via Direct Line ASE',
-    title: 'MockBot via Direct Line App Service Extension with speech-enabled.'
-  },
-  {
-    id: 'mockbot3',
-    name: '[Public] MockBot 3 via Web Socket (Preview)',
-    title: 'MockBot3 via Direct Line App Service Extension.'
-  },
-  {
-    id: 'mockbot3-dlase',
-    name: '[Public] MockBot 3 via Direct Line ASE (Preview)',
-    title: 'MockBot3 via Direct Line App Service Extension.'
+    name: '[Public] MockBot (Direct Line ASE)',
+    title: 'MockBot via Direct Line App Service Extension.'
   },
   { id: 'mockbot-dls', name: '[Public] MockBot (Direct Line Speech)', title: 'MockBot via Direct Line Speech.' },
+  {
+    id: 'echobot',
+    name: '[Public] EchoBot',
+    title: 'EchoBot via Direct Line Web Socket.'
+  },
+  {
+    id: 'echobot-dlase',
+    name: '[Public] EchoBot (Direct Line ASE)',
+    title: 'EchoBot via Direct Line App Service Extension.'
+  },
+  {
+    id: 'echobot-dls',
+    name: '[Public] EchoBot (Direct Line Speech)',
+    title: 'EchoBot via Direct Line Speech.'
+  },
   {
     id: 'relaybot',
     name: '[Preview] Relay Bot',
