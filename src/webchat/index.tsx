@@ -279,7 +279,12 @@ async function main() {
             credentials: () => ({
               region: speechRegion,
               ...(speechAuthorizationToken
-                ? { authorizationToken: speechAuthorizationToken }
+                ? {
+                    // Token used for Entra authentication requires prefix of "Bearer".
+                    authorizationToken: speechAuthorizationToken.includes('aad#')
+                      ? `Bearer ${speechAuthorizationToken}`
+                      : speechAuthorizationToken
+                  }
                 : { subscriptionKey: speechSubscriptionKey })
             })
           });

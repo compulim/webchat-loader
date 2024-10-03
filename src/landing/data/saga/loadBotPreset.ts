@@ -28,8 +28,8 @@ export default function* loadBotPresetSaga() {
       yield put(setSpeechAuthorizationToken(''));
       yield put(setSpeechSubscriptionKey(''));
 
-      // yield put(setSpeechSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token'));
-      // yield put(fetchSpeechAuthorizationToken());
+      yield put(setSpeechSubscriptionKey('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'));
+      yield put(fetchSpeechAuthorizationToken());
     } else if (name === 'mockbot3') {
       yield put(setDirectLineToken(''));
       yield put(setDirectLineSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline'));

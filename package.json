@@ -43,6 +43,7 @@
   "dependencies": {
     "botframework-directlinejs": "^0.11.6",
     "classnames": "^2.5.1",
+    "core-js": "^3.38.1",
     "emotion": "^10.0.27",
     "eventsource-parser": "^2.0.1",
     "fflate": "^0.8.2",

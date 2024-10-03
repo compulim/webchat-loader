@@ -1,17 +1,18 @@
 import { css } from 'emotion';
 import ms from 'ms';
 import React, { FocusEventHandler, MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+import { looseObject, number, parse } from 'valibot';
 
-import isURL from '../util/isURL';
-import Presets from './Presets';
-import Row from './Row';
-import tryDecodeJWT from '../util/tryDecodeJWT';
 import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
 import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
 import useSavedSpeechSubscriptionKeys from '../data/hooks/useSavedSpeechSubscriptionKeys';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
+import isURL from '../util/isURL';
+import tryDecodeJWT from '../util/tryDecodeJWT';
+import Presets from './Presets';
+import Row from './Row';
 
 import type { ChangeEventHandler, FC } from 'react';
 
@@ -104,7 +105,10 @@ const SpeechCredentials: FC = () => {
   );
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
-  const decodedAuthorizationToken = tryDecodeJWT<{ exp: number }>(authorizationToken);
+  const decodedAuthorizationToken = parse(
+    looseObject({ exp: number() }),
+    tryDecodeJWT(authorizationToken.includes('aad#') ? authorizationToken.split('#')[2] : authorizationToken)
+  );
   const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
 
   const [, setForceRender] = useState<{}>();

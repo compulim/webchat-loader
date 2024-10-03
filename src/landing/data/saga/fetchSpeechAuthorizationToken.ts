@@ -23,11 +23,13 @@ export default function* fetchSpeechAuthorizationTokenSaga() {
         return;
       }
 
-      const { token } = (yield call(fetchSpeechAuthorizationToken, url)) as ResultOfPromise<
+      const { region: regionFromAPI, token } = (yield call(fetchSpeechAuthorizationToken, url)) as ResultOfPromise<
         ReturnType<typeof fetchSpeechAuthorizationToken>
       >;
 
-      const { region } = tryDecodeJWT<{ region: string }>(token) || { region: '' };
+      const { region: regionFromToken } = tryDecodeJWT<{ region: string }>(token) || { region: '' };
+
+      const region = regionFromAPI || regionFromToken;
 
       if (region) {
         yield put(setSpeechRegion(region));
