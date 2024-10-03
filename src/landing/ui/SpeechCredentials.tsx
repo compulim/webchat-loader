@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 import ms from 'ms';
 import React, { FocusEventHandler, MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
-import { looseObject, number, parse } from 'valibot';
+import { looseObject, number, safeParse } from 'valibot';
 
 import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';
 import useGenerateSpeechAuthorizationToken from '../data/hooks/useGenerateSpeechAuthorizationToken';
@@ -105,10 +105,15 @@ const SpeechCredentials: FC = () => {
   );
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
-  const decodedAuthorizationToken = parse(
+  const decodedAuthorizationTokenResult = safeParse(
     looseObject({ exp: number() }),
     tryDecodeJWT(authorizationToken.includes('aad#') ? authorizationToken.split('#')[2] : authorizationToken)
   );
+
+  const decodedAuthorizationToken = decodedAuthorizationTokenResult.success
+    ? decodedAuthorizationTokenResult.output
+    : undefined;
+
   const timeToExpire = decodedAuthorizationToken && decodedAuthorizationToken.exp * 1000 - Date.now();
 
   const [, setForceRender] = useState<{}>();
