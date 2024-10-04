@@ -1,8 +1,10 @@
-import { css } from 'emotion';
 import classNames from 'classnames';
-import React, { useMemo } from 'react';
+import { css } from 'emotion';
+import { onErrorResumeNext } from 'on-error-resume-next';
+import React, { memo, useMemo } from 'react';
+import { safeParse } from 'valibot';
 
-import isURL from '../util/isURL';
+import { looseStyleOptionsSchema } from '../../common/types/LooseStyleOptions';
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -17,10 +19,10 @@ import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
+import useStyleOptionsContent from '../data/hooks/useStyleOptionsContent';
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useVersion from '../data/hooks/useVersion';
-
-import type { FC } from 'react';
+import isURL from '../util/isURL';
 
 const ROOT_CSS = css({
   '&.webchat-link--disabled': {
@@ -28,7 +30,7 @@ const ROOT_CSS = css({
   }
 });
 
-const WebChatLink: FC = () => {
+const WebChatLink = memo(() => {
   const [conversationId] = useDirectLineConversationId();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
@@ -43,6 +45,7 @@ const WebChatLink: FC = () => {
   const [speechSubscriptionKey] = useSpeechSubscriptionKey();
   const [token] = useDirectLineToken();
   const [transcriptContent] = useTranscriptDialogContent();
+  const [styleOptionsContent] = useStyleOptionsContent();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
 
@@ -50,6 +53,17 @@ const WebChatLink: FC = () => {
     () => transcriptContent && URL.createObjectURL(new Blob([transcriptContent], { type: 'application/json' })),
     [transcriptContent]
   );
+
+  const styleOptionsJSON = useMemo(() => {
+    const { output, success } = safeParse(
+      looseStyleOptionsSchema,
+      onErrorResumeNext(() => JSON.parse(styleOptionsContent))
+    );
+
+    if (success) {
+      return JSON.stringify(output);
+    }
+  }, [styleOptionsContent]);
 
   const searchParams = useMemo<undefined | URLSearchParams>(() => {
     const isDirectLineTokenURL = isURL(secret);
@@ -103,7 +117,9 @@ const WebChatLink: FC = () => {
         ? { st: speechAuthorizationToken }
         : speechSubscriptionKey
         ? { sk: speechSubscriptionKey }
-        : {})
+        : {}),
+
+      ...(styleOptionsJSON ? { so: styleOptionsJSON } : {})
 
       // ws: protocolWebSocket + '',
       // ...(protocolAppServiceExtension ? { se: domainHost } : {}),
@@ -120,6 +136,7 @@ const WebChatLink: FC = () => {
     speechAuthorizationToken,
     speechSubscriptionKey,
     speechRegion,
+    styleOptionsJSON,
     token,
     transcriptContentBlobURL,
     userId,
@@ -140,5 +157,6 @@ const WebChatLink: FC = () => {
       Open Web Chat in a new window
     </span>
   );
-};
+});
+
 export default WebChatLink;

@@ -23,7 +23,10 @@ export default function createStore() {
   const sagaMiddleware = createSagaMiddleware();
   const store = createReduxStore(
     reducer,
-    tryParseJSON(onErrorResumeNext(() => window.localStorage?.getItem?.(LOCAL_STORAGE_KEY)) || '') || {},
+    tryParseJSON(
+      onErrorResumeNext<() => string | null, string | null>(() => window.localStorage?.getItem?.(LOCAL_STORAGE_KEY)) ||
+        ''
+    ) || {},
     applyMiddleware(sagaMiddleware)
   );
 

@@ -1,0 +1,12 @@
+.style-options-dialog {
+  overflow: hidden;
+}
+
+.style-options-dialog__textarea {
+  height: 80vh;
+  width: 80vw;
+}
+
+.style-options-dialog__textarea--has-error {
+  color: red;
+}

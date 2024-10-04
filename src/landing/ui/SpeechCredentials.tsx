@@ -1,6 +1,6 @@
 import { css } from 'emotion';
 import ms from 'ms';
-import React, { FocusEventHandler, MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { type FocusEventHandler, type MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { looseObject, number, safeParse } from 'valibot';
 
 import useFetchSpeechAuthorizationToken from '../data/hooks/useFetchSpeechAuthorizationToken';

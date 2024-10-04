@@ -1,10 +1,13 @@
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
+// import { unzip } from 'fflate';
 import ReactDOM, { render } from 'react-dom';
 import { fetch } from 'whatwg-fetch';
-// import { unzip } from 'fflate';
 import random from 'math-random';
+import { onErrorResumeNext } from 'on-error-resume-next';
 import React from 'react';
+import { parse } from 'valibot';
 
+import { looseStyleOptionsSchema } from '../common/types/LooseStyleOptions';
 import getDomainURL from '../common/util/getDomainURL';
 import KeyLogs from './ui/KeyLogs';
 import ViaReact from './ui/ViaReact';
@@ -299,7 +302,15 @@ async function main() {
       //   rootElement
       // );
 
-      (window.ReactDOM as any).render(window.React.createElement(ViaReact, adapters), rootElement);
+      (window.ReactDOM as any).render(
+        window.React.createElement(ViaReact, {
+          ...adapters,
+          styleOptions:
+            onErrorResumeNext(() => parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('so') || ''))) ||
+            {}
+        }),
+        rootElement
+      );
     }
   }
 

@@ -5,6 +5,7 @@ import { ScrollingBackground } from 'react-scrolling-background';
 
 import useTranscriptDialogVisible from './data/hooks/useTranscriptDialogVisible';
 import BotPresets from './ui/BotPresets';
+import Customization from './ui/Customization';
 import DirectLineCredentials from './ui/DirectLineCredentials';
 import Protocol from './ui/Protocol';
 import SpeechCredentials from './ui/SpeechCredentials';
@@ -103,13 +104,13 @@ const App: FC = () => {
           onChange={ setExperiment }
           value={ experiment }
         /> */}
+        <Customization />
         <section className="row" style={{ marginBottom: 0 }}>
           <WebChatLink />
         </section>
       </div>
       <div className="app__build-time">
-        {npm_package_version} (Build at {buildTimestamp.toLocaleDateString()}{' '}
-        {buildTimestamp.toLocaleTimeString()})
+        {npm_package_version} (Build at {buildTimestamp.toLocaleDateString()} {buildTimestamp.toLocaleTimeString()})
       </div>
       {transcriptDialogVisible && <TranscriptDialog />}
     </div>
