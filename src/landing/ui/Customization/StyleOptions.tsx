@@ -49,6 +49,22 @@ const StyleOptions = () => {
       </button>
       <dialog className={'style-options-dialog'} onClose={handleDialogClose} ref={dialogRef}>
         <h2>Style options</h2>
+        <p>
+          Link to{' '}
+          <a
+            href="https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/StyleOptions.ts"
+            target="_blank"
+          >
+            <code>StyleOptions.ts</code>
+          </a>
+          {' '}and{' '}
+          <a
+            href="https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/defaultStyleOptions.ts"
+            target="_blank"
+          >
+            <code>defaultStyleOptions.ts</code>
+          </a>
+        </p>
         <textarea
           autoFocus={true}
           className={cx('style-options-dialog__textarea', { 'style-options-dialog__textarea--has-error': hasError })}
