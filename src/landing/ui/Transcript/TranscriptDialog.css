@@ -2,6 +2,7 @@
   border-radius: 8px;
   border: 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   height: 90vh;
   width: 90vw;
 }
