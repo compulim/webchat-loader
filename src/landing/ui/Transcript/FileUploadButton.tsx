@@ -4,13 +4,14 @@ import { memo, useCallback, type ChangeEventHandler, type FormEventHandler, type
 
 type Props = PropsWithChildren<
   Readonly<{
+    disabled?: boolean;
     onError?: (err: any) => void;
     onUpload?: (content: ArrayBuffer | null | string) => void;
     resultType?: string;
   }>
 >;
 
-const FileUploadButton = memo(({ children, onError, onUpload, resultType }: Props) => {
+const FileUploadButton = memo(({ children, disabled, onError, onUpload, resultType }: Props) => {
   const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target }) => {
       new Promise<ArrayBuffer | null | string>((resolve, reject) => {
@@ -49,8 +50,16 @@ const FileUploadButton = memo(({ children, onError, onUpload, resultType }: Prop
 
   return (
     <form className="file-upload-button" onSubmit={handleSubmit}>
-      <button type="button">{children}</button>
-      <input accept=".har" className="file-upload-button__file" onChange={handleChange} type="file" />
+      <button disabled={disabled} type="button">
+        {children}
+      </button>
+      <input
+        accept=".har"
+        className="file-upload-button__file"
+        disabled={disabled}
+        onChange={handleChange}
+        type="file"
+      />
     </form>
   );
 });

@@ -1,25 +1,28 @@
 .transcript-dialog {
-  background-color: White;
-  border-radius: 4;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  bottom: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  left: 20px;
-  position: fixed;
-  right: 20px;
-  top: 20px;
+  border-radius: 8px;
+  border: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  height: 90vh;
+  width: 90vw;
+}
+
+.transcript-dialog__box {
+  /* box-sizing: border-box; */
+  display: grid;
+  gap: 8px;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  width: 100%;
+}
+
+.transcript-dialog__title {
+  margin-block: 0;
 }
 
 .transcript-dialog__button-bar {
-  padding: 5;
-}
-
-.transcript-dialog__body {
-  height: 100%;
-  overflow: scrolling;
-  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .transcript-dialog__text-area {
@@ -32,7 +35,6 @@
   outline: 0;
   padding: 5;
   resize: none;
-  width: 100%;
 }
 
 .transcript-dialog__text-area::placeholder {

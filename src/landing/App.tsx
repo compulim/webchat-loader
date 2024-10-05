@@ -3,13 +3,11 @@ import './App.css';
 import { memo, useMemo } from 'react';
 import { ScrollingBackground } from 'react-scrolling-background';
 
-import useTranscriptDialogVisible from './data/hooks/useTranscriptDialogVisible';
 import BotPresets from './ui/BotPresets';
 import Customization from './ui/Customization';
 import DirectLineCredentials from './ui/DirectLineCredentials';
 import Protocol from './ui/Protocol';
 import SpeechCredentials from './ui/SpeechCredentials';
-import TranscriptDialog from './ui/TranscriptDialog';
 import VersionSelector from './ui/VersionSelector';
 import WebChatLink from './ui/WebChatLink';
 
@@ -22,7 +20,6 @@ declare global {
 }
 
 const App = memo(() => {
-  const [transcriptDialogVisible] = useTranscriptDialogVisible();
   const buildTimestamp = useMemo<Date>(() => new Date(BUILD_TIMESTAMP || ''), []);
 
   return (
@@ -73,7 +70,6 @@ const App = memo(() => {
       <div className="app__build-time">
         {npm_package_version} (Build at {buildTimestamp.toLocaleDateString()} {buildTimestamp.toLocaleTimeString()})
       </div>
-      {transcriptDialogVisible && <TranscriptDialog />}
     </div>
   );
 });

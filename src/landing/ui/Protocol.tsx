@@ -13,14 +13,13 @@ import useProtocolDirectLineSpeech from '../data/hooks/useProtocolDirectLineSpee
 import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
-import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
 import Row from './Row';
+import EditTranscriptButton from './EditTranscriptButton';
 
 const DOMAIN_SUFFIX = '/v3/directline';
 const DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION = '/.bot/v3/directline';
 
 const Protocol = memo(() => {
-  const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
   const [directLineAppServiceExtensionErrorReason] = useDirectLineAppServiceExtensionErrorReason();
   const [directLineAppServiceExtensionResponse] = useDirectLineAppServiceExtensionResponse();
   const [directLineAppServiceExtensionStatus] = useDirectLineAppServiceExtensionStatus();
@@ -39,8 +38,6 @@ const Protocol = memo(() => {
     ({ target: { value } }) => setDirectLineDomainHost(value || ''),
     [setDirectLineDomainHost]
   );
-
-  const handleEditTranscriptClick = useCallback(() => setTranscriptDialogVisible(true), [setTranscriptDialogVisible]);
 
   const handleProtocolClick = useCallback(() => {
     if (protocolAppServiceExtension) {
@@ -160,9 +157,7 @@ const Protocol = memo(() => {
             type="radio"
           />
           &nbsp; Load from transcript &nbsp;
-          <button disabled={!protocolTranscript} onClick={handleEditTranscriptClick} type="button">
-            Edit
-          </button>
+          <EditTranscriptButton />
         </label>
       </div>
     </Row>
