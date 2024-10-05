@@ -25,6 +25,7 @@ import transcript5 from '../../sample/transcript5';
 import transcript6 from '../../sample/transcript6';
 import parseChatHistoryFromHARFile from '../../util/parseChatHistoryFromHARFile';
 import FileUploadButton from './FileUploadButton';
+import CloseButton from '../CloseButton';
 
 const GENERATE_COUNT = 50;
 
@@ -71,6 +72,8 @@ const TranscriptDialog = memo(
 
       return transcript && transcript.length ? JSON.stringify(transcript, null, 2) + '\n' : '';
     });
+
+    const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
 
     const handleGenerateClick = useCallback<MouseEventHandler>(
       event => {
@@ -157,10 +160,8 @@ const TranscriptDialog = memo(
         }
 
         setSavedContent(transcript.length ? JSON.stringify(transcript, null, 2) : '');
-        dialogRef.current?.close();
       } else {
         setSavedContent('');
-        dialogRef.current?.close();
       }
     }, [dialogRef, editedContent, setSavedContent]);
 
@@ -196,6 +197,7 @@ const TranscriptDialog = memo(
 
     return (
       <dialog className="transcript-dialog" onClose={handleDialogClose} ref={dialogRef}>
+        <CloseButton onClick={handleCloseButtonClick} />
         <div className="transcript-dialog__box">
           <h2 className="transcript-dialog__title">Edit transcript (auto-save)</h2>
           <div className="transcript-dialog__button-bar">

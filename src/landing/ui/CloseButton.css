@@ -1,0 +1,12 @@
+.close-button {
+  appearance: none;
+  background-color: Transparent;
+  border: 0;
+  font-size: 24px;
+  height: 32px;
+  padding: 0;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 32px;
+}

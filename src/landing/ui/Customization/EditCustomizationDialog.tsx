@@ -6,6 +6,7 @@ import { useStateWithRef } from 'use-state-with-ref';
 
 import useCSSCustomProperties from '../../data/hooks/useCSSCustomProperties';
 import useStyleOptionsJSON from '../../data/hooks/useStyleOptionsJSON';
+import CloseButton from '../CloseButton';
 import CSSCustomProperties from '../Customization/CSSCustomProperties';
 import StyleOptions from '../Customization/StyleOptions';
 
@@ -22,6 +23,8 @@ const EditCustomizationButton = memo(
     const [styleOptionsJSON, setStyleOptionsJSON, styleOptionsJSONRef] = useStateWithRef<string>(
       savedStyleOptionsJSON || '{}'
     );
+
+    const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
 
     const handleDialogOpen = useCallback(() => {
       setCSSCustomProperties(savedCSSCustomPropertiesRef.current);
@@ -50,6 +53,7 @@ const EditCustomizationButton = memo(
 
     return (
       <dialog className="edit-customization-dialog" onClose={handleDialogClose} ref={dialogRef}>
+        <CloseButton onClick={handleCloseButtonClick} />
         <div className="edit-customization-dialog__box">
           <h2 className="edit-customization-dialog__title">Customization (auto-save)</h2>
           <StyleOptions onInput={setStyleOptionsJSON} value={styleOptionsJSON} />
