@@ -1,4 +1,5 @@
-import { css } from 'emotion';
+import './VersionSelector.css';
+
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { coerce, compare } from 'semver';
 import { fetch } from 'whatwg-fetch';
@@ -16,23 +17,6 @@ type Version = {
   time: string;
   version: string;
 };
-
-const ROOT_CSS = css({
-  '.version-selector__artifact-box': {
-    border: 0,
-    fontSize: '90%',
-    width: '100%'
-  },
-
-  '.version-selector__artifact-box-label': {
-    display: 'inline-block',
-    fontWeight: 'initial',
-    textAlign: 'initial',
-    width: 150
-  },
-
-  '.version-selector__artifact-box-input': {}
-});
 
 const SELECT_STYLE: Readonly<CSSProperties> = Object.freeze({ width: '100%' });
 
@@ -287,7 +271,7 @@ const VersionSelector: FC = () => {
   }, [fetchArtifactBundleURLStatusIsIdleDownloaded, setShowGitHubArtifactPanel]);
 
   return (
-    <Row className={ROOT_CSS} header="Version">
+    <Row className="version-selector" header="Version">
       <div>
         <select
           disabled={availableVersions.length < 2}

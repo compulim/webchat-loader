@@ -1,0 +1,7 @@
+.webchat-link {
+  color: LinkText;
+}
+
+.webchat-link--disabled {
+  color: #ccc;
+}

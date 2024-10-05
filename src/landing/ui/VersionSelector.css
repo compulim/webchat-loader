@@ -1,0 +1,12 @@
+.version-selector__artifact-box {
+  border: 0;
+  font-size: 90%;
+  width: 100%;
+}
+
+.version-selector__artifact-box-label {
+  display: inline-block;
+  font-weight: initial;
+  text-align: initial;
+  width: 150;
+}

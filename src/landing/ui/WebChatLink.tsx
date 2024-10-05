@@ -1,5 +1,6 @@
+import './WebChatLink.css';
+
 import classNames from 'classnames';
-import { css } from 'emotion';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React, { memo, useMemo } from 'react';
 import { safeParse } from 'valibot';
@@ -24,12 +25,6 @@ import useStyleOptionsJSON from '../data/hooks/useStyleOptionsJSON';
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useVersion from '../data/hooks/useVersion';
 import isURL from '../util/isURL';
-
-const ROOT_CSS = css({
-  '&.webchat-link--disabled': {
-    color: '#CCC'
-  }
-});
 
 const WebChatLink = memo(() => {
   const [conversationId] = useDirectLineConversationId();
@@ -153,13 +148,11 @@ const WebChatLink = memo(() => {
   );
 
   return webChatURL ? (
-    <a className={classNames('webchat-link', ROOT_CSS)} href={webChatURL} rel="noopener noreferrer" target="_blank">
+    <a className="webchat-link" href={webChatURL} rel="noopener noreferrer" target="_blank">
       Open Web Chat in a new window
     </a>
   ) : (
-    <span className={classNames('webchat-link', 'webchat-link--disabled', ROOT_CSS)}>
-      Open Web Chat in a new window
-    </span>
+    <span className="webchat-link webchat-link--disabled">Open Web Chat in a new window</span>
   );
 });
 
