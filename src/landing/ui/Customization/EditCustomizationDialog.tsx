@@ -12,7 +12,6 @@ import StyleOptions from '../Customization/StyleOptions';
 const EditCustomizationButton = memo(
   forwardRef<Pick<HTMLDialogElement, 'close' | 'showModal'>>((_, ref) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
-    const styleOptionsTextAreaRef = useRef<HTMLTextAreaElement>(null);
     const [savedCSSCustomProperties, setSavedCSSCustomProperties, savedCSSCustomPropertiesRef] =
       useCSSCustomProperties();
     const [savedStyleOptionsJSON, setSavedStyleOptionsJSON, savedStyleOptionsJSONRef] = useStyleOptionsJSON();
@@ -53,7 +52,7 @@ const EditCustomizationButton = memo(
       <dialog className="edit-customization-dialog" onClose={handleDialogClose} ref={dialogRef}>
         <div className="edit-customization-dialog__box">
           <h2 className="edit-customization-dialog__title">Customization (auto-save)</h2>
-          <StyleOptions onInput={setStyleOptionsJSON} ref={styleOptionsTextAreaRef} value={styleOptionsJSON} />
+          <StyleOptions onInput={setStyleOptionsJSON} value={styleOptionsJSON} />
           <CSSCustomProperties onInput={setCSSCustomProperties} value={cssCustomProperties} />
         </div>
       </dialog>
