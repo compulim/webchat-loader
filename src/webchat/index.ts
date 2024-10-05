@@ -4,7 +4,7 @@ import random from 'math-random';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createRoot } from 'react-dom/client';
+import ReactDOMClient, { createRoot } from 'react-dom/client';
 import { parse } from 'valibot';
 import { fetch } from 'whatwg-fetch';
 
@@ -16,8 +16,9 @@ import createDirectLineFromTranscript from './util/createDirectLineFromTranscrip
 import isLocalhostURL from './util/isLocalhostURL';
 import loadAsset from './util/loadAsset';
 
-window.React = React;
-window.ReactDOM = ReactDOM;
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOM;
+(window as any).ReactDOMClient = ReactDOMClient;
 
 async function main() {
   const urlSearchParams = new URLSearchParams(location.search);
@@ -303,13 +304,12 @@ async function main() {
       //   rootElement
       // );
 
-      (window.ReactDOM as any).render(
+      (window as any).ReactDOMClient.createRoot(rootElement).render(
         window.React.createElement(ViaReact, {
           ...adapters,
           styleOptions:
             onErrorResumeNext(() => parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('so') || ''))) || {}
-        }),
-        rootElement
+        })
       );
 
       const css = urlSearchParams.get('css');
