@@ -28,13 +28,13 @@ import FileUploadButton from './FileUploadButton';
 
 const GENERATE_COUNT = 50;
 
+const SAMPLE_STARTER_PROMPTS = JSON.stringify(preChatMessageWithStarterPrompts, null, 2);
 const SAMPLE_TRANSCRIPT_JSON = JSON.stringify(transcript1, null, 2);
 const SAMPLE_TRANSCRIPT_JSON_2 = JSON.stringify(transcript2, null, 2);
 const SAMPLE_TRANSCRIPT_JSON_3 = JSON.stringify(transcript3, null, 2);
 const SAMPLE_TRANSCRIPT_JSON_4 = JSON.stringify(transcript4, null, 2);
 const SAMPLE_TRANSCRIPT_JSON_5 = JSON.stringify(transcript5, null, 2);
 const SAMPLE_TRANSCRIPT_JSON_6 = JSON.stringify(transcript6, null, 2);
-const SAMPLE_STARTER_PROMPTS = JSON.stringify(preChatMessageWithStarterPrompts, null, 2);
 
 function parseTranscript(value: string): false | [] {
   try {
@@ -84,7 +84,6 @@ const TranscriptDialog = memo(
           nextEditedContent.unshift({
             from: {
               role: i % 2 ? 'bot' : 'user'
-              // role: 'bot'
             },
             id: `a-${count - i}`,
             text: `${count - i}: ${loremIpsum.generateParagraphs(1)}`,
