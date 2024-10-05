@@ -1,0 +1,46 @@
+.protocol-domain-input {
+  font-size: 80%;
+}
+
+.protocol-domain-input__doppelganger,
+.protocol-domain-input__input {
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+.protocol-domain-input__input {
+  background-color: #eee;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.protocol-domain-input__input-box {
+  margin: 1px 2px;
+  position: relative;
+}
+
+.protocol-domain-input__protocol-button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  font-size: inherit;
+  padding: 0;
+}
+
+.protocol-checkbox {
+  margin: 0;
+}
+
+.protocol-label {
+  align-items: center;
+  display: flex;
+}
+
+.protocol--red {
+  color: red;
+}

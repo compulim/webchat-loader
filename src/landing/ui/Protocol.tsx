@@ -1,8 +1,7 @@
-import { css } from 'emotion';
-import classNames from 'classnames';
-import React, { ChangeEventHandler, Fragment, useCallback } from 'react';
+import './Protocol.css';
 
-import Row from './Row';
+import React, { type ChangeEventHandler, Fragment, memo, useCallback } from 'react';
+
 import useDirectLineAppServiceExtensionErrorReason from '../data/hooks/useDirectLineAppServiceExtensionErrorReason';
 import useDirectLineAppServiceExtensionResponse from '../data/hooks/useDirectLineAppServiceExtensionResponse';
 import useDirectLineAppServiceExtensionStatus from '../data/hooks/useDirectLineAppServiceExtensionStatus';
@@ -15,56 +14,12 @@ import useProtocolREST from '../data/hooks/useProtocolREST';
 import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useTranscriptDialogVisible from '../data/hooks/useTranscriptDialogVisible';
-
-import type { FC } from 'react';
+import Row from './Row';
 
 const DOMAIN_SUFFIX = '/v3/directline';
 const DOMAIN_SUFFIX_FOR_APP_SERVICE_EXTENSION = '/.bot/v3/directline';
 
-const DOMAIN_CSS = css({
-  '&.domain': {
-    fontSize: '80%',
-
-    '& .domain__doppelganger, & .domain__input': {
-      border: 0,
-      fontFamily: 'inherit',
-      fontSize: 'inherit',
-      padding: 0
-    },
-
-    '& .domain__input': {
-      backgroundColor: '#EEE',
-      height: '100%',
-      left: 0,
-      position: 'absolute',
-      top: 0,
-      width: '100%'
-    },
-
-    '& .domain__input-box': {
-      margin: '1px 2px',
-      position: 'relative'
-    },
-
-    '& .domain__protocol-button': {
-      appearance: 'none',
-      background: 'transparent',
-      border: 0,
-      fontSize: 'inherit',
-      padding: 0
-    }
-  }
-});
-
-const APP_SERVICE_EXTENSION_CSS = css({});
-const CHECKBOX_CSS = css({ margin: 0 });
-const LABEL_CSS = css({
-  alignItems: 'center',
-  display: 'flex'
-});
-const RED_CSS = css({ color: 'Red' });
-
-const Protocol: FC = () => {
+const Protocol = memo(() => {
   const [, setTranscriptDialogVisible] = useTranscriptDialogVisible();
   const [directLineAppServiceExtensionErrorReason] = useDirectLineAppServiceExtensionErrorReason();
   const [directLineAppServiceExtensionResponse] = useDirectLineAppServiceExtensionResponse();
@@ -103,10 +58,10 @@ const Protocol: FC = () => {
   return (
     <Row header="Protocol" rowLabel={false}>
       <div>
-        <label className={LABEL_CSS}>
+        <label className="protocol-label">
           <input
             checked={protocolWebSocket}
-            className={CHECKBOX_CSS}
+            className="protocol-checkbox"
             name="protocol"
             onChange={setProtocolWebSocket}
             type="radio"
@@ -115,23 +70,25 @@ const Protocol: FC = () => {
         </label>
       </div>
       <div>
-        <label className={LABEL_CSS}>
+        <label className="protocol-label">
           <input
             checked={protocolREST}
-            className={CHECKBOX_CSS}
+            className="protocol-checkbox"
             name="protocol"
             onChange={setProtocolREST}
             type="radio"
           />
           &nbsp; Direct Line via REST short-polling
         </label>
-        {protocolREST && <small className={RED_CSS}>This protocol is not recommended to use in production.</small>}
+        {protocolREST && (
+          <small className="protocol--red">This protocol is not recommended to use in production.</small>
+        )}
       </div>
       <div>
-        <label className={LABEL_CSS}>
+        <label className="protocol-label">
           <input
             checked={protocolDirectLineSpeech}
-            className={CHECKBOX_CSS}
+            className="protocol-checkbox"
             name="protocol"
             onChange={setProtocolDirectLineSpeech}
             type="radio"
@@ -140,11 +97,11 @@ const Protocol: FC = () => {
         </label>
         {protocolDirectLineSpeech && <small>This protocol is supported since version 4.7.0.</small>}
       </div>
-      <div className={APP_SERVICE_EXTENSION_CSS}>
-        <label className={LABEL_CSS}>
+      <div>
+        <label className="protocol-label">
           <input
             checked={protocolAppServiceExtension || protocolAppServiceExtensionInsecure}
-            className={CHECKBOX_CSS}
+            className="protocol-checkbox"
             name="protocol"
             onChange={setProtocolAppServiceExtension}
             type="radio"
@@ -153,18 +110,18 @@ const Protocol: FC = () => {
         </label>
         {protocolAppServiceExtensionFamily && (
           <Fragment>
-            <div className={classNames(DOMAIN_CSS + '', 'domain')}>
-              <button className="domain__protocol-button" onClick={handleProtocolClick}>
+            <div className="protocol-domain-input">
+              <button className="protocol-domain-input__protocol-button" onClick={handleProtocolClick}>
                 {directLineDomainURL.protocol}//
               </button>
-              <span className="domain__input-box">
+              <span className="protocol-domain-input__input-box">
                 {/* @ts-ignore */}
-                <nobr className="domain__doppelganger">
+                <nobr className="protocol-domain-input__doppelganger">
                   {protocolAppServiceExtensionFamily ? directLineDomainHost : ''}
                   {/* @ts-ignore */}
                 </nobr>
                 <input
-                  className="domain__input"
+                  className="protocol-domain-input__input"
                   disabled={!protocolAppServiceExtensionFamily}
                   onChange={handleDomainChange}
                   required={protocolAppServiceExtensionFamily}
@@ -194,10 +151,10 @@ const Protocol: FC = () => {
         )}
       </div>
       <div>
-        <label className={LABEL_CSS}>
+        <label className="protocol-label">
           <input
             checked={protocolTranscript}
-            className={CHECKBOX_CSS}
+            className="protocol-checkbox"
             name="protocol"
             onChange={setProtocolTranscript}
             type="radio"
@@ -210,6 +167,6 @@ const Protocol: FC = () => {
       </div>
     </Row>
   );
-};
+});
 
 export default Protocol;
