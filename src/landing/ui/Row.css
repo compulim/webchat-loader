@@ -1,0 +1,17 @@
+.row {
+  margin: 1em 0;
+}
+
+.row__label {
+  align-items: flex-start;
+  display: flex;
+}
+
+.row__header {
+  display: inline-block;
+  width: 100px;
+}
+
+.row__body {
+  flex: 1;
+}

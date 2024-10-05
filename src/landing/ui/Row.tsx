@@ -1,25 +1,8 @@
-import { css } from 'emotion';
-import React from 'react';
+import './Row.css';
 
-import type { FC, PropsWithChildren } from 'react';
+import classNames from 'classnames';
 
-const ROOT_CSS = css({
-  margin: '1em 0',
-
-  '& > label, & > div': {
-    alignItems: 'flex-start',
-    display: 'flex',
-
-    '& > header': {
-      display: 'inline-block',
-      width: 100
-    },
-
-    '& > div': {
-      flex: 1
-    }
-  }
-});
+import React, { memo, type PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<{
   className?: string;
@@ -27,20 +10,20 @@ type Props = PropsWithChildren<{
   rowLabel?: boolean;
 }>;
 
-const Row: FC<Props> = ({ children, className, header, rowLabel = true }) => (
-  <section className={ROOT_CSS}>
+const Row = memo(({ children, className, header, rowLabel = true }: Props) => (
+  <section className="row">
     {rowLabel ? (
-      <label>
-        <header>{header}</header>
-        <div className={className}>{children}</div>
+      <label className="row__label">
+        <header className="row__header">{header}</header>
+        <div className={classNames('row__body', className)}>{children}</div>
       </label>
     ) : (
-      <div>
-        <header>{header}</header>
-        <div className={className}>{children}</div>
+      <div className="row__label">
+        <header className="row__header">{header}</header>
+        <div className={classNames('row__body', className)}>{children}</div>
       </div>
     )}
   </section>
-);
+));
 
 export default Row;
