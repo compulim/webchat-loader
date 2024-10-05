@@ -1,10 +1,8 @@
-import { css } from 'emotion';
+import './DirectLineCredentials.css';
+
 import ms from 'ms';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import Presets from './Presets';
-import Row from './Row';
-import tryDecodeJWT from '../util/tryDecodeJWT';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
 import useDirectLineUserId from '../data/hooks/useDirectLineUserId';
@@ -18,35 +16,11 @@ import useProtocolTranscript from '../data/hooks/useProtocolTranscript';
 import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useRefreshToken from '../data/hooks/useRefreshToken';
 import useSavedDirectLineSecrets from '../data/hooks/useSavedDirectLineSecrets';
+import tryDecodeJWT from '../util/tryDecodeJWT';
+import Presets from './Presets';
+import Row from './Row';
 
 import type { ChangeEventHandler, FC, FocusEventHandler } from 'react';
-
-const EXPIRED_FOOTNOTE_CSS = css({ color: 'Red' });
-const INPUT_ROW_CSS = css({
-  display: 'flex',
-  flex: 1,
-  position: 'relative',
-
-  '& > input:invalid': {
-    borderColor: 'Red',
-    borderStyle: 'solid',
-    borderWidth: 1
-  }
-});
-
-const REFRESH_TOKEN_BUTTON_CSS = css({
-  appearance: 'none',
-  backgroundColor: 'transparent',
-  border: 0,
-  color: 'rgba(0, 0, 238)',
-  cursor: 'pointer',
-  fontFamily: 'inherit',
-  fontSize: 'inherit',
-  padding: 0,
-  textDecoration: 'underline'
-});
-
-const SECRET_AND_TOKEN_CSS = css({ flex: 1, fontFamily: `Consolas, 'Courier New', monospace`, marginRight: '1em' });
 
 const DirectLineCredential: FC = () => {
   const fetchDirectLineToken = useFetchDirectLineToken();
@@ -129,9 +103,9 @@ const DirectLineCredential: FC = () => {
   return (
     <React.Fragment>
       <Row header={tokenFromURL ? 'Token URL' : 'Secret'}>
-        <div className={INPUT_ROW_CSS}>
+        <div className="direct-line-credentials__input-row">
           <input
-            className={SECRET_AND_TOKEN_CSS}
+            className="direct-line-credentials__input direct-line-credentials__secret-and-token"
             disabled={secretDisabled}
             onChange={handleSecretChange}
             onFocus={handleFocus}
@@ -170,9 +144,9 @@ const DirectLineCredential: FC = () => {
         />
       </Row>
       <Row header="Token">
-        <div className={INPUT_ROW_CSS}>
+        <div className="direct-line-credentials__input-row">
           <input
-            className={SECRET_AND_TOKEN_CSS}
+            className="direct-line-credentials__input direct-line-credentials__secret-and-token"
             disabled={tokenDisabled}
             onChange={handleTokenChange}
             onFocus={handleFocus}
@@ -188,19 +162,19 @@ const DirectLineCredential: FC = () => {
         </div>
         {(protocolDirectLineAppServiceExtension || protocolDirectLineAppServiceExtensionInsecure) &&
           !validDirectLineAppServiceExtensionToken && (
-            <div className={EXPIRED_FOOTNOTE_CSS}>
+            <div className="direct-line-credentials__expired-footnote">
               <small>This token is not for Direct Line App Service Extension.</small>
             </div>
           )}
         {(protocolREST || protocolWebSocket) && !validDirectLineToken && (
-          <div className={EXPIRED_FOOTNOTE_CSS}>
+          <div className="direct-line-credentials__expired-footnote">
             <small>This token is not for Direct Line channel.</small>
           </div>
         )}
         {secretDisabled &&
           !tokenDisabled &&
           (!decodedToken ? (
-            <div className={EXPIRED_FOOTNOTE_CSS}>
+            <div className="direct-line-credentials__expired-footnote">
               <small>This token is not a valid JSON Web Token.</small>
             </div>
           ) : timeToExpire && timeToExpire > 0 ? (
@@ -208,7 +182,7 @@ const DirectLineCredential: FC = () => {
               <small>
                 This token will expire in {ms(timeToExpire, { long: true })}.{' '}
                 <button
-                  className={REFRESH_TOKEN_BUTTON_CSS}
+                  className="direct-line-credentials__refresh-token-button"
                   onClick={refreshToken}
                   title="Auto refresh when expire in 20 minutes"
                   type="button"
@@ -218,7 +192,7 @@ const DirectLineCredential: FC = () => {
               </small>
             </div>
           ) : (
-            <div className={EXPIRED_FOOTNOTE_CSS}>
+            <div className="direct-line-credentials__expired-footnote">
               <small>This token has already expired.</small>
             </div>
           ))}
