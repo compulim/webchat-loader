@@ -42,7 +42,7 @@ const Customization = () => {
   return (
     <Row header="Customization">
       <button className={'customization-dialog-open-button'} onClick={handleOpenButtonClick} type="button">
-        Edit style options
+        Edit
       </button>
       <dialog className={'customization-dialog'} onClose={handleDialogClose} ref={dialogRef}>
         <div className="customization-dialog__box">
