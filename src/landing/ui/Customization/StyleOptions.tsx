@@ -1,4 +1,4 @@
-import { cx } from 'emotion';
+import classNames from 'classnames';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React, { type FormEventHandler, forwardRef, Fragment, memo, useCallback, useMemo } from 'react';
 import { safeParse } from 'valibot';
@@ -58,7 +58,7 @@ const StyleOptions = forwardRef<HTMLTextAreaElement, StyleOptionsProps>(({ onInp
         </p>
       </div>
       <textarea
-        className={cx('customization-dialog__textarea', {
+        className={classNames('customization-dialog__textarea', {
           'customization-dialog__textarea--has-error': hasError
         })}
         onInput={handleInput}

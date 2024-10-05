@@ -1,6 +1,6 @@
 import './TranscriptDialog.css';
 
-import { cx } from 'emotion';
+import classNames from 'classnames';
 import { LoremIpsum } from 'lorem-ipsum';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -678,7 +678,7 @@ const TranscriptDialog: FC = () => {
       <div className="transcript-dialog__body">
         <textarea
           autoFocus={true}
-          className={cx('transcript-dialog__text-area', { 'transcript-dialog__text-area--invalid': !isValid })}
+          className={classNames('transcript-dialog__text-area', { 'transcript-dialog__text-area--invalid': !isValid })}
           onChange={handleTextAreaChange}
           onKeyDown={handleTextAreaKeyDown}
           placeholder={`Please paste transcript in JSON format.\n\n${SAMPLE_TRANSCRIPT_JSON}`}

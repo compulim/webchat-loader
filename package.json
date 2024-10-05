@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/compulim/webchat-loader#readme",
   "skipBump": {
-    "emotion": "@emotion/css@11 depends on stylis which does not support IE11",
     "botframework-directlinejs": "botframwork-directlinejs@0.15.1 depends on buffer@6.0.3 which is not transformable by ESBuild to IE11",
     "esbuild": "esbuild@0.14 does not transpile const for IE11",
     "react": "react@18 dropped support of IE11",
@@ -44,7 +43,6 @@
     "botframework-directlinejs": "^0.11.6",
     "classnames": "^2.5.1",
     "core-js": "^3.38.1",
-    "emotion": "^10.0.27",
     "eventsource-parser": "^2.0.1",
     "fflate": "^0.8.2",
     "iter-fest": "^0.2.1",

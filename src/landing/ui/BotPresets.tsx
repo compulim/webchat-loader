@@ -1,7 +1,5 @@
 import './BotPresets.css';
 
-import classNames from 'classnames';
-import { css } from 'emotion';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
