@@ -1,22 +1,9 @@
-import { css, cx } from 'emotion';
+import './FileUploadButton.css';
+
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
 import type { ChangeEventHandler, FC, FormEventHandler, PropsWithChildren } from 'react';
-
-const ROOT_CSS = css({
-  display: 'inline',
-  position: 'relative',
-
-  '.file-upload-button__file': {
-    height: '100%',
-    left: 0,
-    opacity: 0,
-    position: 'absolute',
-    top: 0,
-    width: '100%'
-  }
-});
 
 type Props = PropsWithChildren<{
   onError?: (err: any) => void;
@@ -62,7 +49,7 @@ const FileUploadButton: FC<Props> = ({ children, onError, onUpload, resultType }
   }, []);
 
   return (
-    <form className={cx(ROOT_CSS, 'file-upload-button')} onSubmit={handleSubmit}>
+    <form className="file-upload-button" onSubmit={handleSubmit}>
       <button type="button">{children}</button>
       <input accept=".har" className="file-upload-button__file" onChange={handleChange} type="file" />
     </form>
