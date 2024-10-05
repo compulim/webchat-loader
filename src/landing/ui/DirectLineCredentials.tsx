@@ -1,7 +1,15 @@
 import './DirectLineCredentials.css';
 
 import ms from 'ms';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEventHandler,
+  type FocusEventHandler
+} from 'react';
 
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
 import useDirectLineToken from '../data/hooks/useDirectLineToken';
@@ -20,9 +28,7 @@ import tryDecodeJWT from '../util/tryDecodeJWT';
 import Presets from './Presets';
 import Row from './Row';
 
-import type { ChangeEventHandler, FC, FocusEventHandler } from 'react';
-
-const DirectLineCredential: FC = () => {
+const DirectLineCredential = memo(() => {
   const fetchDirectLineToken = useFetchDirectLineToken();
   const generateDirectLineToken = useGenerateDirectLineToken();
 
@@ -199,6 +205,6 @@ const DirectLineCredential: FC = () => {
       </Row>
     </React.Fragment>
   );
-};
+});
 
 export default DirectLineCredential;

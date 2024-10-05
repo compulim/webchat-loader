@@ -1,22 +1,29 @@
 import './VersionSelector.css';
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  Fragment,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEventHandler,
+  type CSSProperties
+} from 'react';
 import { coerce, compare } from 'semver';
 import { fetch } from 'whatwg-fetch';
 
+import useFetchArtifactBundleURL from '../data/hooks/useFetchArtifactBundleURL';
+import useFetchArtifactBundleURLReason from '../data/hooks/useFetchArtifactBundleURLReason';
+import useFetchArtifactBundleURLStatus from '../data/hooks/useFetchArtifactBundleURLStatus';
 import useVersion from '../data/hooks/useVersion';
 import Presets from './Presets';
 import Row from './Row';
 
-import type { ChangeEventHandler, CSSProperties, FC } from 'react';
-import useFetchArtifactBundleURL from '../data/hooks/useFetchArtifactBundleURL';
-import useFetchArtifactBundleURLReason from '../data/hooks/useFetchArtifactBundleURLReason';
-import useFetchArtifactBundleURLStatus from '../data/hooks/useFetchArtifactBundleURLStatus';
-
-type Version = {
+type Version = Readonly<{
   time: string;
   version: string;
-};
+}>;
 
 const SELECT_STYLE: Readonly<CSSProperties> = Object.freeze({ width: '100%' });
 
@@ -38,7 +45,7 @@ function toLocalDateTime(date: Date): string {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-const VersionSelector: FC = () => {
+const VersionSelector = memo(() => {
   const [version, setVersion] = useVersion();
   const [availableVersions, setAvailableVersions] = useState<readonly { time: string; version: string }[]>(
     Object.freeze([])
@@ -83,7 +90,7 @@ const VersionSelector: FC = () => {
           final.set(coercedVersion, group);
         }
 
-        group.push(version);
+        group.push(Object.freeze(version));
 
         return final;
       }, new Map()),
@@ -365,6 +372,6 @@ const VersionSelector: FC = () => {
       )}
     </Row>
   );
-};
+});
 
 export default VersionSelector;

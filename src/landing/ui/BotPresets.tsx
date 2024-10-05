@@ -1,13 +1,11 @@
 import './BotPresets.css';
 
-import React, { useCallback } from 'react';
+import React, { memo, useCallback, type MouseEventHandler, type PropsWithChildren } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Row from './Row';
 
 import loadBotPreset from '../data/action/loadBotPreset';
-
-import type { FC, MouseEventHandler, PropsWithChildren } from 'react';
 
 const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.freeze([
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Direct Line Web Socket.' },
@@ -44,13 +42,15 @@ const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.
   }
 ]);
 
-type Props = PropsWithChildren<{
-  onLoad: (value: string) => void;
-  title: string;
-  value: string;
-}>;
+type BotPreset = PropsWithChildren<
+  Readonly<{
+    onLoad: (value: string) => void;
+    title: string;
+    value: string;
+  }>
+>;
 
-const BotPreset: FC<Props> = ({ children, onLoad, title, value }) => {
+const BotPreset = memo(({ children, onLoad, title, value }: BotPreset) => {
   const handleClick = useCallback<MouseEventHandler>(
     event => {
       event.preventDefault();
@@ -65,9 +65,9 @@ const BotPreset: FC<Props> = ({ children, onLoad, title, value }) => {
       <nobr>{children}</nobr>
     </button>
   );
-};
+});
 
-const BotPresets: FC = () => {
+const BotPresets = memo(() => {
   const dispatch = useDispatch();
   const handleLoad = useCallback<(value: string) => void>(value => dispatch(loadBotPreset(value)), []);
 
@@ -82,6 +82,6 @@ const BotPresets: FC = () => {
       ))}
     </Row>
   );
-};
+});
 
 export default BotPresets;

@@ -2,10 +2,10 @@ import React, { type FormEventHandler, forwardRef, Fragment, memo, useCallback }
 
 import { useRefFrom } from 'use-ref-from';
 
-type CSSCustomPropertiesProps = {
+type CSSCustomPropertiesProps = Readonly<{
   onInput?: ((value: string) => void) | undefined;
   value: string;
-};
+}>;
 
 const SAMPLE = '--bubble-minHeight: 100px;';
 

@@ -6,10 +6,10 @@ import { safeParse } from 'valibot';
 import { useRefFrom } from 'use-ref-from';
 import { looseStyleOptionsSchema } from '../../../common/types/LooseStyleOptions';
 
-type StyleOptionsProps = {
+type StyleOptionsProps = Readonly<{
   onInput?: ((value: string) => void) | undefined;
   value: string;
-};
+}>;
 
 const SAMPLE = JSON.stringify({ backgroundColor: '#FEE' }, null, 2);
 

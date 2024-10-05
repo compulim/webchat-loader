@@ -1,13 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
 import App from './App';
 import createStore from './data/createStore';
 
-import type { FC } from 'react';
-
-const Main: FC<{}> = () => {
+const Main = memo(() => {
   const store = useMemo(createStore, []);
 
   return (
@@ -15,7 +13,7 @@ const Main: FC<{}> = () => {
       <App />
     </Provider>
   );
-};
+});
 
 render(<Main />, document.getElementById('root'));
 

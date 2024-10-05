@@ -10,7 +10,7 @@ import CSSCustomProperties from './Customization/CSSCustomProperties';
 import StyleOptions from './Customization/StyleOptions';
 import Row from './Row';
 
-const Customization = () => {
+const Customization = memo(() => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const styleOptionsTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const [savedCSSCustomProperties, setSavedCSSCustomProperties, savedCSSCustomPropertiesRef] = useCSSCustomProperties();
@@ -53,6 +53,6 @@ const Customization = () => {
       </dialog>
     </Row>
   );
-};
+});
 
 export default memo(Customization);

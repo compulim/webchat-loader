@@ -1,14 +1,15 @@
 import './Row.css';
 
 import classNames from 'classnames';
-
 import React, { memo, type PropsWithChildren } from 'react';
 
-type Props = PropsWithChildren<{
-  className?: string;
-  header: string;
-  rowLabel?: boolean;
-}>;
+type Props = PropsWithChildren<
+  Readonly<{
+    className?: string;
+    header: string;
+    rowLabel?: boolean;
+  }>
+>;
 
 const Row = memo(({ children, className, header, rowLabel = true }: Props) => (
   <section className="row">

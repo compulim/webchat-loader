@@ -1,17 +1,22 @@
 import './FileUploadButton.css';
 
-import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, {
+  memo,
+  useCallback,
+  type ChangeEventHandler,
+  type FormEventHandler,
+  type PropsWithChildren
+} from 'react';
 
-import type { ChangeEventHandler, FC, FormEventHandler, PropsWithChildren } from 'react';
+type Props = PropsWithChildren<
+  Readonly<{
+    onError?: (err: any) => void;
+    onUpload?: (content: ArrayBuffer | null | string) => void;
+    resultType?: string;
+  }>
+>;
 
-type Props = PropsWithChildren<{
-  onError?: (err: any) => void;
-  onUpload?: (content: ArrayBuffer | null | string) => void;
-  resultType?: string;
-}>;
-
-const FileUploadButton: FC<Props> = ({ children, onError, onUpload, resultType }) => {
+const FileUploadButton = memo(({ children, onError, onUpload, resultType }: Props) => {
   const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target }) => {
       new Promise<ArrayBuffer | null | string>((resolve, reject) => {
@@ -54,20 +59,6 @@ const FileUploadButton: FC<Props> = ({ children, onError, onUpload, resultType }
       <input accept=".har" className="file-upload-button__file" onChange={handleChange} type="file" />
     </form>
   );
-};
-
-FileUploadButton.defaultProps = {
-  children: undefined,
-  onError: undefined,
-  onUpload: undefined,
-  resultType: 'text'
-};
-
-FileUploadButton.propTypes = {
-  children: PropTypes.any,
-  onError: PropTypes.func,
-  onUpload: PropTypes.func,
-  resultType: PropTypes.oneOf(['text'])
-};
+});
 
 export default FileUploadButton;
