@@ -1,0 +1,21 @@
+.presets__delete-preset,
+.presets__preset,
+.presets__save-preset {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: LinkText;
+  cursor: pointer;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.presets__preset:disabled {
+  color: #ccc;
+  cursor: inherit;
+  text-decoration: none;
+}

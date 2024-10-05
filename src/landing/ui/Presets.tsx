@@ -1,31 +1,9 @@
-import { css } from 'emotion';
-import classNames from 'classnames';
+import './Presets.css';
+
 import PropTypes from 'prop-types';
 import React, { Fragment, useCallback } from 'react';
 
 import type { FC, MouseEventHandler } from 'react';
-
-const ROOT_CSS = css({
-  '& .presets__delete-preset, & .presets__preset, & .presets__save-preset': {
-    appearance: 'none',
-    background: 'transparent',
-    border: 0,
-    color: 'rgb(0, 0, 238)',
-    cursor: 'pointer',
-    display: 'inline',
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-    margin: 0,
-    padding: 0,
-    textDecoration: 'underline'
-  },
-
-  '& .presets__preset:disabled': {
-    color: '#CCC',
-    cursor: 'inherit',
-    textDecoration: 'none'
-  }
-});
 
 type PresetProps = {
   onDelete?: (value: string) => void;
@@ -103,7 +81,7 @@ const Presets: FC<PresetsProps> = ({ onDelete, onLoad, onSave, texts, values }) 
   );
 
   return (
-    <small className={classNames('presets', ROOT_CSS)}>
+    <small className="presets">
       {values.map((value, index) => (
         <Preset key={value} onDelete={onDelete} onLoad={onLoad} text={texts[index] || value} value={value} />
       ))}
