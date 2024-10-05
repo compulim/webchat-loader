@@ -1,35 +1,15 @@
-import { css } from 'emotion';
-import { useDispatch } from 'react-redux';
+import './BotPresets.css';
+
 import classNames from 'classnames';
+import { css } from 'emotion';
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Row from './Row';
 
 import loadBotPreset from '../data/action/loadBotPreset';
 
 import type { FC, MouseEventHandler, PropsWithChildren } from 'react';
-
-const ROOT_CSS = css({
-  '& .bot-presets__preset': {
-    appearance: 'none',
-    background: 'transparent',
-    border: 0,
-    color: 'rgb(0, 0, 238)',
-    cursor: 'pointer',
-    display: 'inline',
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-    margin: 0,
-    padding: 0,
-    textDecoration: 'underline'
-  },
-
-  '& .bot-presets__preset:disabled': {
-    color: '#CCC',
-    cursor: 'inherit',
-    textDecoration: 'none'
-  }
-});
 
 const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.freeze([
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Direct Line Web Socket.' },
@@ -94,7 +74,7 @@ const BotPresets: FC = () => {
   const handleLoad = useCallback<(value: string) => void>(value => dispatch(loadBotPreset(value)), []);
 
   return (
-    <Row className={classNames('bot-presets', ROOT_CSS)} header="Preset">
+    <Row className="bot-presets" header="Preset">
       {PRESETS.map(({ id, name, title }) => (
         <div key={id}>
           <BotPreset title={title} onLoad={handleLoad} value={id}>
