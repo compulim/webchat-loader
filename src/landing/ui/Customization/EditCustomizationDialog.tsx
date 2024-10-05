@@ -26,11 +26,6 @@ const EditCustomizationButton = memo(
 
     const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
 
-    const handleDialogOpen = useCallback(() => {
-      setCSSCustomProperties(savedCSSCustomPropertiesRef.current);
-      setStyleOptionsJSON(savedStyleOptionsJSONRef.current);
-    }, [setCSSCustomProperties, setStyleOptionsJSON, savedCSSCustomPropertiesRef, savedStyleOptionsJSONRef]);
-
     const handleDialogClose = useCallback(() => {
       setSavedCSSCustomProperties(cssCustomPropertiesRef.current);
       setSavedStyleOptionsJSON(
@@ -44,11 +39,13 @@ const EditCustomizationButton = memo(
       () => ({
         close: () => dialogRef.current?.close(),
         showModal: () => {
-          handleDialogOpen();
+          setCSSCustomProperties(savedCSSCustomPropertiesRef.current);
+          setStyleOptionsJSON(savedStyleOptionsJSONRef.current);
+
           dialogRef.current?.showModal();
         }
       }),
-      [dialogRef, handleDialogOpen]
+      [dialogRef, setCSSCustomProperties, setStyleOptionsJSON, savedCSSCustomPropertiesRef, savedStyleOptionsJSONRef]
     );
 
     return (
