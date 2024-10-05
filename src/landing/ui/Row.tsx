@@ -15,12 +15,12 @@ const Row = memo(({ children, className, header, rowLabel = true }: Props) => (
   <section className="row">
     {rowLabel ? (
       <label className="row__label">
-        <header className="row__header">{header}</header>
+        <header className="row__title">{header}</header>
         <div className={classNames('row__body', className)}>{children}</div>
       </label>
     ) : (
       <div className="row__label">
-        <header className="row__header">{header}</header>
+        <header className="row__title">{header}</header>
         <div className={classNames('row__body', className)}>{children}</div>
       </div>
     )}

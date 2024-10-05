@@ -7,7 +7,7 @@
   display: flex;
 }
 
-.row__header {
+.row__title {
   display: inline-block;
   width: 100px;
 }
