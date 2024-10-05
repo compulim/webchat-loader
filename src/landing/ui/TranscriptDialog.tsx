@@ -1,4 +1,6 @@
-import { css, cx } from 'emotion';
+import './TranscriptDialog.css';
+
+import { cx } from 'emotion';
 import { LoremIpsum } from 'lorem-ipsum';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -9,53 +11,6 @@ import FileUploadButton from './FileUploadButton';
 
 import type { ChangeEventHandler, FC, KeyboardEventHandler, MouseEventHandler } from 'react';
 import preChatMessageWithStarterPrompts from '../sample/preChatMessageWithStarterPrompts';
-
-const DIALOG_CSS = css({
-  '&.transcript-dialog': {
-    backgroundColor: 'White',
-    borderRadius: 4,
-    boxShadow: '0 0 10px rgba(0, 0, 0, .05)',
-    bottom: 20,
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    left: 20,
-    position: 'fixed',
-    right: 20,
-    top: 20,
-
-    '& .transcript-dialog__button-bar': {
-      padding: 5
-    },
-
-    '& .transcript-dialog__body': {
-      height: '100%',
-      overflow: 'scrolling',
-      width: '100%'
-    },
-
-    '& .transcript-dialog__text-area': {
-      backgroundColor: 'Transparent',
-      border: 0,
-      boxSizing: 'border-box',
-      flex: 1,
-      fontFamily: 'Cascadia Code, Consolas, monospace',
-      height: '100%',
-      outline: 0,
-      padding: 5,
-      resize: 'none',
-      width: '100%'
-    },
-
-    '& .transcript-dialog__text-area::placeholder': {
-      color: '#CCC'
-    },
-
-    '& .transcript-dialog__text-area--invalid': {
-      color: 'Red'
-    }
-  }
-});
 
 const GENERATE_COUNT = 50;
 const NOW = Date.now();
@@ -680,7 +635,7 @@ const TranscriptDialog: FC = () => {
   const disableLoadButton = !forceEnableLoadButton && !!editedContent;
 
   return (
-    <div className={cx(DIALOG_CSS, 'transcript-dialog')}>
+    <div className="transcript-dialog">
       <div className="transcript-dialog__button-bar">
         <button disabled={!isValid} onClick={handleSaveButtonClick} type="button">
           Save (CTRL+S)
