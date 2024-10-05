@@ -1,6 +1,5 @@
 import './WebChatLink.css';
 
-import classNames from 'classnames';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React, { memo, useMemo } from 'react';
 import { safeParse } from 'valibot';
