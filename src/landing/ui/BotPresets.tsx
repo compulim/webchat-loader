@@ -1,11 +1,11 @@
 import './BotPresets.css';
 
-import React, { memo, useCallback, type MouseEventHandler, type PropsWithChildren } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import Row from './Row';
-
 import loadBotPreset from '../data/action/loadBotPreset';
+import BotPreset from './BotPresets/BotPreset';
+import Row from './Row';
 
 const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.freeze([
   { id: 'mockbot', name: '[Public] MockBot', title: 'MockBot via Direct Line Web Socket.' },
@@ -41,31 +41,6 @@ const PRESETS: Readonly<{ id: string; name: string; title: string }[]> = Object.
     title: 'Bot using tokens fetched locally.'
   }
 ]);
-
-type BotPreset = PropsWithChildren<
-  Readonly<{
-    onLoad: (value: string) => void;
-    title: string;
-    value: string;
-  }>
->;
-
-const BotPreset = memo(({ children, onLoad, title, value }: BotPreset) => {
-  const handleClick = useCallback<MouseEventHandler>(
-    event => {
-      event.preventDefault();
-      onLoad && onLoad(value);
-    },
-    [onLoad, value]
-  );
-
-  return (
-    <button className="bot-presets__preset" onClick={handleClick} title={title} type="button">
-      {/* @ts-ignore */}
-      <nobr>{children}</nobr>
-    </button>
-  );
-});
 
 const BotPresets = memo(() => {
   const dispatch = useDispatch();
