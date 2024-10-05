@@ -256,6 +256,6 @@ const TranscriptDialog = memo(() => {
   );
 });
 
-TranscriptDialog.displayName='TranscriptDialog';
+TranscriptDialog.displayName = 'TranscriptDialog';
 
 export default TranscriptDialog;
