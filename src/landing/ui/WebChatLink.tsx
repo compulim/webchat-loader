@@ -5,6 +5,7 @@ import React, { memo, useMemo } from 'react';
 import { safeParse } from 'valibot';
 
 import { looseStyleOptionsSchema } from '../../common/types/LooseStyleOptions';
+import useCSSCustomProperties from '../data/hooks/useCSSCustomProperties';
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -19,7 +20,7 @@ import useProtocolWebSocket from '../data/hooks/useProtocolWebSocket';
 import useSpeechAuthorizationToken from '../data/hooks/useSpeechAuthorizationToken';
 import useSpeechRegion from '../data/hooks/useSpeechRegion';
 import useSpeechSubscriptionKey from '../data/hooks/useSpeechSubscriptionKey';
-import useStyleOptionsContent from '../data/hooks/useStyleOptionsContent';
+import useStyleOptionsJSON from '../data/hooks/useStyleOptionsJSON';
 import useTranscriptDialogContent from '../data/hooks/useTranscriptDialogContent';
 import useVersion from '../data/hooks/useVersion';
 import isURL from '../util/isURL';
@@ -32,6 +33,7 @@ const ROOT_CSS = css({
 
 const WebChatLink = memo(() => {
   const [conversationId] = useDirectLineConversationId();
+  const [cssCustomProperties] = useCSSCustomProperties();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolAppServiceExtensionInsecure] = useProtocolAppServiceExtensionInsecure();
@@ -43,9 +45,9 @@ const WebChatLink = memo(() => {
   const [speechAuthorizationToken] = useSpeechAuthorizationToken();
   const [speechRegion] = useSpeechRegion();
   const [speechSubscriptionKey] = useSpeechSubscriptionKey();
+  const [styleOptionsJSON] = useStyleOptionsJSON();
   const [token] = useDirectLineToken();
   const [transcriptContent] = useTranscriptDialogContent();
-  const [styleOptionsContent] = useStyleOptionsContent();
   const [userId] = useDirectLineUserId();
   const [version] = useVersion();
 
@@ -54,16 +56,16 @@ const WebChatLink = memo(() => {
     [transcriptContent]
   );
 
-  const styleOptionsJSON = useMemo(() => {
+  const rectifiedStyleOptionsJSON = useMemo(() => {
     const { output, success } = safeParse(
       looseStyleOptionsSchema,
-      onErrorResumeNext(() => JSON.parse(styleOptionsContent))
+      onErrorResumeNext(() => JSON.parse(styleOptionsJSON))
     );
 
     if (success) {
       return JSON.stringify(output);
     }
-  }, [styleOptionsContent]);
+  }, [styleOptionsJSON]);
 
   const searchParams = useMemo<undefined | URLSearchParams>(() => {
     const isDirectLineTokenURL = isURL(secret);
@@ -119,7 +121,8 @@ const WebChatLink = memo(() => {
         ? { sk: speechSubscriptionKey }
         : {}),
 
-      ...(styleOptionsJSON ? { so: styleOptionsJSON } : {})
+      ...(cssCustomProperties ? { css: cssCustomProperties } : {}),
+      ...(rectifiedStyleOptionsJSON ? { so: rectifiedStyleOptionsJSON } : {})
 
       // ws: protocolWebSocket + '',
       // ...(protocolAppServiceExtension ? { se: domainHost } : {}),
@@ -129,14 +132,15 @@ const WebChatLink = memo(() => {
     });
   }, [
     conversationId,
+    cssCustomProperties,
     domainHost,
     protocolAppServiceExtension,
     protocolWebSocket,
+    rectifiedStyleOptionsJSON,
     secret,
     speechAuthorizationToken,
     speechSubscriptionKey,
     speechRegion,
-    styleOptionsJSON,
     token,
     transcriptContentBlobURL,
     userId,

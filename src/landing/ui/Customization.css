@@ -1,0 +1,40 @@
+.customization-dialog {
+  border-radius: 8px;
+  border: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 80vh;
+  width: 80vw;
+}
+
+.customization-dialog__box {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto 1fr;
+  height: 100%;
+  width: 100%;
+}
+
+.customization-dialog__title {
+  margin-block: 0;
+}
+
+.customization-dialog__textarea {
+  border: solid 1px #ddd;
+  padding: 8px;
+  word-break: break-all;
+}
+
+.customization-dialog__textarea--has-error {
+  color: red;
+}
+
+.customization-dialog__link-button {
+  appearance: none;
+  background-color: Transparent;
+  border: 0;
+  color: LinkText;
+  cursor: pointer;
+  font-size: initial;
+  padding: 0;
+  text-decoration: underline;
+}

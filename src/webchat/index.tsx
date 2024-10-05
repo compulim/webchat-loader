@@ -1,11 +1,11 @@
 import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStreaming } from 'botframework-directlinejs';
 // import { unzip } from 'fflate';
-import ReactDOM, { render } from 'react-dom';
-import { fetch } from 'whatwg-fetch';
 import random from 'math-random';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React from 'react';
+import ReactDOM, { render } from 'react-dom';
 import { parse } from 'valibot';
+import { fetch } from 'whatwg-fetch';
 
 import { looseStyleOptionsSchema } from '../common/types/LooseStyleOptions';
 import getDomainURL from '../common/util/getDomainURL';
@@ -306,11 +306,20 @@ async function main() {
         window.React.createElement(ViaReact, {
           ...adapters,
           styleOptions:
-            onErrorResumeNext(() => parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('so') || ''))) ||
-            {}
+            onErrorResumeNext(() => parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('so') || ''))) || {}
         }),
         rootElement
       );
+
+      const css = urlSearchParams.get('css');
+
+      if (css) {
+        const webChatElement = rootElement.querySelector('.webchat');
+
+        if (webChatElement) {
+          (webChatElement as HTMLElement).style.cssText = css;
+        }
+      }
     }
   }
 

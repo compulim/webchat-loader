@@ -1,81 +1,76 @@
-import './StyleOptions.css';
-
 import { cx } from 'emotion';
 import { onErrorResumeNext } from 'on-error-resume-next';
-import React, { FormEventHandler, Fragment, memo, useCallback, useMemo, useRef } from 'react';
-import { useStateWithRef } from 'use-state-with-ref';
+import React, { type FormEventHandler, forwardRef, Fragment, memo, useCallback, useMemo } from 'react';
 import { safeParse } from 'valibot';
 
+import { useRefFrom } from 'use-ref-from';
 import { looseStyleOptionsSchema } from '../../../common/types/LooseStyleOptions';
-import useStyleOptionsContent from '../../data/hooks/useStyleOptionsContent';
 
-const StyleOptions = () => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [savedContent, setSavedContent, savedContentRef] = useStyleOptionsContent();
+type StyleOptionsProps = {
+  onInput?: ((value: string) => void) | undefined;
+  value: string;
+};
 
-  const [content, setContent, contentRef] = useStateWithRef<string>(savedContent || '{}');
+const SAMPLE = JSON.stringify({ backgroundColor: '#FEE' }, null, 2);
+
+const StyleOptions = forwardRef<HTMLTextAreaElement, StyleOptionsProps>(({ onInput, value }, ref) => {
+  const onInputRef = useRefFrom(onInput);
 
   const hasError = useMemo<boolean>(
     () =>
       !safeParse(
         looseStyleOptionsSchema,
-        onErrorResumeNext(() => JSON.parse(content))
+        onErrorResumeNext(() => JSON.parse(value))
       ).success,
-    [content]
+    [value]
   );
 
-  const handleDialogClose = useCallback(
-    () =>
-      setSavedContent(
-        onErrorResumeNext(() => JSON.stringify(JSON.parse(contentRef.current), null, 2) + '\n') || contentRef.current
-      ),
-    [contentRef, setSavedContent]
-  );
+  const handleApplySampleClick = useCallback(() => onInputRef.current?.(SAMPLE), [onInputRef]);
 
-  const handleOpenButtonClick = useCallback(() => {
-    dialogRef.current?.showModal();
-    setContent(savedContentRef.current);
-  }, [dialogRef, setContent, savedContentRef]);
-
-  const handleTextAreaInput = useCallback<FormEventHandler<HTMLTextAreaElement>>(
-    ({ currentTarget: { value } }) => setContent(value),
-    [setContent]
+  const handleInput = useCallback<FormEventHandler<HTMLTextAreaElement>>(
+    ({ currentTarget: { value } }) => onInputRef.current?.(value),
+    [onInputRef.current]
   );
 
   return (
     <Fragment>
-      <button className={'style-options-dialog-open-button'} onClick={handleOpenButtonClick} type="button">
-        Edit style options
-      </button>
-      <dialog className={'style-options-dialog'} onClose={handleDialogClose} ref={dialogRef}>
-        <h2>Style options</h2>
+      <div className="customization-dialog__section">
+        <h3>Style options</h3>
         <p>
-          Link to{' '}
+          <button className="customization-dialog__link-button" onClick={handleApplySampleClick} type="button">
+            Apply sample
+          </button>
+          . Link to{' '}
           <a
             href="https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/StyleOptions.ts"
             target="_blank"
           >
             <code>StyleOptions.ts</code>
-          </a>
-          {' '}and{' '}
+          </a>{' '}
+          and{' '}
           <a
             href="https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/defaultStyleOptions.ts"
             target="_blank"
           >
             <code>defaultStyleOptions.ts</code>
           </a>
+          .
         </p>
-        <textarea
-          autoFocus={true}
-          className={cx('style-options-dialog__textarea', { 'style-options-dialog__textarea--has-error': hasError })}
-          onInput={handleTextAreaInput}
-          placeholder="{}"
-          spellCheck={false}
-          value={content}
-        ></textarea>
-      </dialog>
+      </div>
+      <textarea
+        className={cx('customization-dialog__textarea', {
+          'customization-dialog__textarea--has-error': hasError
+        })}
+        onInput={handleInput}
+        placeholder={SAMPLE}
+        ref={ref}
+        spellCheck={false}
+        value={value}
+      />
     </Fragment>
   );
-};
+});
 
 export default memo(StyleOptions);
+
+export type { StyleOptionsProps };

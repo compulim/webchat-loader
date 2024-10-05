@@ -1,22 +1,22 @@
 import { useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import saveStyleOptionsContent from '../action/saveStyleOptionsContent';
+import saveStyleOptionsJSON from '../action/saveStyleOptionsJSON';
 import useDispatch from './internal/useDispatch';
 import useSelector from './internal/useSelector';
 
-export default function useStyleOptionsContent(): readonly [
+export default function useStyleOptionsJSON(): readonly [
   string,
-  (content: string) => void,
+  (json: string) => void,
   ReturnType<typeof useRefFrom<string>>
 ] {
   const dispatch = useDispatch();
-  const value = useSelector(({ styleOptions: { content } }) => content || '');
+  const value = useSelector(({ customization: { styleOptionsJSON } }) => styleOptionsJSON || '');
   const valueRef = useRefFrom(value);
 
   return Object.freeze([
     value,
-    useCallback((content: string) => dispatch(saveStyleOptionsContent(content)), [dispatch]),
+    useCallback((content: string) => dispatch(saveStyleOptionsJSON(content)), [dispatch]),
     valueRef
   ]);
 }
