@@ -1,9 +1,10 @@
-import React, { Fragment, memo, useEffect, useMemo, useState } from 'react';
+import { Fragment, memo, useEffect, useMemo, useState } from 'react';
+
 import ThemeSwitcher from './ThemeSwitcher';
 
 const SESSION_STORAGE_THEME_KEY = 'THEME';
 
-export default memo(function (props) {
+const ViaReact = memo(props => {
   const {
     WebChat: { FluentThemeProvider, ReactWebChat }
   } = window as any;
@@ -47,3 +48,7 @@ export default memo(function (props) {
     );
   }
 });
+
+ViaReact.displayName = 'ViaReact';
+
+export default ViaReact;

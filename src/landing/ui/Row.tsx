@@ -1,7 +1,7 @@
 import './Row.css';
 
 import classNames from 'classnames';
-import React, { memo, type PropsWithChildren } from 'react';
+import { memo, type PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<
   Readonly<{
@@ -26,5 +26,7 @@ const Row = memo(({ children, className, header, rowLabel = true }: Props) => (
     )}
   </section>
 ));
+
+Row.displayName = 'Row';
 
 export default Row;

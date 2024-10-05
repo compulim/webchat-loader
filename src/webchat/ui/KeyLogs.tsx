@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-
-import type { KeyboardEventHandler } from 'react';
+import { memo, useCallback, useEffect, useState, type KeyboardEventHandler } from 'react';
 
 const KEY_LOG_LENGTH = 10;
 
-const KeyLogs = () => {
+const KeyLogs = memo(() => {
   const [keyLog, setRawKeyLog] = useState<readonly Readonly<Set<string>>[]>(Object.freeze([]));
 
   const setKeyLog = useCallback(
@@ -102,6 +100,8 @@ const KeyLogs = () => {
       )}
     </div>
   );
-};
+});
+
+KeyLogs.displayName = 'KeyLogs';
 
 export default KeyLogs;

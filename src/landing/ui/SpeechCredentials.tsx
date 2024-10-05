@@ -1,9 +1,10 @@
 import './SpeechCredentials.css';
 
 import ms from 'ms';
-import React, {
+import {
   type ChangeEventHandler,
   type FocusEventHandler,
+  Fragment,
   type MouseEventHandler,
   memo,
   useCallback,
@@ -121,7 +122,7 @@ const SpeechCredentials = memo(() => {
   }, [decodedAuthorizationToken]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Row header="Speech region">
         <div className="speech-credentials__row">
           <div className="speech-credentials__input-row">
@@ -232,8 +233,10 @@ const SpeechCredentials = memo(() => {
             </div>
           ))}
       </Row>
-    </React.Fragment>
+    </Fragment>
   );
 });
+
+SpeechCredentials.displayName = 'SpeechCredentials';
 
 export default SpeechCredentials;

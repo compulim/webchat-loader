@@ -1,6 +1,6 @@
 import './VersionSelector.css';
 
-import React, {
+import {
   Fragment,
   memo,
   useCallback,
@@ -373,5 +373,7 @@ const VersionSelector = memo(() => {
     </Row>
   );
 });
+
+VersionSelector.displayName = 'VersionSelector';
 
 export default VersionSelector;

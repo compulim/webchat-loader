@@ -2,7 +2,7 @@ import './TranscriptDialog.css';
 
 import classNames from 'classnames';
 import { LoremIpsum } from 'lorem-ipsum';
-import React, {
+import {
   memo,
   useCallback,
   useEffect,
@@ -255,5 +255,7 @@ const TranscriptDialog = memo(() => {
     </div>
   );
 });
+
+TranscriptDialog.displayName='TranscriptDialog';
 
 export default TranscriptDialog;

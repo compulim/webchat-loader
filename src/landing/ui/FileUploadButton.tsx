@@ -1,12 +1,6 @@
 import './FileUploadButton.css';
 
-import React, {
-  memo,
-  useCallback,
-  type ChangeEventHandler,
-  type FormEventHandler,
-  type PropsWithChildren
-} from 'react';
+import { memo, useCallback, type ChangeEventHandler, type FormEventHandler, type PropsWithChildren } from 'react';
 
 type Props = PropsWithChildren<
   Readonly<{
@@ -60,5 +54,7 @@ const FileUploadButton = memo(({ children, onError, onUpload, resultType }: Prop
     </form>
   );
 });
+
+FileUploadButton.displayName = 'FileUploadButton';
 
 export default FileUploadButton;

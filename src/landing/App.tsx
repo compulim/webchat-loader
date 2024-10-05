@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { ScrollingBackground } from 'react-scrolling-background';
 
 import useTranscriptDialogVisible from './data/hooks/useTranscriptDialogVisible';
@@ -77,5 +77,7 @@ const App = memo(() => {
     </div>
   );
 });
+
+App.displayName = 'App';
 
 export default App;

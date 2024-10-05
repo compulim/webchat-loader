@@ -1,6 +1,6 @@
 import './BotPresets.css';
 
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import loadBotPreset from '../data/action/loadBotPreset';
@@ -58,5 +58,7 @@ const BotPresets = memo(() => {
     </Row>
   );
 });
+
+BotPresets.displayName = 'BotPresets';
 
 export default BotPresets;

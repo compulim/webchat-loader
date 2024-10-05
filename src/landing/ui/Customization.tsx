@@ -1,9 +1,9 @@
 import './Customization.css';
 
-import React, { memo, useCallback, useRef } from 'react';
+import { onErrorResumeNext } from 'on-error-resume-next';
+import { memo, useCallback, useRef } from 'react';
 import { useStateWithRef } from 'use-state-with-ref';
 
-import { onErrorResumeNext } from 'on-error-resume-next';
 import useCSSCustomProperties from '../data/hooks/useCSSCustomProperties';
 import useStyleOptionsJSON from '../data/hooks/useStyleOptionsJSON';
 import CSSCustomProperties from './Customization/CSSCustomProperties';
@@ -55,4 +55,6 @@ const Customization = memo(() => {
   );
 });
 
-export default memo(Customization);
+Customization.displayName = 'Customization';
+
+export default Customization;

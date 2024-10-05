@@ -3,7 +3,8 @@ import { DirectLine as NPMDirectLine, DirectLineStreaming as NPMDirectLineStream
 import random from 'math-random';
 import { onErrorResumeNext } from 'on-error-resume-next';
 import React from 'react';
-import ReactDOM, { render } from 'react-dom';
+import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { parse } from 'valibot';
 import { fetch } from 'whatwg-fetch';
 
@@ -329,7 +330,9 @@ async function main() {
 }
 
 function showKeyLogs() {
-  render(<KeyLogs />, document.getElementById('react-root'));
+  const reactRoot = document.getElementById('react-root');
+
+  reactRoot && createRoot(reactRoot).render(React.createElement(KeyLogs));
 }
 
 main().catch(err => console.error(err));

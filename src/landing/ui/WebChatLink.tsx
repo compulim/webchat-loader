@@ -1,7 +1,7 @@
 import './WebChatLink.css';
 
 import { onErrorResumeNext } from 'on-error-resume-next';
-import React, { memo, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { safeParse } from 'valibot';
 
 import { looseStyleOptionsSchema } from '../../common/types/LooseStyleOptions';
@@ -154,5 +154,7 @@ const WebChatLink = memo(() => {
     <span className="webchat-link webchat-link--disabled">Open Web Chat in a new window</span>
   );
 });
+
+WebChatLink.displayName = 'WebChatLink';
 
 export default WebChatLink;

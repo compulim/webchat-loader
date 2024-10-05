@@ -1,5 +1,5 @@
-import React, { memo, useMemo } from 'react';
-import { render } from 'react-dom';
+import { memo, useMemo } from 'react';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import App from './App';
@@ -15,6 +15,8 @@ const Main = memo(() => {
   );
 });
 
-render(<Main />, document.getElementById('root'));
+const rootElement = document.getElementById('root');
+
+rootElement && createRoot(rootElement).render(<Main />);
 
 IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload());

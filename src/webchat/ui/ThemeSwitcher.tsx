@@ -1,13 +1,13 @@
-import React, { memo, useCallback, type FormEventHandler } from 'react';
+import { memo, useCallback, type FormEventHandler } from 'react';
 
 type Mode = 'copilot' | 'fluent' | 'white label';
 
-type Props = {
+type Props = Readonly<{
   mode: Mode;
   onChange: (mode: Mode) => void;
-};
+}>;
 
-export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
+const ThemeSwitcher = memo(({ mode, onChange }: Props) => {
   const handleChange = useCallback<FormEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => onChange(value === 'copilot' || value === 'fluent' ? value : 'white label'),
     [onChange]
@@ -52,3 +52,7 @@ export default memo(function ThemeSwitcher({ mode, onChange }: Props) {
     )
   );
 });
+
+ThemeSwitcher.displayName = 'ThemeSwitcher';
+
+export default ThemeSwitcher;

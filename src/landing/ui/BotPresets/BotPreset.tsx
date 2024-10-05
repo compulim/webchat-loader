@@ -1,6 +1,6 @@
 import './BotPreset.css';
 
-import React, { memo, useCallback, type MouseEventHandler, type PropsWithChildren } from 'react';
+import { memo, useCallback, type MouseEventHandler, type PropsWithChildren } from 'react';
 
 type BotPreset = PropsWithChildren<
   Readonly<{
@@ -26,5 +26,7 @@ const BotPreset = memo(({ children, onLoad, title, value }: BotPreset) => {
     </button>
   );
 });
+
+BotPreset.displayName = 'BotPreset';
 
 export default BotPreset;

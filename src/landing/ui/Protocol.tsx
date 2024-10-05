@@ -1,6 +1,6 @@
 import './Protocol.css';
 
-import React, { type ChangeEventHandler, Fragment, memo, useCallback } from 'react';
+import { type ChangeEventHandler, Fragment, memo, useCallback } from 'react';
 
 import useDirectLineAppServiceExtensionErrorReason from '../data/hooks/useDirectLineAppServiceExtensionErrorReason';
 import useDirectLineAppServiceExtensionResponse from '../data/hooks/useDirectLineAppServiceExtensionResponse';
@@ -168,5 +168,7 @@ const Protocol = memo(() => {
     </Row>
   );
 });
+
+Protocol.displayName = 'Protocol';
 
 export default Protocol;

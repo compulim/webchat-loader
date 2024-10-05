@@ -1,7 +1,8 @@
 import './DirectLineCredentials.css';
 
 import ms from 'ms';
-import React, {
+import {
+  Fragment,
   memo,
   useCallback,
   useEffect,
@@ -107,7 +108,7 @@ const DirectLineCredential = memo(() => {
   }, [decodedToken]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Row header={tokenFromURL ? 'Token URL' : 'Secret'}>
         <div className="direct-line-credentials__input-row">
           <input
@@ -203,8 +204,10 @@ const DirectLineCredential = memo(() => {
             </div>
           ))}
       </Row>
-    </React.Fragment>
+    </Fragment>
   );
 });
+
+DirectLineCredential.displayName = 'DirectLineCredential';
 
 export default DirectLineCredential;
