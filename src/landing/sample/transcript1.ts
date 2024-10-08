@@ -2,6 +2,9 @@ const NOW = Date.now();
 
 export default [
   {
+    from: {
+      role: 'bot'
+    },
     id: 'a-00001',
     text: 'What can I do for you?',
     timestamp: new Date(NOW - 120000).toISOString(),
@@ -43,6 +46,9 @@ export default [
     type: 'message'
   },
   {
+    from: {
+      role: 'bot'
+    },
     id: 'a-00003',
     text: `It's ${new Date(NOW).toLocaleTimeString()}.`,
     timestamp: new Date(NOW).toISOString(),
