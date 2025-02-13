@@ -11,7 +11,7 @@ type StyleOptionsProps = Readonly<{
   value: string;
 }>;
 
-const SAMPLE = JSON.stringify({ backgroundColor: '#FEE' }, null, 2);
+const SAMPLE = JSON.stringify({ backgroundColor: '#FEE', speechRecognitionContinuous: true }, null, 2);
 
 const StyleOptions = memo(({ onInput, value }: StyleOptionsProps) => {
   const onInputRef = useRefFrom(onInput);
