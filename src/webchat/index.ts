@@ -168,7 +168,7 @@ async function main() {
     } else if ((window as any).WebChat?.createDirectLineAppServiceExtension) {
       console.warn('Using DirectLineJS ASE from the bundle of Web Chat v4.');
       createDirectLineAppServiceExtension = (options: any) =>
-         (window as any).WebChat.createDirectLineAppServiceExtension(options);
+        (window as any).WebChat.createDirectLineAppServiceExtension(options);
     } else {
       console.warn('Using DirectLineJS ASE from Web Chat Loader.');
       createDirectLineAppServiceExtension = (options: any) => new NPMDirectLineStreaming(options);
