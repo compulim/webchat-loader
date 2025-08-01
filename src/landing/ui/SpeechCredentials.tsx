@@ -65,7 +65,7 @@ const SpeechCredentials = memo(() => {
       }
 
       if (subscriptionKey === '#mockbot') {
-        setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
+        setSubscriptionKey('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi');
         fetchAuthorizationToken();
       } else {
         setAuthorizationToken('');
@@ -212,7 +212,7 @@ const SpeechCredentials = memo(() => {
                   : undefined
               }
               texts={useMemo(
-                () => ['MockBot', ...savedSubscriptionKeys.map(key => () => (key || '').substr(0, 5) + '…')],
+                () => ['MockBot4', ...savedSubscriptionKeys.map(key => () => (key || '').substr(0, 5) + '…')],
                 [savedSubscriptionKeys]
               )}
               values={['#mockbot', ...savedSubscriptionKeys]}

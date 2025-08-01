@@ -49,9 +49,10 @@ const DirectLineCredential = memo(() => {
   const savedSecretsTexts = useMemo<readonly (string | (() => string))[]>(
     () =>
       Object.freeze([
-        'MockBot',
-        'MockBot3',
-        'Relay Bot',
+        // 'MockBot',
+        // 'MockBot3',
+        // 'Relay Bot',
+        'MockBot4',
         ...savedSecrets.map(secret => () => (secret || '').substr(0, 5) + '…')
       ]),
     [savedSecrets]
@@ -62,15 +63,20 @@ const DirectLineCredential = memo(() => {
   const handleFocus = useCallback<FocusEventHandler<HTMLInputElement>>(({ target }) => target.select(), []);
   const handleLoadSecret = useCallback<(value: string) => void>(
     value => {
-      if (value === '#mockbot') {
-        setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
+      if (value === '#mockbot4') {
+        setSecret(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline'
+        );
         fetchDirectLineToken();
-      } else if (value === '#mockbot3') {
-        setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
-        fetchDirectLineToken();
-      } else if (value === '#relay-bot') {
-        setSecret('https://webchat-relaybot.azurewebsites.net/api/token/directline');
-        fetchDirectLineToken();
+        // } else if (value === '#mockbot') {
+        //   setSecret('https://webchat-mockbot.azurewebsites.net/directline/token');
+        //   fetchDirectLineToken();
+        // } else if (value === '#mockbot3') {
+        //   setSecret('https://webchat-mockbot3.azurewebsites.net/api/token/directline');
+        //   fetchDirectLineToken();
+        // } else if (value === '#relay-bot') {
+        //   setSecret('https://webchat-relaybot.azurewebsites.net/api/token/directline');
+        //   fetchDirectLineToken();
       } else {
         setSecret(value);
         setToken('');
@@ -147,7 +153,8 @@ const DirectLineCredential = memo(() => {
           onLoad={handleLoadSecret}
           onSave={secret && !savedSecrets.includes(secret) ? handleSaveSecret : undefined}
           texts={savedSecretsTexts}
-          values={useMemo(() => ['#mockbot', '#mockbot3', '#relay-bot', ...savedSecrets], [savedSecrets])}
+          // values={useMemo(() => ['#mockbot', '#mockbot3', '#relay-bot', ...savedSecrets], [savedSecrets])}
+          values={useMemo(() => ['#mockbot4', ...savedSecrets], [savedSecrets])}
         />
       </Row>
       <Row header="Token">
