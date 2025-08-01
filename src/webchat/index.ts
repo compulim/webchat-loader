@@ -268,7 +268,9 @@ async function main() {
       );
     } else {
       if (!protocolDirectLineSpeech) {
-        if (speechAuthorizationToken || speechSubscriptionKey) {
+        if (speechRegion === 'browser') {
+          adapters.webSpeechPonyfillFactory = (window as any).WebChat.createBrowserWebSpeechPonyfillFactory();
+        } else if (speechAuthorizationToken || speechSubscriptionKey) {
           const speechOptions = {
             // speechSynthesisOutputFormat: 'audio-16khz-32kbitrate-mono-mp3'
             // speechRecognitionEndpointId: '12345678-1234-5678-abcd-12345678abcd',

@@ -26,6 +26,7 @@ import Presets from './Presets';
 import Row from './Row';
 
 const REGIONS: Readonly<Record<string, string>> = Object.freeze({
+  browser: 'Browser',
   westus: 'West US',
   westus2: 'West US 2',
   eastus: 'East US',
@@ -59,6 +60,10 @@ const SpeechCredentials = memo(() => {
   }, [setSubscriptionKey]);
   const handleLoadSubscriptionKey = useCallback<(subscriptionKey: string) => void>(
     subscriptionKey => {
+      if (region === 'browser') {
+        return;
+      }
+
       if (subscriptionKey === '#mockbot') {
         setSubscriptionKey('https://webchat-mockbot.azurewebsites.net/speechservices/token');
         fetchAuthorizationToken();
@@ -67,7 +72,7 @@ const SpeechCredentials = memo(() => {
         setSubscriptionKey(subscriptionKey);
       }
     },
-    [fetchAuthorizationToken, setAuthorizationToken, setSubscriptionKey]
+    [fetchAuthorizationToken, region, setAuthorizationToken, setSubscriptionKey]
   );
 
   const handleAuthorizationTokenChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -143,8 +148,8 @@ const SpeechCredentials = memo(() => {
           <div>
             <Presets
               onLoad={subscriptionKeyIsURL ? undefined : setRegion}
-              texts={useMemo(() => Object.freeze(['West US', 'West US 2', 'East US']), [])}
-              values={useMemo(() => Object.freeze(['westus', 'westus2', 'eastus']), [])}
+              texts={useMemo(() => Object.freeze(['West US', 'West US 2', 'East US', 'Browser']), [])}
+              values={useMemo(() => Object.freeze(['westus', 'westus2', 'eastus', 'browser']), [])}
             />
           </div>
         </div>
@@ -154,7 +159,7 @@ const SpeechCredentials = memo(() => {
           <div className="speech-credentials__input-row">
             <input
               className="speech-credentials__input"
-              disabled={!!authorizationToken}
+              disabled={!!authorizationToken || region === 'browser'}
               onChange={handleSubscriptionKeyChange}
               onFocus={handleSubscriptionKeyFocus}
               title={
@@ -164,7 +169,7 @@ const SpeechCredentials = memo(() => {
                   ? `Will POST to this endpoint for either JSON or text depends on "Content-Type" header.`
                   : undefined
               }
-              value={subscriptionKey}
+              value={region === 'browser' ? '' : subscriptionKey}
             />
             <button
               disabled={!subscriptionKey || !!authorizationToken}
@@ -211,11 +216,12 @@ const SpeechCredentials = memo(() => {
           <div className="speech-credentials__input-row">
             <input
               className="speech-credentials__input"
+              disabled={region === 'browser'}
               onChange={handleAuthorizationTokenChange}
               onFocus={handleAuthorizationTokenFocus}
               required={subscriptionKeyIsURL}
               title={decodedAuthorizationToken ? JSON.stringify(decodedAuthorizationToken, null, 2) : undefined}
-              value={authorizationToken}
+              value={region === 'browser' ? '' : authorizationToken}
             />
             <button disabled={!authorizationToken} onClick={handleClearAuthorizationTokenClick} type="button">
               Clear
