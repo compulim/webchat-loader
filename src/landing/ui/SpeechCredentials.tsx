@@ -105,6 +105,15 @@ const SpeechCredentials = memo(() => {
   );
   const subscriptionKeyIsURL = isURL(subscriptionKey);
 
+  const handleLoadRegion = useCallback<(region: string) => void>(
+    region => {
+      if (region === 'browser' || !subscriptionKeyIsURL) {
+        setRegion(region);
+      }
+    },
+    [setRegion, subscriptionKeyIsURL]
+  );
+
   const decodedAuthorizationTokenResult = safeParse(
     looseObject({ exp: number() }),
     tryDecodeJWT(authorizationToken.includes('aad#') ? authorizationToken.split('#')[2] : authorizationToken)
@@ -147,7 +156,7 @@ const SpeechCredentials = memo(() => {
           </div>
           <div>
             <Presets
-              onLoad={subscriptionKeyIsURL ? undefined : setRegion}
+              onLoad={handleLoadRegion}
               texts={useMemo(() => Object.freeze(['West US', 'West US 2', 'East US', 'Browser']), [])}
               values={useMemo(() => Object.freeze(['westus', 'westus2', 'eastus', 'browser']), [])}
             />
@@ -169,7 +178,7 @@ const SpeechCredentials = memo(() => {
                   ? `Will POST to this endpoint for either JSON or text depends on "Content-Type" header.`
                   : undefined
               }
-              value={region === 'browser' ? '' : subscriptionKey}
+              value={subscriptionKey}
             />
             <button
               disabled={!subscriptionKey || !!authorizationToken}
@@ -221,7 +230,7 @@ const SpeechCredentials = memo(() => {
               onFocus={handleAuthorizationTokenFocus}
               required={subscriptionKeyIsURL}
               title={decodedAuthorizationToken ? JSON.stringify(decodedAuthorizationToken, null, 2) : undefined}
-              value={region === 'browser' ? '' : authorizationToken}
+              value={authorizationToken}
             />
             <button disabled={!authorizationToken} onClick={handleClearAuthorizationTokenClick} type="button">
               Clear
