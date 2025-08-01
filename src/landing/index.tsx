@@ -19,4 +19,5 @@ const rootElement = document.getElementById('root');
 
 rootElement && createRoot(rootElement).render(<Main />);
 
-IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload());
+typeof IS_DEVELOPMENT === 'undefined' ||
+  (IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload()));

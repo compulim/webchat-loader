@@ -339,4 +339,5 @@ function showKeyLogs() {
 
 main().catch(err => console.error(err));
 
-IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload());
+typeof IS_DEVELOPMENT === 'undefined' ||
+  (IS_DEVELOPMENT && new EventSource('/esbuild').addEventListener('change', () => location.reload()));
