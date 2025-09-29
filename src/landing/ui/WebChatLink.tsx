@@ -6,6 +6,7 @@ import { safeParse } from 'valibot';
 
 import { looseStyleOptionsSchema } from '../../common/types/LooseStyleOptions';
 import useCSSCustomProperties from '../data/hooks/useCSSCustomProperties';
+import useCustomPropsJSON from '../data/hooks/useCustomPropsJSON';
 import useDirectLineConversationId from '../data/hooks/useDirectLineConversationId';
 import useDirectLineDomainHost from '../data/hooks/useDirectLineDomainHost';
 import useDirectLineSecret from '../data/hooks/useDirectLineSecret';
@@ -28,6 +29,7 @@ import isURL from '../util/isURL';
 const WebChatLink = memo(() => {
   const [conversationId] = useDirectLineConversationId();
   const [cssCustomProperties] = useCSSCustomProperties();
+  const [customPropsJSON] = useCustomPropsJSON();
   const [domainHost] = useDirectLineDomainHost();
   const [protocolAppServiceExtension] = useProtocolAppServiceExtension();
   const [protocolAppServiceExtensionInsecure] = useProtocolAppServiceExtensionInsecure();
@@ -116,6 +118,7 @@ const WebChatLink = memo(() => {
         : {}),
 
       ...(cssCustomProperties ? { css: cssCustomProperties } : {}),
+      ...(customPropsJSON ? { props: customPropsJSON } : {}),
       ...(rectifiedStyleOptionsJSON ? { so: rectifiedStyleOptionsJSON } : {})
 
       // ws: protocolWebSocket + '',
@@ -127,6 +130,7 @@ const WebChatLink = memo(() => {
   }, [
     conversationId,
     cssCustomProperties,
+    customPropsJSON,
     domainHost,
     protocolAppServiceExtension,
     protocolWebSocket,

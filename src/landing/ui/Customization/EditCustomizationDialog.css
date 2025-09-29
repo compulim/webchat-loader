@@ -9,7 +9,7 @@
 
 .edit-customization-dialog__box {
   display: grid;
-  grid-template-rows: auto auto 1fr auto 1fr;
+  grid-template-rows: auto auto 1fr auto 1fr auto 1fr;
   height: 100%;
   width: 100%;
 }

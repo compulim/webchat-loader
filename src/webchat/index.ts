@@ -8,7 +8,7 @@ import ReactDOMClient, { createRoot } from 'react-dom/client';
 import { parse } from 'valibot';
 import { fetch } from 'whatwg-fetch';
 
-import { looseStyleOptionsSchema } from '../common/types/LooseStyleOptions';
+import { looseStyleOptionsSchema, type LooseStyleOptions } from '../common/types/LooseStyleOptions';
 import getDomainURL from '../common/util/getDomainURL';
 import KeyLogs from './ui/KeyLogs';
 import ViaReact from './ui/ViaReact';
@@ -62,15 +62,20 @@ async function main() {
 
   if (/^0/.test(version)) {
     assetURLs = Object.freeze([
-      `https://unpkg.com/botframework-webchat@${version}/botchat.js`,
-      `https://unpkg.com/botframework-webchat@${version}/botchat.css`,
-      `https://unpkg.com/botframework-webchat@${version}/CognitiveServices.js`
+      // `https://unpkg.com/botframework-webchat@${version}/botchat.js`,
+      // `https://unpkg.com/botframework-webchat@${version}/botchat.css`,
+      // `https://unpkg.com/botframework-webchat@${version}/CognitiveServices.js`
+      `https://cdn.jsdelivr.net/npm/botframework-webchat@${version}/botchat.js`,
+      `https://cdn.jsdelivr.net/npm/botframework-webchat@${version}/botchat.css`,
+      `https://cdn.jsdelivr.net/npm/botframework-webchat@${version}/CognitiveServices.js`
     ]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
   } else if (/^4\.\d+\.\d+-/.test(version)) {
-    assetURLs = Object.freeze([`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`]);
+    // assetURLs = Object.freeze([`https://unpkg.com/botframework-webchat@${version}/dist/webchat-es5.js`]);
+    assetURLs = Object.freeze([`https://cdn.jsdelivr.net/npm/botframework-webchat@${version}/dist/webchat-es5.js`]);
     console.warn(`Using Web Chat from ${assetURLs[0]}`);
-    fluentThemeURL = `https://unpkg.com/botframework-webchat-fluent-theme@${version}/dist/botframework-webchat-fluent-theme.development.js`;
+    // fluentThemeURL = `https://unpkg.com/botframework-webchat-fluent-theme@${version}/dist/botframework-webchat-fluent-theme.development.js`;
+    fluentThemeURL = `https://cdn.jsdelivr.net/npm/botframework-webchat-fluent-theme@${version}/dist/botframework-webchat-fluent-theme.development.js`;
   } else if (version.startsWith(`blob:${location.origin}/`)) {
     console.warn(`Using Web Chat from ${version}`);
 
@@ -306,9 +311,21 @@ async function main() {
       //   rootElement
       // );
 
+      console.log(
+        onErrorResumeNext<() => LooseStyleOptions>(() =>
+          parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('props') || ''))
+        ) || {}
+      );
+
+      console.log(urlSearchParams.get('props'));
+
       (window as any).ReactDOMClient.createRoot(rootElement).render(
         window.React.createElement(ViaReact, {
           ...adapters,
+          ...(onErrorResumeNext<() => LooseStyleOptions>(() =>
+            parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('props') || ''))
+          ) || {}),
+
           styleOptions:
             onErrorResumeNext(() => parse(looseStyleOptionsSchema, JSON.parse(urlSearchParams.get('so') || ''))) || {}
         })

@@ -1,24 +1,30 @@
 import './EditCustomizationDialog.css';
 
 import { onErrorResumeNext } from 'on-error-resume-next';
-import { forwardRef, memo, useCallback, useImperativeHandle, useRef } from 'react';
+import { forwardRef, memo, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { useStateWithRef } from 'use-state-with-ref';
 
 import useCSSCustomProperties from '../../data/hooks/useCSSCustomProperties';
+import useCustomPropsJSON from '../../data/hooks/useCustomPropsJSON';
 import useStyleOptionsJSON from '../../data/hooks/useStyleOptionsJSON';
 import CloseButton from '../CloseButton';
 import CSSCustomProperties from '../Customization/CSSCustomProperties';
 import StyleOptions from '../Customization/StyleOptions';
+import CustomProps from './CustomProps';
 
 const EditCustomizationButton = memo(
   forwardRef<Pick<HTMLDialogElement, 'close' | 'showModal'>>((_, ref) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [savedCSSCustomProperties, setSavedCSSCustomProperties, savedCSSCustomPropertiesRef] =
       useCSSCustomProperties();
+    const [savedCustomPropsJSON, setSavedCustomPropsJSON, savedCustomPropsJSONRef] = useCustomPropsJSON();
     const [savedStyleOptionsJSON, setSavedStyleOptionsJSON, savedStyleOptionsJSONRef] = useStyleOptionsJSON();
 
     const [cssCustomProperties, setCSSCustomProperties, cssCustomPropertiesRef] = useStateWithRef<string>(
       savedCSSCustomProperties || ''
+    );
+    const [customPropsJSON, setCustomPropsJSON, customPropsJSONRef] = useStateWithRef<string>(
+      savedCustomPropsJSON || ''
     );
     const [styleOptionsJSON, setStyleOptionsJSON, styleOptionsJSONRef] = useStateWithRef<string>(
       savedStyleOptionsJSON || '{}'
@@ -28,6 +34,10 @@ const EditCustomizationButton = memo(
 
     const handleDialogClose = useCallback(() => {
       setSavedCSSCustomProperties(cssCustomPropertiesRef.current);
+      setSavedCustomPropsJSON(
+        onErrorResumeNext(() => JSON.stringify(JSON.parse(customPropsJSONRef.current), null, 2) + '\n') ||
+          customPropsJSONRef.current
+      );
       setSavedStyleOptionsJSON(
         onErrorResumeNext(() => JSON.stringify(JSON.parse(styleOptionsJSONRef.current), null, 2) + '\n') ||
           styleOptionsJSONRef.current
@@ -40,6 +50,7 @@ const EditCustomizationButton = memo(
         close: () => dialogRef.current?.close(),
         showModal: () => {
           setCSSCustomProperties(savedCSSCustomPropertiesRef.current);
+          setCustomPropsJSON(savedCustomPropsJSONRef.current);
           setStyleOptionsJSON(savedStyleOptionsJSONRef.current);
 
           dialogRef.current?.showModal();
@@ -54,6 +65,7 @@ const EditCustomizationButton = memo(
         <div className="edit-customization-dialog__box">
           <h2 className="edit-customization-dialog__title">Customization (auto-save)</h2>
           <StyleOptions onInput={setStyleOptionsJSON} value={styleOptionsJSON} />
+          <CustomProps onInput={setCustomPropsJSON} value={customPropsJSON} />
           <CSSCustomProperties onInput={setCSSCustomProperties} value={cssCustomProperties} />
         </div>
       </dialog>
