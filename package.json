@@ -56,7 +56,7 @@
     "simple-update-in": "2.2.0",
     "use-ref-from": "0.1.0",
     "use-state-with-ref": "0.1.0",
-    "valibot": "1.0.0-beta.0",
+    "valibot": "1.2.0",
     "whatwg-fetch": "3.6.20"
   }
 }
