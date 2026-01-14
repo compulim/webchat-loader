@@ -21,7 +21,7 @@ export default function* loadBotPresetSaga() {
       yield put(setDirectLineToken(''));
       yield put(
         setDirectLineSecret(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline'
         )
       );
       yield put(fetchDirectLineToken());
@@ -33,7 +33,7 @@ export default function* loadBotPresetSaga() {
 
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
@@ -41,7 +41,7 @@ export default function* loadBotPresetSaga() {
       yield put(setDirectLineToken(''));
       yield put(
         setDirectLineSecret(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline?bot=echo%20bot'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directline?bot=echo%20bot'
         )
       );
       yield put(fetchDirectLineToken());
@@ -53,7 +53,7 @@ export default function* loadBotPresetSaga() {
 
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
@@ -61,7 +61,7 @@ export default function* loadBotPresetSaga() {
       yield put(setDirectLineToken(''));
       yield put(
         setDirectLineSecret(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease?bot=echo%20bot'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directlinease?bot=echo%20bot'
         )
       );
       yield put(fetchDirectLineToken());
@@ -73,7 +73,7 @@ export default function* loadBotPresetSaga() {
 
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
@@ -86,7 +86,7 @@ export default function* loadBotPresetSaga() {
       yield put(setSpeechAuthorizationToken(''));
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
@@ -94,7 +94,7 @@ export default function* loadBotPresetSaga() {
       yield put(setDirectLineToken(''));
       yield put(
         setDirectLineSecret(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/directlinease'
         )
       );
       yield put(fetchDirectLineToken());
@@ -107,7 +107,7 @@ export default function* loadBotPresetSaga() {
 
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
@@ -120,7 +120,7 @@ export default function* loadBotPresetSaga() {
       yield put(setSpeechAuthorizationToken(''));
       yield put(
         setSpeechSubscriptionKey(
-          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi?bot=echo%20bot'
+          'https://hawo-mockbot4-token-app.ambitiousflower-67725bfd.westus.azurecontainerapps.io/api/token/speech/msi?bot=echo%20bot'
         )
       );
       yield put(fetchSpeechAuthorizationToken());
